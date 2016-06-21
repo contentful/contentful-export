@@ -1,0 +1,28 @@
+#!/usr/bin/env node
+var log = require('npmlog')
+var runContentfulExport = require('../')
+var usageParams
+
+try {
+  usageParams = require('../dist/usageParams')
+} catch (err) {
+  if (err.code === 'MODULE_NOT_FOUND') {
+    usageParams = require('../lib/usageParams')
+  } else {
+    console.log(err)
+    process.exit(1)
+  }
+}
+// welcome the user and let them know what's gonna happen
+log.info('Contentful Export Tool:\n' +
+'Fetching Space data ...')
+
+setTimeout(function () {
+  runContentfulExport(usageParams)
+  process.exit(1)
+
+  // .catch(function (err) {
+  //   log.error('Failed with\n', err)
+  //   process.exit(1)
+  // })
+}, 3000)

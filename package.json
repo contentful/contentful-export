@@ -2,13 +2,14 @@
   "name": "contentful-export",
   "version": "0.0.1",
   "description": "this tool allows you to export a space to a JSON dump",
+  "bin": "bin/contentful-export",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "rimraf dist && mkdirp dist && babel lib --out-dir dist"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/contentful/contentful-export.git"
+    "url": "https://github.com/contentful/contentful-export.git"
   },
   "keywords": ["contentful", "contentful-export"],
   "author": "Contentful <opensource@contentful.com>",
