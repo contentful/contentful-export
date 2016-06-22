@@ -1,0 +1,9 @@
+#!/usr/bin/env node
+var log = require('npmlog')
+log.level = 'silent'
+
+require('require-all')({
+  dirname: process.cwd() + '/test',
+  filter: process.argv[2] || /\-test\.js/,
+  recursive: true
+})

@@ -1,18 +1,29 @@
 {
   "name": "contentful-export",
-  "version": "0.0.1",
   "description": "this tool allows you to export a space to a JSON dump",
   "bin": "bin/contentful-export",
   "main": "index.js",
   "scripts": {
     "build": "npm run clean && mkdirp dist && babel lib --out-dir dist",
-    "clean": "rimraf dist"
+    "clean": "rimraf dist",
+    "prepublish": "in-publish && npm run build || not-in-publish",
+    "postpublish": "npm run clean",
+    "pretest": "standard",
+    "test": "npm run test:cover",
+    "test:cover": "BABEL_ENV=test babel-node ./node_modules/istanbul/lib/cli.js cover test/runner",
+    "test:only": "BABEL_ENV=test babel-node ./test/runner",
+    "test:debug": "BABEL_ENV=test babel-node debug ./test/runner",
+    "browser-coverage": "npm run test:cover && opener coverage/lcov-report/index.html",
+    "semantic-release": "semantic-release pre && npm publish && semantic-release post"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/contentful/contentful-export.git"
   },
-  "keywords": ["contentful", "contentful-export"],
+  "keywords": [
+    "contentful",
+    "contentful-export"
+  ],
   "author": "Contentful <opensource@contentful.com>",
   "license": "MIT",
   "bugs": {
@@ -53,5 +64,4 @@
       "path": "./node_modules/cz-conventional-changelog"
     }
   }
-
 }
