@@ -45,7 +45,7 @@ Check the `example-config.json` file for an example of what a configuration file
 ```shell
 contentful-export \
   --space-id spaceID \
-  --management-token destinationSpaceManagementToken
+  --management-token managementToken
 ```
 
 or
