@@ -19,8 +19,8 @@ log.info('Contentful Export Tool:\n' +
 
 setTimeout(function () {
   runContentfulExport(usageParams)
-  // .catch(function (err) {
-  //   log.error('Failed with\n', err)
-  //   process.exit(1)
-  // })
+  .catch(function (err) {
+    log.error('Failed with\n', err)
+    process.exit(1)
+  })
 }, 3000)
