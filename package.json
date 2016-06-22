@@ -5,7 +5,8 @@
   "bin": "bin/contentful-export",
   "main": "index.js",
   "scripts": {
-    "build": "rimraf dist && mkdirp dist && babel lib --out-dir dist"
+    "build": "npm run clean && mkdirp dist && babel lib --out-dir dist",
+    "clean": "rimraf dist"
   },
   "repository": {
     "type": "git",
@@ -19,7 +20,8 @@
   },
   "dependencies": {
     "bluebird": "^3.3.3",
-    "contentful-batch-libs": "^3.2.0",
+    "contentful-batch-libs": "^4.0.2",
+    "json-stringify-safe": "^5.0.1",
     "lodash": "^4.0.0",
     "npmlog": "^2.0.0",
     "yargs": "^4.2.0"
