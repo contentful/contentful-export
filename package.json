@@ -56,6 +56,12 @@
     "standard": "^6.0.7",
     "tape": "^4.5.1"
   },
+  "files": [
+    "bin",
+    "dist",
+    "example-config.json",
+    "index.js"
+  ],
   "standard": {
     "parser": "babel-eslint"
   },
