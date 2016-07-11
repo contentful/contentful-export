@@ -8,6 +8,8 @@
 [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
 [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)
 
+[Contentful][1] is a content management platform for web applications, mobile apps and connected devices. It allows you to create, edit & manage content in the cloud and publish it anywhere via powerful API. Contentful offers tools for managing editorial teams and enabling cooperation between organizations.
+
 this tool allows you to export a space to a JSON dump
 
 ## What this tool is for
@@ -76,3 +78,5 @@ The options object can contain any of the CLI options but written with a camelCa
 Apart from those options, there are an additional ones that can be passed to it:
 
 * `errorLogFile` - File to where any errors will be written.
+
+[1]: https://www.contentful.com
