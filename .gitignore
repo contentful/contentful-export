@@ -5,3 +5,4 @@ coverage
 node_modules
 config.json
 dist
+*.swp
