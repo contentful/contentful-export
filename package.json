@@ -34,8 +34,8 @@
     "contentful-batch-libs": "^4.0.2",
     "json-stringify-safe": "^5.0.1",
     "lodash": "^4.0.0",
-    "npmlog": "^2.0.0",
-    "yargs": "^4.2.0"
+    "npmlog": "^4.0.0",
+    "yargs": "^5.0.0"
   },
   "devDependencies": {
     "babel-cli": "^6.3.17",
