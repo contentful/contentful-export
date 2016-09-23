@@ -15,6 +15,19 @@ this tool allows you to export a space to a JSON dump
 ## What this tool is for
 this tool does one simple thing which is exporting all your space data to a json file that can be used later to import to another space or save as a backup.
 
+## Exported Data
+
+This is an overview of what gets exported.
+
+```json
+{
+  "contentTypes": [],
+  "entries": [],
+  "locales":[],
+  "assets":[]
+}
+
+```
 # Changelog
 
 Check out the [releases](https://github.com/contentful/contentful-export/releases) page.
