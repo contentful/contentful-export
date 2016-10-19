@@ -10,10 +10,9 @@
 
 [Contentful][1] is a content management platform for web applications, mobile apps and connected devices. It allows you to create, edit & manage content in the cloud and publish it anywhere via powerful API. Contentful offers tools for managing editorial teams and enabling cooperation between organizations.
 
-this tool allows you to export a space to a JSON dump
+This tool allows you to backup all of your content or move your it to a new Contentful space.
+To import your data, please refer to the [contentful-import](https://github.com/contentful/contentful-import) tool.
 
-## What this tool is for
-this tool does one simple thing which is exporting all your space data to a json file that can be used later to import to another space or save as a backup.
 
 ## Exported Data
 
