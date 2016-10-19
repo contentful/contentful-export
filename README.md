@@ -10,9 +10,9 @@
 
 [Contentful][1] is a content management platform for web applications, mobile apps and connected devices. It allows you to create, edit & manage content in the cloud and publish it anywhere via powerful API. Contentful offers tools for managing editorial teams and enabling cooperation between organizations.
 
-This tool allows you to backup all of your content or move your it to a new Contentful space.
-To import your data, please refer to the [contentful-import](https://github.com/contentful/contentful-import) tool.
+This is a Command Line Tool (CLI) that allows you to backup your published Content Model, Content and Assets or move them to a new Contentful space. Editor Interfaces, Webhooks and Roles & Permissions will be supported in a next version of this tool.
 
+To import your data, please refer to the [contentful-import](https://github.com/contentful/contentful-import) repository.
 
 ## Exported Data
 
@@ -27,15 +27,14 @@ This is an overview of what gets exported.
 }
 
 ```
-# Changelog
+# Installation
 
-Check out the [releases](https://github.com/contentful/contentful-export/releases) page.
-
-# Install
+We recommend the installation of this CLI via npm:
 
 `npm install -g contentful-export`
 
-# Usage
+# Usage and Examples
+
 ```shell
 Usage: contentful-export [options]
 
@@ -54,7 +53,7 @@ The `--management-token` parameter allows you to specify a token which will be u
 
 Check the `example-config.json` file for an example of what a configuration file would look like. If you use the config file, you don't need to specify the other options for tokens and space ids.
 
-# Example usage
+## Example
 
 ```shell
 contentful-export \
@@ -70,7 +69,7 @@ contentful-export --config example-config.json
 
 You can create your own config file based on the [`example-config.json`](example-config.json) file.
 
-# Usage as a library
+## Usage as a library
 
 While this tool is mostly intended to be used as a command line tool, it can also be used as a Node library:
 
@@ -90,5 +89,19 @@ The options object can contain any of the CLI options but written with a camelCa
 Apart from those options, there are an additional ones that can be passed to it:
 
 * `errorLogFile` - File to where any errors will be written.
+
+# Limitations
+
+- This tool exports only your published Content Model, Content and Assets or move them to a new Contentful space. Editor Interfaces, Webhooks and Roles & Permissions will be supported in a next version of this tool. Drafts are not exported;
+- The content exported by this tool can only be imported to a new blank space. We curently do not support merging content into pre-existent spaces.
+- If you have custom widgets, you need to reinstall them manually on the new space;
+
+# Changelog
+
+Check out the [releases](https://github.com/contentful/contentful-export/releases) page.
+
+# License
+
+This project is licensed under MIT license.
 
 [1]: https://www.contentful.com
