@@ -40,7 +40,7 @@ The `--management-token` parameter allows you to specify a token which will be u
 
 Check the `example-config.json` file for an example of what a configuration file would look like. If you use the config file, you don't need to specify the other options for tokens and space ids.
 
-## Example
+### Example
 
 ```shell
 contentful-export \
@@ -56,7 +56,7 @@ contentful-export --config example-config.json
 
 You can create your own config file based on the [`example-config.json`](example-config.json) file.
 
-## Exported Data
+### Exported Data
 
 This is an overview of what gets exported.
 
@@ -70,7 +70,7 @@ This is an overview of what gets exported.
 
 ```
 
-## Usage as a library
+### Usage as a library
 
 While this tool is mostly intended to be used as a command line tool, it can also be used as a Node library:
 
