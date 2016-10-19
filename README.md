@@ -14,19 +14,6 @@ This is a Command Line Tool (CLI) that allows you to backup your published Conte
 
 To import your data, please refer to the [contentful-import](https://github.com/contentful/contentful-import) repository.
 
-## Exported Data
-
-This is an overview of what gets exported.
-
-```json
-{
-  "contentTypes": [],
-  "entries": [],
-  "locales":[],
-  "assets":[]
-}
-
-```
 # Installation
 
 We recommend the installation of this CLI via npm:
@@ -68,6 +55,20 @@ contentful-export --config example-config.json
 ```
 
 You can create your own config file based on the [`example-config.json`](example-config.json) file.
+
+## Exported Data
+
+This is an overview of what gets exported.
+
+```json
+{
+  "contentTypes": [],
+  "entries": [],
+  "locales":[],
+  "assets":[]
+}
+
+```
 
 ## Usage as a library
 
