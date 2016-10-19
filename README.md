@@ -95,7 +95,7 @@ Apart from those options, there are an additional ones that can be passed to it:
 
 - This tool exports only your published Content Model, Content and Assets or move them to a new Contentful space. Editor Interfaces, Webhooks and Roles & Permissions will be supported in a next version of this tool. Drafts are not exported;
 - The content exported by this tool can only be imported to a new blank space. We curently do not support merging content into pre-existent spaces.
-- If you have custom widgets, you need to reinstall them manually on the new space;
+- If you have custom widgets, you need to reinstall them manually on the new space.
 
 # Changelog
 
