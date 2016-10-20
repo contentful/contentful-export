@@ -67,6 +67,7 @@ This is an overview of the data exported.
   "webhooks": [],
   "editorInterfaces": []
 }
+```
 
 ### Usage as a library
 
