@@ -14,7 +14,15 @@
     "test:only": "BABEL_ENV=test babel-node ./test/runner",
     "test:debug": "BABEL_ENV=test babel-node debug ./test/runner",
     "browser-coverage": "npm run test:cover && opener coverage/lcov-report/index.html",
-    "semantic-release": "semantic-release pre && npm publish && semantic-release post"
+    "semantic-release": "semantic-release pre && npm publish && semantic-release post",
+    "devmanage:build": "pushd ../contentful-management.js && npm run build && popd",
+    "devmanage:clean": "pushd ../contentful-management.js && npm run clean && popd",
+    "devmanage:install": "npm run devmanage:build && rm -rf node_modules/contentful-management.js && npm install ../contentful-management.js && npm run devmanage:clean",
+    "devmanage:uninstall": "npm run devmanage:clean && rimraf node_modules/contentful-management.js",
+    "devdep:build": "pushd ../contentful-batch-libs && npm run build && popd",
+    "devdep:clean": "pushd ../contentful-batch-libs && npm run clean && popd",
+    "devdep:install": "npm run devdep:build && rm -rf node_modules/contentful-batch-libs && npm install ../contentful-batch-libs && npm run devdep:clean",
+    "devdep:uninstall": "npm run devdep:clean && rimraf node_modules/contentful-batch-libs"
   },
   "repository": {
     "type": "git",
@@ -31,7 +39,7 @@
   },
   "dependencies": {
     "bluebird": "^3.3.3",
-    "contentful-batch-libs": "^4.0.2",
+    "contentful-batch-libs": "^4.1.0",
     "json-stringify-safe": "^5.0.1",
     "lodash": "^4.0.0",
     "npmlog": "^4.0.0",
