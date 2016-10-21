@@ -65,7 +65,8 @@ This is an overview of the data exported.
   "locales": [],
   "assets": [],
   "webhooks": [],
-  "editorInterfaces": []
+  "editorInterfaces": [],
+	"roles": []
 }
 ```
 
