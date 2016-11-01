@@ -3,7 +3,6 @@ before_install:
   - npm install -g npm@latest
 language: node_js
 node_js:
-  - "0.10"
   - "3.3"
   - "4.2"
   - "5.0"
