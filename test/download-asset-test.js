@@ -11,12 +11,12 @@ test('Download asset successfully', (t) => {
     '//images.contentful.com/kq9lln4hyr8s/2MTd2wBirYikEYkIIc0YSw/7aa4c06f3054996e45bb3f13964cb254/rocka-nutrition.png',
     tmpDirectory
   ).then((file) => {
-    t.equal(file, tmpDirectory + '/images.contentful.com/kq9lln4hyr8s/2MTd2wBirYikEYkIIc0YSw/7aa4c06f3054996e45bb3f13964cb254/rocka-nutrition.png')
+    t.equal(file, tmpDirectory + '/images.contentful.com-kq9lln4hyr8s-2MTd2wBirYikEYkIIc0YSw-7aa4c06f3054996e45bb3f13964cb254-rocka-nutrition.png')
   })
   // test that file has has been downloaded
   // by checking if access throws no exception
   t.doesNotThrow(function () {
-    fs.accessSync(tmpDirectory + '/images.contentful.com/kq9lln4hyr8s/2MTd2wBirYikEYkIIc0YSw/7aa4c06f3054996e45bb3f13964cb254/rocka-nutrition.png')
+    fs.accessSync(tmpDirectory + '/images.contentful.com-kq9lln4hyr8s-2MTd2wBirYikEYkIIc0YSw-7aa4c06f3054996e45bb3f13964cb254-rocka-nutrition.png')
   })
 
   fs.removeSync(tmpDirectory)

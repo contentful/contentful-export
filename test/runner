@@ -4,6 +4,6 @@ log.level = 'silent'
 
 require('require-all')({
   dirname: process.cwd() + '/test',
-  filter: process.argv[2] || /\-test\.js/,
+  filter: process.argv[2] || /\-test\.js$/,
   recursive: true
 })
