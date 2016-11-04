@@ -4,5 +4,4 @@ coverage
 .lock-wscript
 node_modules
 config.json
-dist
 *.swp

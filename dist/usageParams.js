@@ -1,0 +1,40 @@
+'use strict';
+
+var yargs = require('yargs');
+var log = require('npmlog');
+var packageFile = require('../package');
+
+var opts = yargs.version(packageFile.version || 'Version only available on installed package').usage('Usage: $0 [options]').option('space-id', {
+  describe: 'ID of Space with source data',
+  type: 'string',
+  demand: true
+}).option('management-token', {
+  describe: 'Management API token for the space to be exported.',
+  type: 'string',
+  demand: true
+}).option('export-dir', {
+  describe: 'Defines the path for storing the export json file (default path is the current directory)',
+  type: 'string'
+}).option('download-assets', {
+  describe: 'With this flags assets will also be downloaded',
+  type: 'boolean'
+}).config('config', 'Configuration file with required values').check(function (argv) {
+  if (!argv.spaceId) {
+    log.error('Please provide --space-id to be used to export \n' + 'For more info See: https://www.npmjs.com/package/contentful-export');
+    process.exit(1);
+  }
+  if (!argv.managementToken) {
+    log.error('Please provide --management-token to be used for export \n' + 'For more info See: https://www.npmjs.com/package/contentful-export');
+    process.exit(1);
+  }
+  return true;
+}).argv;
+
+opts.sourceSpace = opts.sourceSpace || opts.spaceId;
+opts.sourceManagementToken = opts.sourceManagementToken || opts.managementToken;
+opts.exportDir = opts.exportDir || process.cwd();
+
+module.exports = {
+  opts: opts,
+  errorLogFile: opts.exportDir + '/contentful-export-' + Date.now() + '.log'
+};
