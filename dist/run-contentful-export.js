@@ -92,7 +92,7 @@ function runContentfulExport(usageParams) {
     if (exportToFile) {
       var responseFile = opts.exportDir + '/contentful-export-' + clients.source.spaceId + '-' + Date.now() + '.json';
       log.info('Writing space data to json file at : ' + responseFile);
-      return _fs2.default.writeFile(responseFile, (0, _jsonStringifySafe2.default)(response));
+      return _fs2.default.writeFile(responseFile, (0, _jsonStringifySafe2.default)(response, null, 4));
     }
     return response;
   }).catch(function (err) {
