@@ -90,6 +90,9 @@ function runContentfulExport(usageParams) {
       });
     }
     if (exportToFile) {
+      if (!_fs2.default.existsSync(opts.exportDir)) {
+        _fs2.default.mkdirSync(opts.exportDir);
+      }
       var responseFile = opts.exportDir + '/contentful-export-' + clients.source.spaceId + '-' + Date.now() + '.json';
       log.info('Writing space data to json file at : ' + responseFile);
       return _fs2.default.writeFile(responseFile, (0, _jsonStringifySafe2.default)(response, null, 4));

@@ -19,7 +19,7 @@ function downloadAsset(url, directory) {
     // build local file path from the url for the download
     var urlParts = url.split('//');
 
-    var localFile = path.join(directory, urlParts[urlParts.length - 1].split('/').join('-'));
+    var localFile = path.join(directory, urlParts[urlParts.length - 1]);
 
     // ensure directory exists and create file stream
     _fsExtra2.default.mkdirsSync(path.dirname(localFile));
