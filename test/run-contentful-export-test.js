@@ -18,7 +18,9 @@ runContentfulExport.__Rewire__('getFullSourceSpace', getFullSourceSpaceStub)
 
 const getFullSourceSpaceWithErrorStub = sinon.stub().returns(Promise.reject({request: {uri: 'erroruri'}}))
 const fsMock = {
-  writeFile: sinon.stub().returns(Promise.resolve())
+  writeFile: sinon.stub().returns(Promise.resolve()),
+  existsSync: sinon.stub().returns(true),
+  mkdirSync: sinon.stub().returns(undefined)
 }
 runContentfulExport.__Rewire__('fs', fsMock)
 dumpErrorBuffer.__Rewire__('fs', fsMock)
@@ -34,6 +36,9 @@ test('Runs Contentful Export', (t) => {
     t.ok(createClientsStub.called, 'create clients')
     t.ok(getFullSourceSpaceStub.called, 'get full space')
     runContentfulExport.__ResetDependency__('getFullSourceSpace')
+    t.end()
+  }).catch((error) => {
+    t.fail('Shoud not throw ', error)
     t.end()
   })
 })

@@ -29,7 +29,11 @@ test('Download fails', (t) => {
   downloadAsset(
     '//images.contentful.com/does-not-exist.png',
     tmpDirectory
-  ).catch((error) => {
+  )
+  .then(() => {
+    t.fail('Should not succeed')
+  })
+  .catch((error) => {
     t.equal(error, 'error response status: 404')
   })
 
