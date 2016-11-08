@@ -42,11 +42,12 @@
   },
   "dependencies": {
     "bluebird": "^3.3.3",
-    "fs-extra": "^0.30.0",
     "contentful-batch-libs": "^4.2.0",
+    "fs-extra": "^0.30.0",
     "json-stringify-safe": "^5.0.1",
     "lodash": "^4.0.0",
     "npmlog": "^4.0.0",
+    "request": "^2.78.0",
     "yargs": "^5.0.0"
   },
   "devDependencies": {
@@ -76,7 +77,9 @@
   ],
   "standard": {
     "parser": "babel-eslint",
-    "ignore":["/dist/"]
+    "ignore": [
+      "/dist/"
+    ]
   },
   "config": {
     "commitizen": {
