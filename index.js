@@ -1,6 +1,5 @@
 try {
-  let runContentfulExport = require('./dist/run-contentful-export').default
-  module.exports = runContentfulExport
+  module.exports = require('./dist/run-contentful-export').default
 } catch (err) {
   if (err.code === 'MODULE_NOT_FOUND') {
     require('babel-register')
