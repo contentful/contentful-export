@@ -1,7 +1,10 @@
 {
   "name": "contentful-export",
+  "version": "0.0.0-semantically-realsed",
   "description": "this tool allows you to export a space to a JSON dump",
-  "bin": "bin/contentful-export",
+  "bin": {
+    "contentful-export": "./bin/contentful-export"
+  },
   "main": "index.js",
   "scripts": {
     "build": "npm run clean && mkdirp dist && babel lib --out-dir dist",
