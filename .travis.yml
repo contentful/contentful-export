@@ -7,6 +7,7 @@ node_js:
   - "4.2"
   - "5.0"
 script:
+  - npm run build
   - npm run test
 after_success:
   - curl -Lo travis_after_all.py https://raw.githubusercontent.com/contentful/travis_after_all/master/travis_after_all.py
