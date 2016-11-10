@@ -25,13 +25,20 @@ Usage: contentful-export [options]
 
 Options:
   --version           Show version number                              
+  
   --space-id          ID of Space with source data           
                       [string] [required]
+  
   --management-token  Management API token for the space to be exported.
                       [string] [required]
+  
   --export-dir        Defines the path for storing the export json file
-                      (defaultpath is the current directory) [string]
+                      (default path is the current directory) [string]
+  
+  --max-allowed-limit how many item per page per request default 1000 [number]
+
   --config            Configuration file with required values
+
 ```
 
 The `--management-token` parameter allows you to specify a token used for both spaces. If you request a token from [here](https://www.contentful.com/developers/docs/references/authentication/) and your user account has access to both spaces, this should be enough.
