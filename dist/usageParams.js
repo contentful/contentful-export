@@ -18,6 +18,9 @@ var opts = yargs.version(packageFile.version || 'Version only available on insta
 }).option('download-assets', {
   describe: 'With this flags assets will also be downloaded',
   type: 'boolean'
+}).option('max-allowed-limit', {
+  describe: 'how many item per page per request default 1000',
+  type: 'number'
 }).config('config', 'Configuration file with required values').check(function (argv) {
   if (!argv.spaceId) {
     log.error('Please provide --space-id to be used to export \n' + 'For more info See: https://www.npmjs.com/package/contentful-export');
