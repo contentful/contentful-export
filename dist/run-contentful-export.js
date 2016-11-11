@@ -52,7 +52,8 @@ function runContentfulExport(usageParams) {
   var clients = (0, _createClients2.default)(opts);
   return (0, _getFullSourceSpace2.default)({
     managementClient: clients.source.management,
-    spaceId: clients.source.spaceId
+    spaceId: clients.source.spaceId,
+    maxAllowedLimit: opts.maxAllowedLimit
   }).then(function (response) {
     if (opts.downloadAssets) {
       var successCount = 0;
