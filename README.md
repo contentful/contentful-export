@@ -4,11 +4,11 @@
 
 [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release) [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)
 
-[Contentful][1] is a content management platform for web applications, mobile apps and connected devices. It allows you to create, edit & manage content in the cloud and publish it anywhere via powerful API. Contentful offers tools for managing editorial teams and enabling cooperation between organizations.
+[https://www.contentful.com](Contentful) is a content management platform for web applications, mobile apps and connected devices. It allows you to create, edit & manage content in the cloud and publish it anywhere via powerful API. Contentful offers tools for managing editorial teams and enabling cooperation between organizations.
 
-This is a command line tool (CLI) that allows you to backup your published Content Model, Content and Assets or move them to a new Contentful space. It will support Editor Interfaces, Webhooks and Roles & Permissions in a future version.
+This is a command line tool (CLI) that help you backup your published Content Model, Content and Assets or move them to a new Contentful space. _It will support Editor Interfaces, Webhooks and Roles & Permissions in a future version._
 
-To import your data, please refer to the [contentful-import](https://github.com/contentful/contentful-import) repository.
+To import your exported data, please refer to the [contentful-import](https://github.com/contentful/contentful-import) repository.
 
 ## Installation
 
@@ -18,23 +18,23 @@ We recommend the installation of this CLI via npm:
 npm install -g contentful-export
 ```
 
-## Usage and Examples
+## Usage and examples
 
 ```shell
 Usage: contentful-export [options]
 
 Options:
   --version           Show version number                              
-  
+
   --space-id          ID of Space with source data           
                       [string] [required]
-  
+
   --management-token  Management API token for the space to be exported.
                       [string] [required]
-  
+
   --export-dir        Defines the path for storing the export json file
                       (default path is the current directory) [string]
-  
+
   --max-allowed-limit how many item per page per request default 1000 [number]
 
   --config            Configuration file with required values
@@ -43,7 +43,7 @@ Options:
 
 The `--management-token` parameter allows you to specify a token used for both spaces. If you request a token from [here](https://www.contentful.com/developers/docs/references/authentication/) and your user account has access to both spaces, this should be enough.
 
-Check the _example-config.json_ file for an example of what a configuration file would look like. If you use the configuration file, you don't need to specify the other options for tokens and space ids.
+Check the _example-config.json_ file for an example of what a configuration file looks like. If you use the configuration file, you don't need to specify the other options for tokens and space ids.
 
 ### Example
 
@@ -61,9 +61,9 @@ contentful-export --config example-config.json
 
 You can create your own configuration file based on the [_example-config.json_](example-config.json) file.
 
-### Exported Data
+### Exported data
 
-This is an overview of the data exported.
+This is an overview of the exported data:
 
 ```json
 {
@@ -79,7 +79,7 @@ This is an overview of the data exported.
 
 ### Usage as a library
 
-While this tool is intended to be used as a command line tool, you can also use it as a Node library:
+While this tool is intended for use as a command line tool, you can also use it as a Node library:
 
 ```javascript
 var spaceExport = require('contentful-export')
