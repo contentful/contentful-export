@@ -34,7 +34,7 @@
     "contentful",
     "contentful-export"
   ],
-  "author": "Contentful <opensource@contentful.com>",
+  "author": "Khaled Garbaya <khaled@contentful.com>",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/contentful/contentful-export/issues"
@@ -43,7 +43,7 @@
     "bluebird": "^3.3.3",
     "fs-extra": "^0.30.0",
     "request": "^2.78.0",
-    "contentful-batch-libs": "4.5.0",
+    "contentful-batch-libs": "4.7.0",
     "json-stringify-safe": "^5.0.1",
     "lodash": "^4.0.0",
     "npmlog": "^4.0.0",
