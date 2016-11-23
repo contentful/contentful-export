@@ -12,6 +12,10 @@ var opts = yargs.version(packageFile.version || 'Version only available on insta
   describe: 'Management API token for the space to be exported.',
   type: 'string',
   demand: true
+}).option('preview-token', {
+  describe: 'Preview API token for the space to be exported.',
+  type: 'string',
+  demand: true
 }).option('export-dir', {
   describe: 'Defines the path for storing the export json file (default path is the current directory)',
   type: 'string'
@@ -19,8 +23,11 @@ var opts = yargs.version(packageFile.version || 'Version only available on insta
   describe: 'With this flags assets will also be downloaded',
   type: 'boolean'
 }).option('max-allowed-limit', {
-  describe: 'how many item per page per request default 1000',
+  describe: 'How many item per page per request default 1000',
   type: 'number'
+}).options('include-drafts', {
+  describe: 'Export Drafts entiries',
+  type: 'boolean'
 }).config('config', 'Configuration file with required values').check(function (argv) {
   if (!argv.spaceId) {
     log.error('Please provide --space-id to be used to export \n' + 'For more info See: https://www.npmjs.com/package/contentful-export');
@@ -30,6 +37,15 @@ var opts = yargs.version(packageFile.version || 'Version only available on insta
     log.error('Please provide --management-token to be used for export \n' + 'For more info See: https://www.npmjs.com/package/contentful-export');
     process.exit(1);
   }
+  if (argv.includeDrafts && !argv.previewToken) {
+    log.error('Please provide a preview API token to be able to get draft or set --include-drafts false');
+    process.exit(1);
+  }
+  if (!argv.includeDrafts && argv.previewToken) {
+    log.error('Please make sure to specify --include-drafts to be able to get drafts');
+    process.exit(1);
+  }
+
   return true;
 }).argv;
 

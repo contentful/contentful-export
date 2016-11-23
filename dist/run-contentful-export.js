@@ -49,6 +49,10 @@ function runContentfulExport(usageParams) {
     opts.sourceSpace = opts.sourceSpace || usageParams.spaceId;
     opts.sourceManagementToken = opts.sourceManagementToken || usageParams.managementToken;
   }
+  if (opts.includeDrafts) {
+    opts.deliveryHost = 'preview.contentful.com';
+    opts.sourceDeliveryToken = opts.previewToken;
+  }
   var clients = (0, _createClients2.default)(opts);
   return (0, _getFullSourceSpace2.default)({
     managementClient: clients.source.management,
