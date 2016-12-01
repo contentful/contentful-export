@@ -35,7 +35,13 @@ Options:
   --export-dir        Defines the path for storing the export json file
                       (default path is the current directory) [string]
 
-  --max-allowed-limit how many item per page per request default 1000 [number]
+  --max-allowed-limit How many item per page per request default 1000 [number]
+
+  --include-drafts    Export Drafts entiries, a preview token needs to be provided when the value is true [boolean]
+
+  --preview-token     Preview API token for the space to be exported. [string] 
+
+  --download-assets   Download the assets along with the exported data [boolean]
 
   --config            Configuration file with required values
 
