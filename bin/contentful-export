@@ -1,4 +1,4 @@
-#!/usr/bin/env node --harmony
+#!/usr/bin/env node
 var log = require('npmlog')
 var runContentfulExport = require('../')
 var usageParams
