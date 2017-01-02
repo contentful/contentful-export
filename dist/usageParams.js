@@ -14,8 +14,7 @@ var opts = yargs.version(packageFile.version || 'Version only available on insta
   demand: true
 }).option('preview-token', {
   describe: 'Preview API token for the space to be exported.',
-  type: 'string',
-  demand: true
+  type: 'string'
 }).option('export-dir', {
   describe: 'Defines the path for storing the export json file (default path is the current directory)',
   type: 'string'

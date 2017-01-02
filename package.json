@@ -1,5 +1,6 @@
 {
   "name": "contentful-export",
+  "version": "0.0.0-placeholder",
   "description": "this tool allows you to export a space to a JSON dump",
   "bin": {
     "contentful-export": "./bin/contentful-export"
@@ -43,7 +44,7 @@
     "bluebird": "^3.3.3",
     "fs-extra": "^0.30.0",
     "request": "^2.78.0",
-    "contentful-batch-libs": "4.7.0",
+    "contentful-batch-libs": "~4.7.2",
     "json-stringify-safe": "^5.0.1",
     "lodash": "^4.0.0",
     "npmlog": "^4.0.0",
