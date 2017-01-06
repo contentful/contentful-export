@@ -42,7 +42,11 @@ Options:
   --preview-token     Preview API token for the space to be exported. [string] 
 
   --download-assets   Download the assets along with the exported data [boolean]
-
+ 
+  --rate-limit                    How many request per period of time, default 6 [number]
+  
+  --rate-limit-period             How much time to wait before retry in ms, default 1000 [number]     
+  
   --config            Configuration file with required values
 
 ```
