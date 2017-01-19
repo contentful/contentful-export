@@ -39,8 +39,6 @@ Options:
 
   --include-drafts    Export Drafts entiries, a preview token needs to be provided when the value is true [boolean]
 
-  --preview-token     Preview API token for the space to be exported. [string] 
-
   --download-assets   Download the assets along with the exported data [boolean]
  
   --rate-limit                    How many request per period of time, default 6 [number]
