@@ -18,6 +18,7 @@ log.info('Contentful Export Tool:\n' +
 'Fetching Space data ...')
 
 setTimeout(function () {
+  // errorLogFile is not set here
   runContentfulExport(usageParams)
   .catch(function (err) {
     log.error('Failed with\n', err)
