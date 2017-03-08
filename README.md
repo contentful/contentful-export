@@ -20,33 +20,38 @@ npm install -g contentful-export
 
 ## Usage and examples
 
-```shell
+```
 Usage: contentful-export [options]
 
 Options:
-  --version           Show version number
 
-  --space-id          ID of Space with source data
-                      [string] [required]
+--version             Show version number [boolean]
 
-  --management-token  Management API token for the space to be exported.
-                      [string] [required]
+--space-id            ID of Space with source data [string] [required]
 
-  --export-dir        Defines the path for storing the export json file
-                      (default path is the current directory) [string]
+--rate-limit          How many requests to perform per period of time [number] [default: 6]
 
-  --max-allowed-limit How many item per page per request default 1000 [number]
+--rate-limit-period   How much time to wait before retry in ms [number] [default: 1000]
 
-  --include-drafts    Export Drafts entiries, a preview token needs to be provided when the value is true [boolean]
+--management-token    Management API token for the space to be exported. [string] [required]
 
-  --download-assets   Download the assets along with the exported data [boolean]
+--export-dir          Defines the path for storing the export json file (default path is the current directory) [string]
 
-  --rate-limit                    How many request per period of time, default 6 [number]
+ --include-drafts      include drafts drafts in the exported entries [boolean] [default: false]
 
-  --rate-limit-period             How much time to wait before retry in ms, default 1000 [number]
+--skip-roles          Define this flag ti skip exporting roles and permissions [boolean] [default: false]
 
-  --config            Configuration file with required values
+--skip-content-model  Define this flag to skip exporting content models [boolean] [default: false]
 
+--skip-content        Define this flag to skip exporting Assets and Entries [boolean] [default: false]
+
+--skip-webhooks       Define this flag ti skip exporting webhooks [boolean] [default: false]
+
+--download-assets     With this flags assets will also be downloaded [boolean]
+
+--max-allowed-limit   How many item per page per request [number] [default: 1000]
+
+--config              Configuration file with required values
 ```
 
 The `--management-token` parameter allows you to specify a token used for both spaces. If you request a token from [here](https://www.contentful.com/developers/docs/references/authentication/) and your user account has access to both spaces, this should be enough.
