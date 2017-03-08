@@ -24,9 +24,9 @@ npm install -g contentful-export
 Usage: contentful-export [options]
 
 Options:
-  --version           Show version number                              
+  --version           Show version number
 
-  --space-id          ID of Space with source data           
+  --space-id          ID of Space with source data
                       [string] [required]
 
   --management-token  Management API token for the space to be exported.
@@ -40,11 +40,11 @@ Options:
   --include-drafts    Export Drafts entiries, a preview token needs to be provided when the value is true [boolean]
 
   --download-assets   Download the assets along with the exported data [boolean]
- 
+
   --rate-limit                    How many request per period of time, default 6 [number]
-  
-  --rate-limit-period             How much time to wait before retry in ms, default 1000 [number]     
-  
+
+  --rate-limit-period             How much time to wait before retry in ms, default 1000 [number]
+
   --config            Configuration file with required values
 
 ```
