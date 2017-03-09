@@ -16,7 +16,9 @@ runContentfulExport.__Rewire__('createClients', createClientsStub)
 const getFullSourceSpaceStub = sinon.stub().returns(Promise.resolve(fullSpaceResponse))
 runContentfulExport.__Rewire__('getFullSourceSpace', getFullSourceSpaceStub)
 
-const getFullSourceSpaceWithErrorStub = sinon.stub().returns(Promise.reject({request: {uri: 'erroruri'}}))
+const rejectError = new Error()
+rejectError.request = {uri: 'erroruri'}
+const getFullSourceSpaceWithErrorStub = sinon.stub().returns(Promise.reject(rejectError))
 const fsMock = {
   writeFile: sinon.stub().returns(Promise.resolve()),
   existsSync: sinon.stub().returns(true),
