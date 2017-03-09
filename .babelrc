@@ -1,5 +1,16 @@
 {
-  "presets": ["es2015"],
+  "presets": [
+    ["env", {
+      "debug": true,
+      "targets": {
+        "node": 4.7,
+        "browsers": [
+          "last 3 versions",
+          "ie >= 11"
+        ]
+      }
+    }]
+  ],
   "env": {
     "test": {
       "sourceMaps": "inline",
