@@ -34,7 +34,7 @@ test('Download fails', (t) => {
     t.fail('Should not succeed')
   })
   .catch((error) => {
-    t.equal(error, 'error response status: 404')
+    t.equal(error.message, 'error response status: 404')
   })
 
   fs.removeSync(tmpDirectory)

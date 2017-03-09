@@ -11,6 +11,9 @@
       }
     }]
   ],
+  "plugins": [
+    "add-module-exports"
+  ],
   "env": {
     "test": {
       "sourceMaps": "inline",
