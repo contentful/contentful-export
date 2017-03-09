@@ -14,7 +14,7 @@
     "clean": "rimraf dist",
     "prepublish": "in-publish && npm run build || not-in-publish",
     "postpublish": "npm run clean",
-    "lint": "standard",
+    "lint": "eslint lib bin/* test",
     "pretest": "npm run lint",
     "test": "npm run test:cover",
     "test:cover": "BABEL_ENV=test babel-node ./node_modules/istanbul/lib/cli.js cover test/runner",
@@ -65,6 +65,10 @@
     "babel-register": "^6.3.13",
     "coveralls": "^2.11.6",
     "cz-conventional-changelog": "^2.0.0",
+    "eslint": "^3.17.1",
+    "eslint-config-standard": "^7.0.1",
+    "eslint-plugin-promise": "^3.5.0",
+    "eslint-plugin-standard": "^2.1.1",
     "husky": "^0.13.2",
     "in-publish": "^2.0.0",
     "istanbul": "^1.0.0-alpha.2",
@@ -73,7 +77,6 @@
     "rimraf": "^2.5.0",
     "semantic-release": "^6.3.2",
     "sinon": "^1.17.2",
-    "standard": "^6.0.7",
     "tape": "^4.5.1"
   },
   "files": [
@@ -82,12 +85,6 @@
     "example-config.json",
     "index.js"
   ],
-  "standard": {
-    "parser": "babel-eslint",
-    "ignore": [
-      "/dist/"
-    ]
-  },
   "config": {
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
