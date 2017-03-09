@@ -1,7 +1,7 @@
 import test from 'tape'
 import sinon from 'sinon'
 import Promise from 'bluebird'
-import runContentfulExport from '../lib/run-contentful-export'
+import runContentfulExport from '../lib/index'
 import dumpErrorBuffer from '../lib/dump-error-buffer'
 const fullSpaceResponse = {
   'contentTypes': [],
@@ -40,7 +40,7 @@ test('Runs Contentful Export', (t) => {
     runContentfulExport.__ResetDependency__('getFullSourceSpace')
     t.end()
   }).catch((error) => {
-    t.fail('Shoud not throw ', error)
+    t.fail('Should not throw ', error)
     t.end()
   })
 })
