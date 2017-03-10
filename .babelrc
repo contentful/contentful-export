@@ -3,11 +3,7 @@
     ["env", {
       "debug": true,
       "targets": {
-        "node": 4.7,
-        "browsers": [
-          "last 3 versions",
-          "ie >= 11"
-        ]
+        "node": 4.7
       }
     }]
   ],
