@@ -64,7 +64,6 @@
     "babel-plugin-add-module-exports": "^0.2.1",
     "babel-plugin-rewire": "^1.0.0-beta-3",
     "babel-preset-env": "^1.2.1",
-    "babel-register": "^6.3.13",
     "coveralls": "^2.11.6",
     "cz-conventional-changelog": "^2.0.0",
     "eslint": "^3.17.1",
