@@ -49,21 +49,21 @@
   },
   "dependencies": {
     "bluebird": "^3.3.3",
-    "contentful-batch-libs": "^4.9.1",
-    "fs-extra": "^2.0.0",
+    "contentful-batch-libs": "^4.9.2",
+    "fs-extra": "^2.1.2",
     "json-stringify-safe": "^5.0.1",
     "lodash": "^4.0.0",
     "npmlog": "^4.0.0",
-    "request": "^2.78.0",
-    "yargs": "^7.0.1"
+    "request": "^2.81.0",
+    "yargs": "^7.0.2"
   },
   "devDependencies": {
-    "babel-cli": "^6.3.17",
-    "babel-core": "^6.23.1",
+    "babel-cli": "^6.24.0",
+    "babel-core": "^6.24.0",
     "babel-eslint": "^7.1.1",
     "babel-plugin-add-module-exports": "^0.2.1",
     "babel-plugin-rewire": "^1.0.0-beta-3",
-    "babel-preset-env": "^1.2.1",
+    "babel-preset-env": "^1.2.2",
     "coveralls": "^2.11.6",
     "cz-conventional-changelog": "^2.0.0",
     "eslint": "^3.17.1",
@@ -77,7 +77,7 @@
     "require-all": "^2.0.0",
     "rimraf": "^2.5.0",
     "semantic-release": "^6.3.2",
-    "sinon": "^1.17.2",
+    "sinon": "^2.0.0",
     "tape": "^4.5.1",
     "trevor": "^2.3.0"
   },
