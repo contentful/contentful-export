@@ -49,7 +49,7 @@
   },
   "dependencies": {
     "bluebird": "^3.3.3",
-    "contentful-batch-libs": "^4.9.2",
+    "contentful-batch-libs": "beta",
     "fs-extra": "^2.1.2",
     "json-stringify-safe": "^5.0.1",
     "lodash": "^4.0.0",
