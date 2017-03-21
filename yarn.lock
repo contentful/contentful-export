@@ -961,7 +961,7 @@ console-control-strings@^1.0.0, console-control-strings@~1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/console-control-strings/-/console-control-strings-1.1.0.tgz#3d7cf4464db6446ea644bf4b39507f9851008e8e"
 
-contentful-batch-libs@beta:
+contentful-batch-libs@v5.1.0:
   version "5.1.0"
   resolved "https://registry.yarnpkg.com/contentful-batch-libs/-/contentful-batch-libs-5.1.0.tgz#5f2ade7aa82875f39a3aca47d3bc43a6a82da168"
   dependencies:
