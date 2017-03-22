@@ -20,7 +20,7 @@ const rejectError = new Error()
 rejectError.request = {uri: 'erroruri'}
 const getFullSourceSpaceWithErrorStub = sinon.stub().returns(Promise.reject(rejectError))
 const fsMock = {
-  writeFile: sinon.stub().returns(Promise.resolve()),
+  writeFileSync: sinon.stub().returns(Promise.resolve()),
   existsSync: sinon.stub().returns(true),
   mkdirSync: sinon.stub().returns(undefined)
 }
