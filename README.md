@@ -24,34 +24,35 @@ npm install -g contentful-export
 Usage: contentful-export [options]
 
 Options:
+  --version             Show version number                            [boolean]
 
---version             Show version number [boolean]
+  --space-id            ID of Space with source data         [string] [required]
 
---space-id            ID of Space with source data [string] [required]
+  --management-token    Contentful management API token for the space to be
+                        exported                             [string] [required]
 
---rate-limit          How many requests to perform per period of time [number] [default: 6]
+  --export-dir          Defines the path for storing the export json file
+                        (default path is the current directory)         [string]
 
---rate-limit-period   How much time to wait before retry in ms [number] [default: 1000]
+  --include-drafts      Include drafts in the exported entries
+                                                      [boolean] [default: false]
 
---management-token    Management API token for the space to be exported. [string] [required]
+  --skip-roles          Skip exporting roles and permissions
+                                                      [boolean] [default: false]
 
---export-dir          Defines the path for storing the export json file (default path is the current directory) [string]
+  --skip-content-model  Skip exporting content models [boolean] [default: false]
 
- --include-drafts      include drafts drafts in the exported entries [boolean] [default: false]
+  --skip-content        Skip exporting assets and entries
+                                                      [boolean] [default: false]
 
---skip-roles          Define this flag ti skip exporting roles and permissions [boolean] [default: false]
+  --skip-webhooks       Skip exporting webhooks       [boolean] [default: false]
 
---skip-content-model  Define this flag to skip exporting content models [boolean] [default: false]
+  --download-assets     With this flags assets will also be downloaded [boolean]
 
---skip-content        Define this flag to skip exporting Assets and Entries [boolean] [default: false]
+  --max-allowed-limit   How many items per page per request
+                                                        [number] [default: 1000]
 
---skip-webhooks       Define this flag ti skip exporting webhooks [boolean] [default: false]
-
---download-assets     With this flags assets will also be downloaded [boolean]
-
---max-allowed-limit   How many item per page per request [number] [default: 1000]
-
---config              Configuration file with required values
+  --config              Configuration file with required values
 ```
 
 The `--management-token` parameter allows you to specify a token used for both spaces. If you request a token from [here](https://www.contentful.com/developers/docs/references/authentication/) and your user account has access to both spaces, this should be enough.
@@ -82,11 +83,11 @@ This is an overview of the exported data:
 {
   "contentTypes": [],
   "entries": [],
-  "locales": [],
   "assets": [],
+  "locales": [],
   "webhooks": [],
-  "editorInterfaces": [],
-	"roles": []
+  "roles": [],
+  "editorInterfaces": []
 }
 ```
 
@@ -96,7 +97,13 @@ While this tool is intended for use as a command line tool, you can also use it 
 
 ```javascript
 var spaceExport = require('contentful-export')
-
+var options = {
+  opts: {
+    maxAllowedItems: 100,
+    ...
+  },
+  errorLogFile: 'filename'
+}
 spaceExport(options)
 .then((output) => {
   console.log('space data', output)
@@ -106,15 +113,15 @@ spaceExport(options)
 })
 ```
 
-The `options` object can contain any of the CLI options, but written with a camelCase pattern instead, and no dashes. For example `--space-id` would become `spaceId`.
+The `opts` object within options can contain any of the CLI options, but written with a camelCase pattern instead and no dashes. For example `--space-id` would become `spaceId`.
 
 Another option is `errorLogFile`, the location of a file to log errors to.
 
 ## Limitations
 
-- This tool exports only your published Content Model, Content and Assets. It will support Editor Interfaces, Webhooks and Roles & Permissions in a future version. Draft entries are not supported.
-- You can only export the content exported by this tool into an empty space. We currently do not support merging content into pre-existing spaces.
-- If you have custom widgets, you need to reinstall them manually in the new space.
+- This tool currently does **not** support the export of space memberships.
+- Exported webhooks with credentials will be exported as normal webhooks. Credentials should be added manually afterwards.
+- If you have custom UI extensions, you need to reinstall them manually in the new space.
 
 ## Changelog
 
