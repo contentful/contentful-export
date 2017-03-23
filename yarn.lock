@@ -972,28 +972,28 @@ console-control-strings@^1.0.0, console-control-strings@~1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/console-control-strings/-/console-control-strings-1.1.0.tgz#3d7cf4464db6446ea644bf4b39507f9851008e8e"
 
-contentful-batch-libs@v5.1.0:
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/contentful-batch-libs/-/contentful-batch-libs-5.1.0.tgz#5f2ade7aa82875f39a3aca47d3bc43a6a82da168"
+contentful-batch-libs@^5.3.0:
+  version "5.3.0"
+  resolved "https://registry.yarnpkg.com/contentful-batch-libs/-/contentful-batch-libs-5.3.0.tgz#c7d1a4b0134e35d7afa7401b4c9b056a28b4a3ee"
   dependencies:
     bluebird "^3.3.3"
     contentful "^3.3.12"
-    contentful-management "^3.2.0"
+    contentful-management "^3.3.0"
     lodash "^4.0.1"
     npmlog "^4.0.2"
 
-contentful-management@^3.2.0:
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/contentful-management/-/contentful-management-3.2.0.tgz#443b1ad94d3ecb3a1e3d98d4d6084324102f9278"
+contentful-management@^3.3.0:
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/contentful-management/-/contentful-management-3.3.0.tgz#ce6c0a7fc4e6ea4ca47f1ba88efe5c6c9020cb5e"
   dependencies:
     axios "~0.15.3"
-    contentful-sdk-core "^3.7.0"
+    contentful-sdk-core "^3.8.0"
     es6-promise "^4.0.5"
     lodash "^4.17.4"
 
-contentful-sdk-core@^3.7.0:
-  version "3.7.0"
-  resolved "https://registry.yarnpkg.com/contentful-sdk-core/-/contentful-sdk-core-3.7.0.tgz#1573d6e04d55d6e414a271e8759a986af95e322b"
+contentful-sdk-core@^3.8.0:
+  version "3.8.0"
+  resolved "https://registry.yarnpkg.com/contentful-sdk-core/-/contentful-sdk-core-3.8.0.tgz#4766c5411b2b8417eaac2decceb234c6b6ff1716"
   dependencies:
     axios "^0.15.3"
     es6-promise "^4.0.5"
