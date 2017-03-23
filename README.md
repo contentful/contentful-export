@@ -37,12 +37,12 @@ Options:
   --include-drafts      Include drafts in the exported entries
                                                       [boolean] [default: false]
 
-  --skip-roles          Skip exporting roles and permissions
-                                                      [boolean] [default: false]
-
   --skip-content-model  Skip exporting content models [boolean] [default: false]
 
   --skip-content        Skip exporting assets and entries
+                                                      [boolean] [default: false]
+
+  --skip-roles          Skip exporting roles and permissions
                                                       [boolean] [default: false]
 
   --skip-webhooks       Skip exporting webhooks       [boolean] [default: false]
@@ -52,7 +52,10 @@ Options:
   --max-allowed-limit   How many items per page per request
                                                         [number] [default: 1000]
 
-  --config              Configuration file with required values
+  --error-log-file      Full path to the error log file                 [string]
+
+  --config              An optional configuration JSON file containing all the
+                        options for a single run
 ```
 
 The `--management-token` parameter allows you to specify a token used for both spaces. If you request a token from [here](https://www.contentful.com/developers/docs/references/authentication/) and your user account has access to both spaces, this should be enough.
@@ -98,11 +101,9 @@ While this tool is intended for use as a command line tool, you can also use it 
 ```javascript
 var spaceExport = require('contentful-export')
 var options = {
-  opts: {
-    maxAllowedItems: 100,
-    ...
-  },
-  errorLogFile: 'filename'
+  maxAllowedItems: 100,
+  errorLogFile: 'filename',
+  ...
 }
 spaceExport(options)
 .then((output) => {
@@ -113,9 +114,7 @@ spaceExport(options)
 })
 ```
 
-The `opts` object within options can contain any of the CLI options, but written with a camelCase pattern instead and no dashes. For example `--space-id` would become `spaceId`.
-
-Another option is `errorLogFile`, the location of a file to log errors to.
+The `options` object can contain any of the CLI options, but written with a camelCase pattern instead and no dashes. For example `--space-id` would become `spaceId`.
 
 ## Limitations
 

@@ -8,6 +8,7 @@
     }]
   ],
   "plugins": [
+    "transform-object-rest-spread",
     "add-module-exports"
   ],
   "env": {
