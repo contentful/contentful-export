@@ -3,6 +3,8 @@ import sinon from 'sinon'
 import Promise from 'bluebird'
 import runContentfulExport from '../lib/index'
 import dumpErrorBuffer from '../lib/dump-error-buffer'
+import { resolve } from 'path'
+
 const fullSpaceResponse = {
   'contentTypes': [],
   'entries': [],
@@ -31,13 +33,34 @@ runContentfulExport.__Rewire__('dumpErrorBuffer', dumpErrorBufferStub)
 
 test('Runs Contentful Export', (t) => {
   runContentfulExport({
-    opts: {},
-    errorLogFile: 'errorlogfile'
+    errorLogFile: 'errorlogfile',
+    spaceId: 'someSpaceId',
+    managementToken: 'someManagementToken'
   })
   .then(() => {
     t.ok(createClientsStub.called, 'create clients')
     t.ok(getFullSourceSpaceStub.called, 'get full space')
-    runContentfulExport.__ResetDependency__('getFullSourceSpace')
+    t.end()
+  }).catch((error) => {
+    t.fail('Should not throw ', error)
+    t.end()
+  })
+})
+
+test('Creates a valid and correct opts object', (t) => {
+  const errorLogFile = 'errorlogfile'
+  const exampleConfig = require('../example-config.json')
+  createClientsStub.resetHistory()
+
+  runContentfulExport({
+    errorLogFile,
+    config: resolve(__dirname, '..', 'example-config.json')
+  })
+  .then(() => {
+    const opts = createClientsStub.args[0][0]
+    t.false(opts.skipContentModel, 'defaults are applied')
+    t.equal(opts.errorLogFile, errorLogFile, 'defaults can be overwritten')
+    t.equal(opts.spaceId, exampleConfig.spaceId, 'config file values are taken')
     t.end()
   }).catch((error) => {
     t.fail('Should not throw ', error)
@@ -48,8 +71,9 @@ test('Runs Contentful Export', (t) => {
 test('Runs Contentful fails', (t) => {
   runContentfulExport.__Rewire__('getFullSourceSpace', getFullSourceSpaceWithErrorStub)
   runContentfulExport({
-    opts: {},
-    errorLogFile: 'errorlogfile'
+    errorLogFile: 'errorlogfile',
+    spaceId: 'someSpaceId',
+    managementToken: 'someManagementToken'
   })
   .then(() => {})
   .catch(() => {

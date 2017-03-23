@@ -4,13 +4,14 @@ var runContentfulExport = require('../dist/index')
 var usageParams = require('../dist/usageParams')
 
 // welcome the user and let them know what's gonna happen
-log.info('Contentful Export Tool:\n' +
-'Fetching Space data ...')
+log.info('Contentful Export Tool')
+log.info('Fetching Space data ...')
 
-setTimeout(function () {
-  runContentfulExport(usageParams)
-  .catch(function (err) {
-    log.error('Failed with\n', err)
-    process.exit(1)
-  })
-}, 3000)
+runContentfulExport(usageParams)
+.then((result) => {
+  process.exit(0)
+})
+.catch((err) => {
+  log.error('', 'Failed with\n', err)
+  process.exit(1)
+})
