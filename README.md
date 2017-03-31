@@ -109,7 +109,7 @@ var options = {
 }
 spaceExport(options)
 .then((output) => {
-  console.log('Your space Data:', output)
+  console.log('Your space data:', output)
 })
 .catch((err) => {
   console.log('Oh no! Some errors occurred!', err)
