@@ -101,16 +101,18 @@ While this tool is intended for use as a command line tool, you can also use it 
 ```javascript
 var spaceExport = require('contentful-export')
 var options = {
+  spaceId: '{space_id}',
+  managementToken: '{content_management_api_key}',
   maxAllowedItems: 100,
   errorLogFile: 'filename',
   ...
 }
 spaceExport(options)
 .then((output) => {
-  console.log('space data', output)
+  console.log('Your space Data:', output)
 })
 .catch((err) => {
-  console.log('oh no! errors occurred!', err)
+  console.log('Oh no! Some errors occurred!', err)
 })
 ```
 
