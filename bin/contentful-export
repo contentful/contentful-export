@@ -1,17 +1,12 @@
 #!/usr/bin/env node
-var log = require('npmlog')
 var runContentfulExport = require('../dist/index')
 var usageParams = require('../dist/usageParams')
-
-// welcome the user and let them know what's gonna happen
-log.info('Contentful Export Tool')
-log.info('Fetching Space data ...')
 
 runContentfulExport(usageParams)
 .then((result) => {
   process.exit(0)
 })
 .catch((err) => {
-  log.error('export', 'Failed with\n', err)
+  console.error(err)
   process.exit(1)
 })
