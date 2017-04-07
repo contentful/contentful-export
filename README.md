@@ -54,6 +54,8 @@ Options:
 
   --error-log-file      Full path to the error log file                 [string]
 
+  --save-file           Save the export as a json file [boolean] [default: true]
+
   --config              An optional configuration JSON file containing all the
                         options for a single run
 ```
@@ -105,6 +107,7 @@ var options = {
   managementToken: '{content_management_api_key}',
   maxAllowedItems: 100,
   errorLogFile: 'filename',
+  saveFile: false
   ...
 }
 spaceExport(options)
