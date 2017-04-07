@@ -12,6 +12,6 @@ runContentfulExport(usageParams)
   process.exit(0)
 })
 .catch((err) => {
-  log.error('', 'Failed with\n', err)
+  log.error('export', 'Failed with\n', err)
   process.exit(1)
 })
