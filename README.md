@@ -24,35 +24,44 @@ npm install -g contentful-export
 Usage: contentful-export [options]
 
 Options:
-  --version             Show version number                            [boolean]
+  --version               Show version number                          [boolean]
 
-  --space-id            ID of Space with source data         [string] [required]
+  --space-id              ID of Space with source data       [string] [required]
 
-  --management-token    Contentful management API token for the space to be
-                        exported                             [string] [required]
+  --management-token      Contentful management API token for the space to be
+                          exported                           [string] [required]
 
-  --export-dir          Defines the path for storing the export json file
-                        (default path is the current directory)         [string]
+  --export-dir            Defines the path for storing the export json file
+                          (default path is the current directory)       [string]
 
-  --include-drafts      Include drafts in the exported entries
+  --include-drafts        Include drafts in the exported entries
                                                       [boolean] [default: false]
 
-  --skip-content-model  Skip exporting content models [boolean] [default: false]
-
-  --skip-content        Skip exporting assets and entries
+  --skip-content-model    Skip exporting content models
                                                       [boolean] [default: false]
 
-  --skip-roles          Skip exporting roles and permissions
+  --skip-content          Skip exporting assets and entries
                                                       [boolean] [default: false]
 
-  --skip-webhooks       Skip exporting webhooks       [boolean] [default: false]
+  --skip-roles            Skip exporting roles and permissions
+                                                      [boolean] [default: false]
 
-  --download-assets     With this flags assets will also be downloaded [boolean]
+  --skip-webhooks         Skip exporting webhooks     [boolean] [default: false]
 
-  --max-allowed-limit   How many items per page per request
+  --download-assets       With this flags assets will also be downloaded
+                                                                       [boolean]
+
+  --max-allowed-limit     How many items per page per request
                                                         [number] [default: 1000]
 
-  --error-log-file      Full path to the error log file                 [string]
+  --management-host       Management API host
+                                        [string] [default: "api.contentful.com"]
+
+  --error-log-file        Full path to the error log file               [string]
+
+  --use-verbose-renderer  Display progress in new lines instead of displaying a
+                          busy spinner and the status in the same line. Useful
+                          for CI.                     [boolean] [default: false]
 
   --save-file           Save the export as a json file [boolean] [default: true]
 
