@@ -980,13 +980,15 @@ console-control-strings@^1.0.0, console-control-strings@~1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/console-control-strings/-/console-control-strings-1.1.0.tgz#3d7cf4464db6446ea644bf4b39507f9851008e8e"
 
-contentful-batch-libs@^5.3.0:
-  version "5.3.0"
-  resolved "https://registry.yarnpkg.com/contentful-batch-libs/-/contentful-batch-libs-5.3.0.tgz#c7d1a4b0134e35d7afa7401b4c9b056a28b4a3ee"
+contentful-batch-libs@^5.5.1:
+  version "5.5.1"
+  resolved "https://registry.yarnpkg.com/contentful-batch-libs/-/contentful-batch-libs-5.5.1.tgz#075706115849608994b0173b6cf07f3c9f9939cb"
   dependencies:
     bluebird "^3.3.3"
     contentful "^3.3.12"
     contentful-management "^3.3.0"
+    listr "^0.11.0"
+    listr-verbose-renderer "^0.4.0"
     lodash "^4.0.1"
     npmlog "^4.0.2"
 

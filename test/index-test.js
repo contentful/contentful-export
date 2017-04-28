@@ -37,9 +37,14 @@ test('Runs Contentful Export', (t) => {
     spaceId: 'someSpaceId',
     managementToken: 'someManagementToken'
   })
-  .then(() => {
+  .then((returnedData) => {
     t.ok(createClientsStub.called, 'create clients')
     t.ok(getFullSourceSpaceStub.called, 'get full space')
+    t.equal(returnedData.contentTypes.length, 0, 'returned contentTypes')
+    t.equal(returnedData.entries.length, 0, 'returned entries')
+    t.equal(returnedData.assets.length, 0, 'returned assets')
+    t.equal(returnedData.locales.length, 0, 'returned locales')
+    t.equal(returnedData, fullSpaceResponse, 'getting the response back')
     t.end()
   }).catch((error) => {
     t.fail('Should not throw ', error)
