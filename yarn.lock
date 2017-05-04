@@ -686,18 +686,12 @@ babel-register@^6.24.1:
     mkdirp "^0.5.1"
     source-map-support "^0.4.2"
 
-babel-runtime@^6.18.0, babel-runtime@^6.22.0, babel-runtime@^6.3.19:
+babel-runtime@^6.18.0, babel-runtime@^6.22.0:
   version "6.23.0"
   resolved "https://registry.yarnpkg.com/babel-runtime/-/babel-runtime-6.23.0.tgz#0a9489f144de70efb3ce4300accdb329e2fc543b"
   dependencies:
     core-js "^2.4.0"
     regenerator-runtime "^0.10.0"
-
-babel-runtime@~6.3.19:
-  version "6.3.19"
-  resolved "https://registry.yarnpkg.com/babel-runtime/-/babel-runtime-6.3.19.tgz#f2db696c3c8c379881e2a53665e02187074dc681"
-  dependencies:
-    core-js "^1.2.0"
 
 babel-template@^6.16.0, babel-template@^6.23.0, babel-template@^6.24.1:
   version "6.24.1"
@@ -980,12 +974,12 @@ console-control-strings@^1.0.0, console-control-strings@~1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/console-control-strings/-/console-control-strings-1.1.0.tgz#3d7cf4464db6446ea644bf4b39507f9851008e8e"
 
-contentful-batch-libs@^5.5.1:
-  version "5.5.1"
-  resolved "https://registry.yarnpkg.com/contentful-batch-libs/-/contentful-batch-libs-5.5.1.tgz#075706115849608994b0173b6cf07f3c9f9939cb"
+contentful-batch-libs@^5.7.0:
+  version "5.7.0"
+  resolved "https://registry.yarnpkg.com/contentful-batch-libs/-/contentful-batch-libs-5.7.0.tgz#8a8b03e58f6a2f0ec462334377a5d757ba18e835"
   dependencies:
     bluebird "^3.3.3"
-    contentful "^3.3.12"
+    contentful "^4.3.0"
     contentful-management "^3.3.0"
     listr "^0.11.0"
     listr-verbose-renderer "^0.4.0"
@@ -1011,23 +1005,25 @@ contentful-sdk-core@^3.8.0:
     npmlog "^4.0.2"
     qs "^6.1.0"
 
-contentful-sdk-core@~2.5.0:
-  version "2.5.0"
-  resolved "https://registry.yarnpkg.com/contentful-sdk-core/-/contentful-sdk-core-2.5.0.tgz#e1cad6b7660654bb1095b385fd5abc225199273f"
+contentful-sdk-core@^3.9.0:
+  version "3.9.0"
+  resolved "https://registry.yarnpkg.com/contentful-sdk-core/-/contentful-sdk-core-3.9.0.tgz#0339f29f31710d781a5979a4b7a8a1ecdb0e7bbf"
   dependencies:
-    babel-runtime "^6.3.19"
-    follow-redirects "0.0.7"
-    lodash "^4.2.0"
+    axios "^0.15.3"
+    es6-promise "^4.0.5"
+    lodash "^4.17.4"
+    npmlog "^4.0.2"
     qs "^6.1.0"
 
-contentful@^3.3.12:
-  version "3.8.1"
-  resolved "https://registry.yarnpkg.com/contentful/-/contentful-3.8.1.tgz#ba532c0032a165c22a251ce964a7f39d4011c21b"
+contentful@^4.3.0:
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/contentful/-/contentful-4.3.0.tgz#9a405998607af9c498f5876acb41b5599691d129"
   dependencies:
-    babel-runtime "~6.3.19"
-    contentful-sdk-core "~2.5.0"
-    json-stringify-safe "~5.0.1"
-    lodash "~4.2.0"
+    axios "~0.15.3"
+    contentful-sdk-core "^3.9.0"
+    es6-promise "^4.0.5"
+    json-stringify-safe "^5.0.1"
+    lodash "^4.17.4"
 
 conventional-changelog@0.0.17:
   version "0.0.17"
@@ -1046,10 +1042,6 @@ conventional-commit-types@^2.0.0:
 convert-source-map@^1.1.0:
   version "1.5.0"
   resolved "https://registry.yarnpkg.com/convert-source-map/-/convert-source-map-1.5.0.tgz#9acd70851c6d5dfdd93d9282e5edf94a03ff46b5"
-
-core-js@^1.2.0:
-  version "1.2.7"
-  resolved "https://registry.yarnpkg.com/core-js/-/core-js-1.2.7.tgz#652294c14651db28fa93bd2d5ff2983a4f08c636"
 
 core-js@^2.4.0:
   version "2.4.1"
@@ -2512,10 +2504,6 @@ lodash@^4.0.0, lodash@^4.0.1, lodash@^4.13.1, lodash@^4.14.0, lodash@^4.17.4, lo
 lodash@~1.3.1:
   version "1.3.1"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-1.3.1.tgz#a4663b53686b895ff074e2ba504dfb76a8e2b770"
-
-lodash@~4.2.0:
-  version "4.2.1"
-  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.2.1.tgz#171fdcfbbc30d689c544cd18c0529f56de6c1aa9"
 
 log-driver@1.2.5:
   version "1.2.5"

@@ -50,7 +50,7 @@
   "dependencies": {
     "bluebird": "^3.3.3",
     "cli-table2": "^0.2.0",
-    "contentful-batch-libs": "^5.5.1",
+    "contentful-batch-libs": "^5.7.0",
     "fs-extra": "^2.1.2",
     "json-stringify-safe": "^5.0.1",
     "listr": "^0.11.0",
