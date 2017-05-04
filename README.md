@@ -57,6 +57,9 @@ Options:
   --management-host       Management API host
                                         [string] [default: "api.contentful.com"]
 
+  --proxy                 Proxy configuration in HTTP auth format: host:port or
+                          user:password@host:port                       [string]
+
   --error-log-file        Full path to the error log file               [string]
 
   --use-verbose-renderer  Display progress in new lines instead of displaying a
