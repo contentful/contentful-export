@@ -3,7 +3,7 @@
     ["env", {
       "debug": true,
       "targets": {
-        "node": 4.7
+        "node": "4.7"
       }
     }]
   ],
