@@ -2,6 +2,7 @@ import test from 'tape'
 import nixt from 'nixt'
 import { join } from 'path'
 import fs from 'fs'
+
 const bin = join(__dirname, '../../', 'bin')
 
 const app = () => {
@@ -13,10 +14,14 @@ const managementToken = process.env.MANAGEMENT_TOKEN
 let filePath = null
 
 test.onFinish(() => {
-  fs.unlinkSync(join(bin, filePath))
+  try {
+    fs.unlinkSync(join(bin, filePath))
+  } catch (e) {
+
+  }
 })
 
-test('it should export space properly', (t) => {
+test('It should export space properly when running as a cli', (t) => {
   t.plan(7)
   app()
     .run(` --space-id ${spaceId} --management-token ${managementToken}`)
