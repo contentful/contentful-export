@@ -1,8 +1,8 @@
 import test from 'tape'
 import sinon from 'sinon'
 import Promise from 'bluebird'
-import runContentfulExport from '../lib/index'
-import dumpErrorBuffer from '../lib/dump-error-buffer'
+import runContentfulExport from '../../lib/index'
+import dumpErrorBuffer from '../../lib/dump-error-buffer'
 import { resolve } from 'path'
 
 const fullSpaceResponse = {
@@ -49,12 +49,12 @@ test('Runs Contentful Export', (t) => {
 
 test('Creates a valid and correct opts object', (t) => {
   const errorLogFile = 'errorlogfile'
-  const exampleConfig = require('../example-config.json')
+  const exampleConfig = require('../../example-config.json')
   createClientsStub.resetHistory()
 
   runContentfulExport({
     errorLogFile,
-    config: resolve(__dirname, '..', 'example-config.json')
+    config: resolve(__dirname, '..', '..', 'example-config.json')
   })
   .then(() => {
     const opts = createClientsStub.args[0][0]
