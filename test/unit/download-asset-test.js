@@ -1,5 +1,5 @@
 import test from 'tape'
-import downloadAsset from '../lib/download-asset'
+import downloadAsset from '../../lib/download-asset'
 import fs from 'fs-extra'
 import path from 'path'
 var tmpDirectory = path.join(__dirname, 'tmp')
