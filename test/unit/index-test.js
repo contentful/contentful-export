@@ -2,7 +2,7 @@ import test from 'tape'
 import sinon from 'sinon'
 import Promise from 'bluebird'
 import runContentfulExport from '../../lib/index'
-import dumpErrorBuffer from '../../lib/dump-error-buffer'
+import errorBuffer from 'contentful-batch-libs/dist/utils/error-buffer'
 import { resolve } from 'path'
 
 const fullSpaceResponse = {
@@ -18,18 +18,13 @@ runContentfulExport.__Rewire__('createClients', createClientsStub)
 const getFullSourceSpaceStub = sinon.stub().returns(Promise.resolve(fullSpaceResponse))
 runContentfulExport.__Rewire__('getFullSourceSpace', getFullSourceSpaceStub)
 
-const rejectError = new Error()
-rejectError.request = {uri: 'erroruri'}
-const getFullSourceSpaceWithErrorStub = sinon.stub().returns(Promise.reject(rejectError))
 const fsMock = {
   writeFileSync: sinon.stub().returns(Promise.resolve()),
   existsSync: sinon.stub().returns(true),
   mkdirSync: sinon.stub().returns(undefined)
 }
 runContentfulExport.__Rewire__('fs', fsMock)
-dumpErrorBuffer.__Rewire__('fs', fsMock)
-const dumpErrorBufferStub = sinon.stub()
-runContentfulExport.__Rewire__('dumpErrorBuffer', dumpErrorBufferStub)
+errorBuffer.push = sinon.spy(errorBuffer, 'push')
 
 test('Runs Contentful Export', (t) => {
   runContentfulExport({
@@ -69,15 +64,23 @@ test('Creates a valid and correct opts object', (t) => {
 })
 
 test('Runs Contentful fails', (t) => {
+  const rejectError = new Error()
+  rejectError.request = {uri: 'erroruri'}
+  const getFullSourceSpaceWithErrorStub = sinon.stub().returns(Promise.reject(rejectError))
   runContentfulExport.__Rewire__('getFullSourceSpace', getFullSourceSpaceWithErrorStub)
   runContentfulExport({
     errorLogFile: 'errorlogfile',
     spaceId: 'someSpaceId',
     managementToken: 'someManagementToken'
   })
-  .then(() => {})
+  .then(() => {
+    t.fail('Should throw error')
+    t.end()
+  })
   .catch(() => {
-    t.ok(dumpErrorBufferStub.called)
+    t.ok(errorBuffer.push.called)
+    t.equal(errorBuffer.push.args[0][0], rejectError)
+    t.ok(getFullSourceSpaceWithErrorStub.called)
     runContentfulExport.__ResetDependency__('getFullSourceSpace')
     runContentfulExport.__ResetDependency__('createClients')
     runContentfulExport.__ResetDependency__('dumpErrorBuffer')
