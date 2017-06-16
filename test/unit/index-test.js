@@ -1,9 +1,13 @@
-import test from 'tape'
-import sinon from 'sinon'
-import Promise from 'bluebird'
-import runContentfulExport from '../../lib/index'
-import errorBuffer from 'contentful-batch-libs/dist/utils/error-buffer'
 import { resolve } from 'path'
+
+import test from 'blue-tape'
+import Promise from 'bluebird'
+import sinon from 'sinon'
+
+import {
+  default as runContentfulExport,
+  __RewireAPI__ as runContentfulExportRewireAPI
+} from '../../lib/index'
 
 const fullSpaceResponse = {
   'contentTypes': [],
@@ -12,21 +16,49 @@ const fullSpaceResponse = {
   'locales': []
 }
 
-const createClientsStub = sinon.stub().returns({ source: {delivery: {}}, destination: {management: {}} })
-runContentfulExport.__Rewire__('createClients', createClientsStub)
-
-const getFullSourceSpaceStub = sinon.stub().returns(Promise.resolve(fullSpaceResponse))
-runContentfulExport.__Rewire__('getFullSourceSpace', getFullSourceSpaceStub)
+const createClientsStub = sinon.stub()
+const getFullSourceSpaceStub = sinon.stub()
 
 const fsMock = {
-  writeFileSync: sinon.stub().returns(Promise.resolve()),
-  existsSync: sinon.stub().returns(true),
-  mkdirSync: sinon.stub().returns(undefined)
+  writeFileSync: sinon.stub(),
+  existsSync: sinon.stub(),
+  mkdirSync: sinon.stub()
 }
-runContentfulExport.__Rewire__('fs', fsMock)
-errorBuffer.push = sinon.spy(errorBuffer, 'push')
+
+const fakeBfj = {
+  write: sinon.stub()
+}
+
+function setup () {
+  createClientsStub.returns({ source: {delivery: {}}, destination: {management: {}} })
+  getFullSourceSpaceStub.returns(Promise.resolve(fullSpaceResponse))
+  fsMock.writeFileSync.returns(Promise.resolve())
+  fsMock.existsSync.returns(true)
+  fsMock.mkdirSync.returns(undefined)
+  fakeBfj.write.returns(Promise.resolve())
+
+  runContentfulExportRewireAPI.__Rewire__('createClients', createClientsStub)
+  runContentfulExportRewireAPI.__Rewire__('getFullSourceSpace', getFullSourceSpaceStub)
+  runContentfulExportRewireAPI.__Rewire__('fs', fsMock)
+  runContentfulExportRewireAPI.__Rewire__('bfj', fakeBfj)
+}
+
+function teardown () {
+  createClientsStub.reset()
+  getFullSourceSpaceStub.reset()
+  fsMock.writeFileSync.reset()
+  fsMock.existsSync.reset()
+  fsMock.mkdirSync.reset()
+  fakeBfj.write.reset()
+
+  runContentfulExportRewireAPI.__ResetDependency__('createClients')
+  runContentfulExportRewireAPI.__ResetDependency__('getFullSourceSpace')
+  runContentfulExportRewireAPI.__ResetDependency__('fs')
+  runContentfulExportRewireAPI.__ResetDependency__('bfj')
+}
 
 test('Runs Contentful Export', (t) => {
+  setup()
   runContentfulExport({
     errorLogFile: 'errorlogfile',
     spaceId: 'someSpaceId',
@@ -35,17 +67,19 @@ test('Runs Contentful Export', (t) => {
   .then((returnedData) => {
     t.ok(createClientsStub.called, 'create clients')
     t.ok(getFullSourceSpaceStub.called, 'get full space')
+    teardown()
     t.end()
   }).catch((error) => {
     t.fail('Should not throw ', error)
+    teardown()
     t.end()
   })
 })
 
 test('Creates a valid and correct opts object', (t) => {
+  setup()
   const errorLogFile = 'errorlogfile'
   const exampleConfig = require('../../example-config.json')
-  createClientsStub.resetHistory()
 
   runContentfulExport({
     errorLogFile,
@@ -54,20 +88,24 @@ test('Creates a valid and correct opts object', (t) => {
   .then(() => {
     const opts = createClientsStub.args[0][0]
     t.false(opts.skipContentModel, 'defaults are applied')
-    t.equal(opts.errorLogFile, errorLogFile, 'defaults can be overwritten')
+    t.equal(opts.errorLogFile, resolve(process.cwd(), errorLogFile), 'defaults can be overwritten')
     t.equal(opts.spaceId, exampleConfig.spaceId, 'config file values are taken')
+    teardown()
     t.end()
   }).catch((error) => {
-    t.fail('Should not throw ', error)
+    t.fail('Should not throw error')
+    console.log({error, errors: error.errors})
+    teardown()
     t.end()
   })
 })
 
-test('Runs Contentful fails', (t) => {
+test('Run Contentful export fails due to rejection', (t) => {
+  setup()
   const rejectError = new Error()
   rejectError.request = {uri: 'erroruri'}
-  const getFullSourceSpaceWithErrorStub = sinon.stub().returns(Promise.reject(rejectError))
-  runContentfulExport.__Rewire__('getFullSourceSpace', getFullSourceSpaceWithErrorStub)
+  getFullSourceSpaceStub.returns(Promise.reject(rejectError))
+
   runContentfulExport({
     errorLogFile: 'errorlogfile',
     spaceId: 'someSpaceId',
@@ -75,15 +113,14 @@ test('Runs Contentful fails', (t) => {
   })
   .then(() => {
     t.fail('Should throw error')
+    teardown()
     t.end()
   })
   .catch(() => {
-    t.ok(errorBuffer.push.called)
-    t.equal(errorBuffer.push.args[0][0], rejectError)
-    t.ok(getFullSourceSpaceWithErrorStub.called)
-    runContentfulExport.__ResetDependency__('getFullSourceSpace')
-    runContentfulExport.__ResetDependency__('createClients')
-    runContentfulExport.__ResetDependency__('dumpErrorBuffer')
+    t.ok(getFullSourceSpaceStub.calledOnce, 'tries to get full source space')
+    t.notOk(fakeBfj.write.called, 'did not write any file since an error happened')
+    t.pass('test passed since export promise got rejected')
+    teardown()
     t.end()
   })
 })
