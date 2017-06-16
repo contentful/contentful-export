@@ -1,7 +1,10 @@
-import test from 'tape'
-import downloadAsset from '../../lib/download-asset'
-import fs from 'fs-extra'
 import path from 'path'
+
+import test from 'blue-tape'
+import fs from 'fs-extra'
+
+import downloadAsset from '../../lib/download-asset'
+
 var tmpDirectory = path.join(__dirname, 'tmp')
 
 test('Download asset successfully', (t) => {
