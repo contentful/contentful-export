@@ -1,8 +1,11 @@
-import test from 'tape'
-import nixt from 'nixt'
 import { join } from 'path'
 import fs from 'fs'
+
+import test from 'blue-tape'
+import mkdirp from 'mkdirp'
+import nixt from 'nixt'
 import rimraf from 'rimraf'
+
 const bin = join(__dirname, '../../', 'bin')
 const tmpFolder = join(__dirname, 'tmp')
 const app = () => {
@@ -14,8 +17,7 @@ const managementToken = process.env.MANAGEMENT_TOKEN
 let filePath = null
 
 test('It should export space properly when running as a cli', (t) => {
-  t.plan(7)
-  fs.mkdirSync(tmpFolder)
+  mkdirp.sync(tmpFolder)
   app()
     .run(` --space-id ${spaceId} --management-token ${managementToken} --export-dir ${tmpFolder}`)
     .stdout(/Exported entities/)
@@ -32,6 +34,10 @@ test('It should export space properly when running as a cli', (t) => {
         t.fail('Should not throw error')
       }
       const fileList = fs.readdirSync(tmpFolder)
+      if (!fileList.length) {
+        t.fail('No file was exported. Did you set EXPORT_SPACE_ID and MANAGEMENT_TOKEN env variables?')
+        return t.end()
+      }
       filePath = fileList[0] // we only have one file
       const exportedFile = JSON.parse(fs.readFileSync(join(tmpFolder, filePath)))
       t.equal(exportedFile.contentTypes.length, 2, '2 content types should be exported')
