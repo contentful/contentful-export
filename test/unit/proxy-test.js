@@ -1,4 +1,5 @@
-import test from 'tape'
+import test from 'blue-tape'
+
 import {
   proxyStringToObject,
   proxyObjectToString,

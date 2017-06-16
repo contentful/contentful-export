@@ -1,12 +1,17 @@
-import test from 'tape'
+import test from 'blue-tape'
+
 import runContentfulExport from '../../dist/index'
 
 const spaceId = process.env.EXPORT_SPACE_ID
 const managementToken = process.env.MANAGEMENT_TOKEN
 
 test('It should export space when used as a library', (t) => {
-  t.plan(8)
+  t.plan(9)
   return runContentfulExport({spaceId, managementToken, saveFile: false})
+    .catch((multierror) => {
+      const errors = multierror.errors.filter((error) => error.hasOwnProperty('error'))
+      t.equals(errors.length, 0, 'should not log any real errors, only warnings')
+    })
     .then((content) => {
       t.ok(content)
       t.equal(content.contentTypes.length, 3, '3 content types should be exported')
@@ -16,5 +21,6 @@ test('It should export space when used as a library', (t) => {
       t.equal(content.locales.length, 1, '1 locale should be exported')
       t.equal(content.webhooks.length, 0, '0 webhooks should be exported')
       t.equal(content.roles.length, 7, '7 roles should be exported')
+      t.pass('Finished export as a lib')
     })
 })
