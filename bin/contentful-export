@@ -7,6 +7,8 @@ runContentfulExport(usageParams)
   process.exit(0)
 })
 .catch((err) => {
-  console.error(err)
+  if (err.name !== 'ContentfulMultiError') {
+    console.error(err)
+  }
   process.exit(1)
 })
