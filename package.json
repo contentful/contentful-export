@@ -53,6 +53,7 @@
     "bluebird": "^3.3.3",
     "cli-table2": "^0.2.0",
     "contentful-batch-libs": "^5.10.0",
+    "figures": "^2.0.0",
     "fs-extra": "^2.1.2",
     "http-proxy-agent": "^1.0.0",
     "https-proxy-agent": "^1.0.0",
