@@ -33,12 +33,12 @@ test('Download fails', (t) => {
     '//images.contentful.com/does-not-exist.png',
     tmpDirectory
   )
-  .then(() => {
-    t.fail('Should not succeed')
-  })
-  .catch((error) => {
-    t.equal(error.message, 'error response status: 404')
-  })
+    .then(() => {
+      t.fail('Should not succeed')
+    })
+    .catch((error) => {
+      t.equal(error.message, 'error response status: 404')
+    })
 
   fs.removeSync(tmpDirectory)
   t.end()
