@@ -82,16 +82,16 @@ test('Runs Contentful Export', (t) => {
     spaceId: 'someSpaceId',
     managementToken: 'someManagementToken'
   })
-  .then((returnedData) => {
-    t.ok(createClientsStub.called, 'create clients')
-    t.ok(getFullSourceSpaceStub.called, 'get full space')
-    teardown()
-    t.end()
-  }).catch((error) => {
-    t.fail('Should not throw ', error)
-    teardown()
-    t.end()
-  })
+    .then((returnedData) => {
+      t.ok(createClientsStub.called, 'create clients')
+      t.ok(getFullSourceSpaceStub.called, 'get full space')
+      teardown()
+      t.end()
+    }).catch((error) => {
+      t.fail('Should not throw ', error)
+      teardown()
+      t.end()
+    })
 })
 
 test('Creates a valid and correct opts object', (t) => {
@@ -103,19 +103,19 @@ test('Creates a valid and correct opts object', (t) => {
     errorLogFile,
     config: resolve(__dirname, '..', '..', 'example-config.json')
   })
-  .then(() => {
-    const opts = createClientsStub.args[0][0]
-    t.false(opts.skipContentModel, 'defaults are applied')
-    t.equal(opts.errorLogFile, resolve(process.cwd(), errorLogFile), 'defaults can be overwritten')
-    t.equal(opts.spaceId, exampleConfig.spaceId, 'config file values are taken')
-    teardown()
-    t.end()
-  }).catch((error) => {
-    t.fail('Should not throw error')
-    console.log({error, errors: error.errors})
-    teardown()
-    t.end()
-  })
+    .then(() => {
+      const opts = createClientsStub.args[0][0]
+      t.false(opts.skipContentModel, 'defaults are applied')
+      t.equal(opts.errorLogFile, resolve(process.cwd(), errorLogFile), 'defaults can be overwritten')
+      t.equal(opts.spaceId, exampleConfig.spaceId, 'config file values are taken')
+      teardown()
+      t.end()
+    }).catch((error) => {
+      t.fail('Should not throw error')
+      console.log({error, errors: error.errors})
+      teardown()
+      t.end()
+    })
 })
 
 test('Run Contentful export fails due to rejection', (t) => {
@@ -129,16 +129,16 @@ test('Run Contentful export fails due to rejection', (t) => {
     spaceId: 'someSpaceId',
     managementToken: 'someManagementToken'
   })
-  .then(() => {
-    t.fail('Should throw error')
-    teardown()
-    t.end()
-  })
-  .catch(() => {
-    t.ok(getFullSourceSpaceStub.calledOnce, 'tries to get full source space')
-    t.notOk(fakeBfj.write.called, 'did not write any file since an error happened')
-    t.pass('test passed since export promise got rejected')
-    teardown()
-    t.end()
-  })
+    .then(() => {
+      t.fail('Should throw error')
+      teardown()
+      t.end()
+    })
+    .catch(() => {
+      t.ok(getFullSourceSpaceStub.calledOnce, 'tries to get full source space')
+      t.notOk(fakeBfj.write.called, 'did not write any file since an error happened')
+      t.pass('test passed since export promise got rejected')
+      teardown()
+      t.end()
+    })
 })
