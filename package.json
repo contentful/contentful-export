@@ -17,7 +17,7 @@
     "lint": "eslint lib bin/* test",
     "pretest": "npm run lint",
     "test": "npm run test:cover && npm run test:integration",
-    "test:integration": "npm run build && BABEL_ENV=test babel-node ./test/runner-integration",
+    "test:integration": "npm run build && rimraf ./test/integration/tmp && BABEL_ENV=test babel-node ./test/runner-integration",
     "test:cover": "BABEL_ENV=test babel-node ./node_modules/istanbul/lib/cli.js cover test/runner-unit",
     "test:only": "BABEL_ENV=test babel-node ./test/runner-unit",
     "test:debug": "BABEL_ENV=test babel-node debug ./test/runner-unit",
