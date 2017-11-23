@@ -53,7 +53,7 @@
     "blue-tape": "^1.0.0",
     "bluebird": "^3.3.3",
     "cli-table2": "^0.2.0",
-    "contentful-batch-libs": "8.0.0-beta2",
+    "contentful-batch-libs": "8.0.0-beta3",
     "figures": "^2.0.0",
     "fs-extra": "^3.0.1",
     "https-proxy-agent": "^2.0.0",
