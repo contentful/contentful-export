@@ -48,6 +48,12 @@ Options:
 
   --skip-webhooks         Skip exporting webhooks     [boolean] [default: false]
 
+  --content-only          Only export entries and assets [boolean] [default: false]
+
+  --query                 Exports only entries assets that matches these queries [array]
+
+  --content-file          The filename for the exported data [string]
+
   --download-assets       With this flags assets will also be downloaded
                                                                        [boolean]
 
