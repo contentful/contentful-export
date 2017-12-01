@@ -1,6 +1,6 @@
 {
   "name": "contentful-export",
-  "version": "5.0.0",
+  "version": "5.0.1-beta3",
   "description": "this tool allows you to export a space to a JSON dump",
   "bin": {
     "contentful-export": "./bin/contentful-export"
