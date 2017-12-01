@@ -50,7 +50,9 @@ Options:
 
   --content-only          Only export entries and assets [boolean] [default: false]
 
-  --query                 Exports only entries assets that matches these queries [array]
+  --query-entries         Exports only entries that matches these queries [array]
+
+  --query-assets          Exports only assets that matches these queries [array]
 
   --content-file          The filename for the exported data [string]
 
