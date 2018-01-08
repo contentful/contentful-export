@@ -86,6 +86,8 @@ Check the _example-config.json_ file for an example of what a configuration file
 
 ### Example
 
+#### Basic Usage
+
 ```shell
 contentful-export \
   --space-id spaceID \
@@ -99,6 +101,26 @@ contentful-export --config example-config.json
 ```
 
 You can create your own configuration file based on the [_example-config.json_](example-config.json) file.
+
+#### Querying
+
+```shell
+contentful-export \
+  --space-id spaceID \
+  --management-token managementToken
+  --query-entries 'content_type=contentTypeId'
+```
+
+The Export tool also support multiple inline queries.
+
+```shell
+contentful-export \
+  --space-id spaceID \
+  --management-token managementToken
+  --query-entries 'content_type=contentTypeId'
+  --query-entries 'sys.id=<entry-id>'
+```
+
 
 ### Exported data
 
