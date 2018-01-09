@@ -104,6 +104,8 @@ You can create your own configuration file based on the [_example-config.json_](
 
 #### Querying
 
+To scope your export, you are able to pass query parameters. All search parameters of our API are supported as documented in our [API documentation](https://www.contentful.com/developers/docs/references/content-delivery-api/#/reference/search-parameters).
+
 ```shell
 contentful-export \
   --space-id spaceID \
@@ -120,6 +122,8 @@ contentful-export \
   --query-entries 'content_type=contentTypeId'
   --query-entries 'sys.id=<entry-id>'
 ```
+
+`--query-assets` uses the same syntax as `--query-entries`
 
 
 ### Exported data
