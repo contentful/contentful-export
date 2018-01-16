@@ -9,11 +9,5 @@
   "plugins": [
     "transform-object-rest-spread",
     "add-module-exports"
-  ],
-  "env": {
-    "test": {
-      "sourceMaps": "inline",
-      "plugins": ["babel-plugin-rewire"]
-    }
-  }
+  ]
 }

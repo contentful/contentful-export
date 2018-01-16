@@ -17,8 +17,8 @@
     "lint": "eslint lib bin/* test",
     "pretest": "npm run lint",
     "test": "npm run test:unit && npm run test:integration",
-    "test:unit": "jest ./test/unit",
-    "test:unit:debug": "jest --watch ./test/unit",
+    "test:unit": "jest test/unit/**/*.js",
+    "test:unit:debug": "jest test/unit/**/*.js --watch",
     "test:integration": "npm run build && rimraf ./test/integration/tmp && BABEL_ENV=test babel-node ./test/runner-integration",
     "test:simulate-ci": "trevor",
     "browser-coverage": "npm run test:cover && opener coverage/lcov-report/index.html",
@@ -79,6 +79,7 @@
     "eslint": "^4.2.0",
     "eslint-config-standard": "^10.2.1",
     "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-jest": "^21.6.2",
     "eslint-plugin-node": "^5.2.1",
     "eslint-plugin-promise": "^3.5.0",
     "eslint-plugin-standard": "^3.0.1",
@@ -100,5 +101,14 @@
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "collectCoverage": true,
+    "collectCoverageFrom": [
+      "lib/**/*.js",
+      "!**/node_modules/**",
+      "!**/vendor/**"
+    ]
   }
 }
