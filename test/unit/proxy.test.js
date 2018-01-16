@@ -1,7 +1,18 @@
 import {
   proxyStringToObject,
-  proxyObjectToString
+  proxyObjectToString,
+  agentFromProxy
 } from '../../lib/utils/proxy'
+
+jest.mock('https-proxy-agent', () => {
+  const mock = jest.fn()
+  return class mocked {
+    constructor (args) {
+      this.mock = mock
+      mock(args)
+    }
+  }
+})
 
 test('proxyString with basic auth, with protocol', () => {
   const proxyString = 'http://foo:bar@127.0.0.1:8213'
@@ -102,4 +113,26 @@ test('parseString with username & password', () => {
   expect(parsed.auth.username).toBe('user')
   expect(parsed.auth.password).toBe('53cr37')
   expect(stringified).toBe(expectedStringified)
+})
+
+test('agentFromProxy with no proxy passed', () => {
+  const agent = agentFromProxy()
+  expect(agent).toMatchObject({})
+})
+
+test('agentFromProxy creates https agent and removes proxy env variables', () => {
+  process.env.HTTP_PROXY = true
+  process.env.http_proxy = true
+  process.env.HTTPS_PROXY = true
+  process.env.https_proxy = true
+  const agentParams = {
+    host: 'foo.bar',
+    port: 1234
+  }
+  const agent = agentFromProxy(agentParams)
+  expect(process.env).not.toHaveProperty('HTTP_PROXY')
+  expect(process.env).not.toHaveProperty('http_proxy')
+  expect(process.env).not.toHaveProperty('HTTPS_PROXY')
+  expect(process.env).not.toHaveProperty('https_proxy')
+  expect(agent.mock.mock.calls[0][0]).toMatchObject(agentParams)
 })
