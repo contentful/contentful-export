@@ -1,12 +1,19 @@
 import path from 'path'
 
+import nock from 'nock'
 import fs from 'fs-extra'
 
 import downloadAsset from '../../lib/download-asset'
 
-jest.setTimeout(10000)
+const tmpDirectory = path.join(__dirname, 'tmp')
 
-var tmpDirectory = path.join(__dirname, 'tmp')
+nock('https://images.contentful.com')
+  .get('/kq9lln4hyr8s/2MTd2wBirYikEYkIIc0YSw/7aa4c06f3054996e45bb3f13964cb254/rocka-nutrition.png')
+  .reply(200)
+
+nock('https://images.contentful.com')
+  .get('/does-not-exist.png')
+  .reply(404)
 
 beforeAll(() => {
   fs.mkdirsSync(tmpDirectory)
