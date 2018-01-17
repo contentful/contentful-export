@@ -4,6 +4,8 @@ import fs from 'fs-extra'
 
 import downloadAsset from '../../lib/download-asset'
 
+jest.setTimeout(10000)
+
 var tmpDirectory = path.join(__dirname, 'tmp')
 
 beforeAll(() => {

@@ -1,6 +1,7 @@
 import { resolve } from 'path'
 
 import runContentfulExport from '../../lib/index'
+import downloadAsset from '../../lib/download-asset'
 
 import getFullSourceSpace from 'contentful-batch-libs/dist/get/get-full-source-space'
 import createClients from 'contentful-batch-libs/dist/utils/create-clients'
@@ -9,17 +10,47 @@ import {
   displayErrorLog,
   writeErrorLogFile
 } from 'contentful-batch-libs/dist/utils/logging'
+
 import bfj from 'bfj-node4'
 import fs from 'fs'
 import mkdirp from 'mkdirp'
 
-jest.mock('../../lib/download-asset', () => Promise.resolve())
-jest.mock('contentful-batch-libs/dist/get/get-full-source-space', () => jest.fn(() => ({
-  'contentTypes': [],
-  'entries': [],
-  'assets': [],
-  'locales': []
-})))
+jest.mock('../../lib/download-asset', () => jest.fn(() => Promise.resolve()))
+jest.mock('contentful-batch-libs/dist/get/get-full-source-space', () => jest.fn(() => {
+  const Listr = require('listr')
+  return new Listr([
+    {
+      title: 'mocked get full source space',
+      task: (ctx) => {
+        ctx.data = {
+          'contentTypes': [],
+          'entries': [],
+          'assets': [
+            {
+              sys: {
+                id: 'someValidAsset'
+              },
+              fields: {
+                file: {
+                  'en-US': {
+                    url: '//images.contentful.com/kq9lln4hyr8s/2MTd2wBirYikEYkIIc0YSw/7aa4c06f3054996e45bb3f13964cb254/rocka-nutrition.png'
+                  }
+                }
+              }
+            },
+            {
+              sys: {
+                id: 'someBrokenAsset'
+              },
+              fields: {}
+            }
+          ],
+          'locales': []
+        }
+      }
+    }
+  ])
+}))
 jest.mock('contentful-batch-libs/dist/utils/create-clients', () => jest.fn(() => ({
   source: {
     delivery: {}
@@ -39,15 +70,13 @@ jest.mock('contentful-batch-libs/dist/utils/logging', () => ({
   })
 }))
 jest.mock('fs', () => ({
-  access: jest.fn(() => Promise.resolve(true))
+  access: jest.fn((path, cb) => cb())
 }))
+jest.mock('mkdirp', () => jest.fn((path, cb) => cb()))
 jest.mock('bfj-node4', () => ({
   write: jest.fn(() => Promise.resolve())
 }))
-jest.mock('mkdirp', () => jest.fn())
-jest.mock('bluebird', () => ({
-  promisify: jest.fn((fn) => fn)
-}))
+jest.spyOn(global.console, 'log')
 
 afterEach(() => {
   createClients.mockClear()
@@ -58,9 +87,11 @@ afterEach(() => {
   mkdirp.mockClear()
   bfj.write.mockClear()
   writeErrorLogFile.mockClear()
+  downloadAsset.mockClear()
+  global.console.log.mockClear()
 })
 
-test('Runs Contentful Export', () => {
+test('Runs Contentful Export with default config', () => {
   return runContentfulExport({
     errorLogFile: 'errorlogfile',
     spaceId: 'someSpaceId',
@@ -70,11 +101,41 @@ test('Runs Contentful Export', () => {
       expect(createClients.mock.calls).toHaveLength(1)
       expect(getFullSourceSpace.mock.calls).toHaveLength(1)
       expect(setupLogging.mock.calls).toHaveLength(1)
+      expect(downloadAsset.mock.calls).toHaveLength(0)
       expect(displayErrorLog.mock.calls).toHaveLength(1)
       expect(fs.access.mock.calls).toHaveLength(1)
       expect(mkdirp.mock.calls).toHaveLength(1)
       expect(bfj.write.mock.calls).toHaveLength(1)
       expect(writeErrorLogFile.mock.calls).toHaveLength(0)
+      const exportedTable = global.console.log.mock.calls.find((call) => call[0].match(/Exported entities/))
+      expect(exportedTable).not.toBeUndefined()
+      expect(exportedTable[0]).toMatchSnapshot()
+    })
+})
+
+test('Runs Contentful Export and downloads assets', () => {
+  return runContentfulExport({
+    errorLogFile: 'errorlogfile',
+    spaceId: 'someSpaceId',
+    managementToken: 'someManagementToken',
+    downloadAssets: true
+  })
+    .then((returnedData) => {
+      expect(createClients.mock.calls).toHaveLength(1)
+      expect(getFullSourceSpace.mock.calls).toHaveLength(1)
+      expect(setupLogging.mock.calls).toHaveLength(1)
+      expect(downloadAsset.mock.calls).toHaveLength(1)
+      expect(displayErrorLog.mock.calls).toHaveLength(1)
+      expect(fs.access.mock.calls).toHaveLength(1)
+      expect(mkdirp.mock.calls).toHaveLength(1)
+      expect(bfj.write.mock.calls).toHaveLength(1)
+      expect(writeErrorLogFile.mock.calls).toHaveLength(0)
+      const exportedTable = global.console.log.mock.calls.find((call) => call[0].match(/Exported entities/))
+      expect(exportedTable).not.toBeUndefined()
+      expect(exportedTable[0]).toMatchSnapshot()
+      const assetsTable = global.console.log.mock.calls.find((call) => call[0].match(/Asset file download results/))
+      expect(assetsTable).not.toBeUndefined()
+      expect(assetsTable[0]).toMatchSnapshot()
     })
 })
 
@@ -93,11 +154,15 @@ test('Creates a valid and correct opts object', () => {
       expect(createClients.mock.calls).toHaveLength(1)
       expect(getFullSourceSpace.mock.calls).toHaveLength(1)
       expect(setupLogging.mock.calls).toHaveLength(1)
+      expect(downloadAsset.mock.calls).toHaveLength(0)
       expect(displayErrorLog.mock.calls).toHaveLength(1)
       expect(fs.access.mock.calls).toHaveLength(1)
       expect(mkdirp.mock.calls).toHaveLength(1)
       expect(bfj.write.mock.calls).toHaveLength(1)
       expect(writeErrorLogFile.mock.calls).toHaveLength(0)
+      const exportedTable = global.console.log.mock.calls.find((call) => call[0].match(/Exported entities/))
+      expect(exportedTable).not.toBeUndefined()
+      expect(exportedTable[0]).toMatchSnapshot()
     })
 })
 
@@ -118,6 +183,7 @@ test('Run Contentful export fails due to rejection', () => {
       expect(createClients.mock.calls).toHaveLength(1)
       expect(getFullSourceSpace.mock.calls).toHaveLength(1)
       expect(setupLogging.mock.calls).toHaveLength(1)
+      expect(downloadAsset.mock.calls).toHaveLength(0)
       expect(displayErrorLog.mock.calls).toHaveLength(1)
       expect(fs.access.mock.calls).toHaveLength(0)
       expect(mkdirp.mock.calls).toHaveLength(0)
