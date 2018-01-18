@@ -1,6 +1,6 @@
 import runContentfulExport from '../../dist/index'
 
-jest.setTimeout(10000)
+jest.setTimeout(15000)
 
 const spaceId = process.env.EXPORT_SPACE_ID
 const managementToken = process.env.MANAGEMENT_TOKEN
