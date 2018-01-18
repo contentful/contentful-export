@@ -5,7 +5,7 @@ import mkdirp from 'mkdirp'
 import nixt from 'nixt'
 import rimraf from 'rimraf'
 
-jest.setTimeout(10000)
+jest.setTimeout(15000)
 
 const bin = join(__dirname, '../../', 'bin')
 const tmpFolder = join(__dirname, 'tmp')
