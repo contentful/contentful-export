@@ -1,6 +1,6 @@
 import { resolve } from 'path'
 
-import bfj from 'bfj-node4'
+import bfj from 'bfj'
 import fs from 'fs'
 import mkdirp from 'mkdirp'
 
@@ -79,7 +79,7 @@ jest.mock('fs', () => ({
   access: jest.fn((path, cb) => cb())
 }))
 jest.mock('mkdirp', () => jest.fn((path, cb) => cb()))
-jest.mock('bfj-node4', () => ({
+jest.mock('bfj', () => ({
   write: jest.fn(() => Promise.resolve())
 }))
 jest.spyOn(global.console, 'log')
