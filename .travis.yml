@@ -1,15 +1,7 @@
-dist: trusty
-before_install:
-  - npm install -g npm@latest
-  - npm set progress=false
 language: node_js
 node_js:
-  - "4.7"
-  - "6.9"
-install:
-  - npm install
-script:
-  - npm run test
+  - "6"
+  - "8"
 after_success:
   - curl -Lo travis_after_all.py https://raw.githubusercontent.com/contentful/travis_after_all/master/travis_after_all.py
   - python travis_after_all.py

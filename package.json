@@ -1,13 +1,13 @@
 {
   "name": "contentful-export",
-  "version": "5.0.1-beta3",
+  "version": "0.0.0-determined-by-semantic-release",
   "description": "this tool allows you to export a space to a JSON dump",
   "bin": {
     "contentful-export": "./bin/contentful-export"
   },
   "main": "dist/index.js",
   "engines": {
-    "node": ">=4.7"
+    "node": ">=6"
   },
   "scripts": {
     "build": "npm run clean && babel lib --out-dir dist",
@@ -51,7 +51,7 @@
     "url": "https://github.com/contentful/contentful-export/issues"
   },
   "dependencies": {
-    "bfj-node4": "^4.2.4",
+    "bfj": "^5.2.1",
     "bluebird": "^3.3.3",
     "cli-table2": "^0.2.0",
     "contentful-batch-libs": "^8.0.3",
