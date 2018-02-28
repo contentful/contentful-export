@@ -12,7 +12,7 @@
   "scripts": {
     "build": "npm run clean && babel lib --out-dir dist",
     "clean": "rimraf dist",
-    "prepublish": "in-publish && npm run build || not-in-publish",
+    "prepublishOnly": "run build",
     "postpublish": "npm run clean",
     "lint": "eslint lib bin/* test",
     "pretest": "npm run lint && npm run build && rimraf ./test/integration/tmp",
@@ -87,7 +87,6 @@
     "eslint-plugin-promise": "^3.5.0",
     "eslint-plugin-standard": "^3.0.1",
     "husky": "^0.14.3",
-    "in-publish": "^2.0.0",
     "jest": "^22.4.2",
     "nixt": "^0.5.0",
     "nock": "^9.1.6",
