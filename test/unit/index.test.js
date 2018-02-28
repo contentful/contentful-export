@@ -1,22 +1,34 @@
 import { resolve } from 'path'
 
-import runContentfulExport from '../../lib/index'
-import downloadAsset from '../../lib/download-asset'
-
-import getFullSourceSpace from 'contentful-batch-libs/dist/get/get-full-source-space'
-import createClients from 'contentful-batch-libs/dist/utils/create-clients'
-import {
-  setupLogging,
-  displayErrorLog,
-  writeErrorLogFile
-} from 'contentful-batch-libs/dist/utils/logging'
-
 import bfj from 'bfj-node4'
 import fs from 'fs'
 import mkdirp from 'mkdirp'
 
-jest.mock('../../lib/download-asset', () => jest.fn(() => Promise.resolve()))
-jest.mock('contentful-batch-libs/dist/get/get-full-source-space', () => jest.fn(() => {
+import {
+  setupLogging,
+  displayErrorLog,
+  writeErrorLogFile
+} from 'contentful-batch-libs/dist/logging'
+
+import downloadAssets, { downloadAssetsMock } from '../../lib/tasks/download-assets'
+import getSpaceData from '../../lib/tasks/get-space-data'
+import initClient from '../../lib/tasks/init-client'
+import runContentfulExport from '../../lib/index'
+
+jest.mock('../../lib/tasks/download-assets', () => {
+  const downloadAssetsMock = jest.fn((ctx) => {
+    ctx.assetDownloads = {
+      successCount: 3,
+      warningCount: 2,
+      errorCount: 1
+    }
+    return Promise.resolve()
+  })
+  const downloadAssets = jest.fn(() => downloadAssetsMock)
+  downloadAssets.downloadAssetsMock = downloadAssetsMock
+  return downloadAssets
+})
+jest.mock('../../lib/tasks/get-space-data', () => jest.fn(() => {
   const Listr = require('listr')
   return new Listr([
     {
@@ -51,17 +63,11 @@ jest.mock('contentful-batch-libs/dist/get/get-full-source-space', () => jest.fn(
     }
   ])
 }))
-jest.mock('contentful-batch-libs/dist/utils/create-clients', () => jest.fn(() => ({
-  source: {
-    delivery: {}
-  },
-  destination: {
-    management: {}
-  }
-})))
-jest.mock('contentful-batch-libs/dist/utils/logging', () => ({
+jest.mock('../../lib/tasks/init-client', () => jest.fn())
+jest.mock('contentful-batch-libs/dist/logging', () => ({
   setupLogging: jest.fn(),
   displayErrorLog: jest.fn(),
+  logToTaskOutput: () => jest.fn(),
   writeErrorLogFile: jest.fn((destination, errorLog) => {
     const multiError = new Error('Errors occured')
     multiError.name = 'ContentfulMultiError'
@@ -79,15 +85,16 @@ jest.mock('bfj-node4', () => ({
 jest.spyOn(global.console, 'log')
 
 afterEach(() => {
-  createClients.mockClear()
-  getFullSourceSpace.mockClear()
+  initClient.mockClear()
+  getSpaceData.mockClear()
   setupLogging.mockClear()
   displayErrorLog.mockClear()
   fs.access.mockClear()
   mkdirp.mockClear()
   bfj.write.mockClear()
   writeErrorLogFile.mockClear()
-  downloadAsset.mockClear()
+  downloadAssets.mockClear()
+  downloadAssetsMock.mockClear()
   global.console.log.mockClear()
 })
 
@@ -98,10 +105,11 @@ test('Runs Contentful Export with default config', () => {
     managementToken: 'someManagementToken'
   })
     .then((returnedData) => {
-      expect(createClients.mock.calls).toHaveLength(1)
-      expect(getFullSourceSpace.mock.calls).toHaveLength(1)
+      expect(initClient.mock.calls).toHaveLength(1)
+      expect(getSpaceData.mock.calls).toHaveLength(1)
       expect(setupLogging.mock.calls).toHaveLength(1)
-      expect(downloadAsset.mock.calls).toHaveLength(0)
+      expect(downloadAssets.mock.calls).toHaveLength(1)
+      expect(downloadAssetsMock.mock.calls).toHaveLength(0)
       expect(displayErrorLog.mock.calls).toHaveLength(1)
       expect(fs.access.mock.calls).toHaveLength(1)
       expect(mkdirp.mock.calls).toHaveLength(1)
@@ -114,6 +122,8 @@ test('Runs Contentful Export with default config', () => {
       expect(exportedTable[0]).toMatch(/Entries.+0/)
       expect(exportedTable[0]).toMatch(/Assets.+2/)
       expect(exportedTable[0]).toMatch(/Locales.+0/)
+      const assetsTable = global.console.log.mock.calls.find((call) => call[0].match(/Asset file download results/))
+      expect(assetsTable).toBeUndefined()
     })
 })
 
@@ -125,10 +135,11 @@ test('Runs Contentful Export and downloads assets', () => {
     downloadAssets: true
   })
     .then((returnedData) => {
-      expect(createClients.mock.calls).toHaveLength(1)
-      expect(getFullSourceSpace.mock.calls).toHaveLength(1)
+      expect(initClient.mock.calls).toHaveLength(1)
+      expect(getSpaceData.mock.calls).toHaveLength(1)
       expect(setupLogging.mock.calls).toHaveLength(1)
-      expect(downloadAsset.mock.calls).toHaveLength(1)
+      expect(downloadAssets.mock.calls).toHaveLength(1)
+      expect(downloadAssetsMock.mock.calls).toHaveLength(1)
       expect(displayErrorLog.mock.calls).toHaveLength(1)
       expect(fs.access.mock.calls).toHaveLength(1)
       expect(mkdirp.mock.calls).toHaveLength(1)
@@ -144,9 +155,9 @@ test('Runs Contentful Export and downloads assets', () => {
       const assetsTable = global.console.log.mock.calls.find((call) => call[0].match(/Asset file download results/))
       expect(assetsTable).not.toBeUndefined()
       expect(assetsTable[0]).toMatch(/Asset file download results/)
-      expect(assetsTable[0]).toMatch(/Successful.+1/)
-      expect(assetsTable[0]).toMatch(/Warnings.+1/)
-      expect(assetsTable[0]).toMatch(/Errors.+0/)
+      expect(assetsTable[0]).toMatch(/Successful.+3/)
+      expect(assetsTable[0]).toMatch(/Warnings.+2/)
+      expect(assetsTable[0]).toMatch(/Errors.+1/)
     })
 })
 
@@ -159,13 +170,14 @@ test('Creates a valid and correct opts object', () => {
     config: resolve(__dirname, '..', '..', 'example-config.json')
   })
     .then(() => {
-      expect(createClients.mock.calls[0][0].skipContentModel).toBeFalsy()
-      expect(createClients.mock.calls[0][0].errorLogFile).toBe(resolve(process.cwd(), errorLogFile))
-      expect(createClients.mock.calls[0][0].spaceId).toBe(exampleConfig.spaceId)
-      expect(createClients.mock.calls).toHaveLength(1)
-      expect(getFullSourceSpace.mock.calls).toHaveLength(1)
+      expect(initClient.mock.calls[0][0].skipContentModel).toBeFalsy()
+      expect(initClient.mock.calls[0][0].errorLogFile).toBe(resolve(process.cwd(), errorLogFile))
+      expect(initClient.mock.calls[0][0].spaceId).toBe(exampleConfig.spaceId)
+      expect(initClient.mock.calls).toHaveLength(1)
+      expect(getSpaceData.mock.calls).toHaveLength(1)
       expect(setupLogging.mock.calls).toHaveLength(1)
-      expect(downloadAsset.mock.calls).toHaveLength(0)
+      expect(downloadAssets.mock.calls).toHaveLength(1)
+      expect(downloadAssetsMock.mock.calls).toHaveLength(0)
       expect(displayErrorLog.mock.calls).toHaveLength(1)
       expect(fs.access.mock.calls).toHaveLength(1)
       expect(mkdirp.mock.calls).toHaveLength(1)
@@ -184,7 +196,7 @@ test('Creates a valid and correct opts object', () => {
 test('Run Contentful export fails due to rejection', () => {
   const rejectError = new Error()
   rejectError.request = {uri: 'erroruri'}
-  getFullSourceSpace.mockImplementation(() => Promise.reject(rejectError))
+  getSpaceData.mockImplementation(() => Promise.reject(rejectError))
 
   return runContentfulExport({
     errorLogFile: 'errorlogfile',
@@ -195,10 +207,11 @@ test('Run Contentful export fails due to rejection', () => {
       throw new Error('should not resolve')
     })
     .catch(() => {
-      expect(createClients.mock.calls).toHaveLength(1)
-      expect(getFullSourceSpace.mock.calls).toHaveLength(1)
+      expect(initClient.mock.calls).toHaveLength(1)
+      expect(getSpaceData.mock.calls).toHaveLength(1)
       expect(setupLogging.mock.calls).toHaveLength(1)
-      expect(downloadAsset.mock.calls).toHaveLength(0)
+      expect(downloadAssets.mock.calls).toHaveLength(1)
+      expect(downloadAssetsMock.mock.calls).toHaveLength(0)
       expect(displayErrorLog.mock.calls).toHaveLength(1)
       expect(fs.access.mock.calls).toHaveLength(0)
       expect(mkdirp.mock.calls).toHaveLength(0)
