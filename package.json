@@ -11,6 +11,7 @@
   },
   "scripts": {
     "build": "npm run clean && babel lib --out-dir dist",
+    "build:watch": "babel lib --out-dir dist --watch",
     "clean": "rimraf dist && rimraf coverage",
     "lint": "eslint lib bin/* test",
     "pretest": "npm run lint && npm run build && rimraf ./test/integration/tmp",
