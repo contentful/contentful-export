@@ -36,7 +36,7 @@
     "contentful",
     "contentful-export"
   ],
-  "author": "Khaled Garbaya <khaled@contentful.com>",
+  "author": "Contentful <opensource@contentful.com>",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/contentful/contentful-export/issues"
