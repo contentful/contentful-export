@@ -46,7 +46,7 @@
     "bluebird": "^3.3.3",
     "cli-table2": "^0.2.0",
     "contentful-batch-libs": "^9.0.0-beta2",
-    "contentful-management": "^4.2.2",
+    "contentful-management": "^5.0.0-beta0",
     "figures": "^2.0.0",
     "fs-extra": "^5.0.0",
     "listr": "^0.13.0",
