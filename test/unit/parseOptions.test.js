@@ -31,8 +31,8 @@ test('parseOptions sets correct default options', () => {
     managementToken
   })
 
-  const contentFileNamePattern = `contentful-export-${spaceId}-[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}-[0-9]{2}-[0-9]{2}\\.json`
-  const errorFileNamePattern = `contentful-export-error-log-${spaceId}-[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}-[0-9]{2}-[0-9]{2}\\.json`
+  const contentFileNamePattern = `contentful-export-${spaceId}-master-[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}-[0-9]{2}-[0-9]{2}\\.json`
+  const errorFileNamePattern = `contentful-export-error-log-${spaceId}-master-[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}-[0-9]{2}-[0-9]{2}\\.json`
 
   expect(options.contentFile).toMatch(new RegExp(`^${contentFileNamePattern}$`))
   expect(options.errorLogFile).toMatch(new RegExp(`^${resolve(basePath, errorFileNamePattern)}$`))
