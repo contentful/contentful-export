@@ -60,7 +60,7 @@ Options:
 
   --content-file          The filename for the exported data [string]
 
-  --download-assets       With this flag assets will also be downloaded
+  --download-assets       With this flag asset files will also be downloaded
                                                                        [boolean]
 
   --max-allowed-limit     How many items per page per request
