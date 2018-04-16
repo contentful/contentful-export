@@ -31,7 +31,9 @@ Options:
   --version               Show version number                          [boolean]
 
   --space-id              ID of Space with source data       [string] [required]
-
+  
+  --environment-id        ID the environment in the source space [default: 'master']
+  
   --management-token      Contentful management API token for the space to be
                           exported                           [string] [required]
 
