@@ -22,7 +22,7 @@
     "test:integration": "jest --testPathPattern=test/integration",
     "test:integration:debug": "node --inspect-brk ./node_modules/.bin/jest --runInBand --watch --testPathPattern=test/integration",
     "test:integration:watch": "npm run test:integration -- --watch",
-    "semantic-release": "semantic-release pre && npm publish && semantic-release post",
+    "semantic-release": "semantic-release",
     "prepublishOnly": "npm run build",
     "postpublish": "npm run clean",
     "precommit": "npm run lint",
@@ -84,7 +84,8 @@
     "nock": "^9.1.6",
     "opener": "^1.4.1",
     "rimraf": "^2.5.0",
-    "semantic-release": "^12.4.1"
+    "semantic-release": "^12.4.1",
+    "travis-deploy-once": "^4.4.1"
   },
   "files": [
     "bin",
