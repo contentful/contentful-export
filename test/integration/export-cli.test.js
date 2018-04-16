@@ -37,7 +37,7 @@ test('It should export space properly when running as a cli', (done) => {
     .stdout(/Locales +.+│ 1/)
     .stdout(/Webhooks +.+│ 0/)
     .stdout(/Roles +.+│ 7/)
-    .end((error) => {
+    .end(() => {
       const fileList = fs.readdirSync(tmpFolder)
       if (!fileList.length) {
         throw new Error('No file was exported. Did you set EXPORT_SPACE_ID and MANAGEMENT_TOKEN env variables?')
