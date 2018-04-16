@@ -112,8 +112,8 @@ To scope your export, you are able to pass query parameters. All search paramete
 
 ```shell
 contentful-export \
-  --space-id spaceID \
-  --management-token managementToken
+  --space-id <space-id> \
+  --management-token <token>
   --query-entries 'content_type=contentTypeId'
 ```
 
@@ -121,15 +121,21 @@ The Export tool also support multiple inline queries.
 
 ```shell
 contentful-export \
-  --space-id spaceID \
-  --management-token managementToken
+  --space-id <space-id> \
+  --management-token <token>
   --query-entries 'content_type=contentTypeId'
   --query-entries 'sys.id=<entry-id>'
 ```
 
 `--query-assets` uses the same syntax as `--query-entries`
 
+#### Export an environment
 
+```
+contentful-export --space-id <space-id>\
+ --management-token <token>\
+ --environment-id <environment-id>
+```
 ### Exported data
 
 This is an overview of the exported data:
