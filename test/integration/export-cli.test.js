@@ -68,10 +68,7 @@ test('It should export environment properly when running as a cli', (done) => {
     .stdout(/Locales +.+│ 1/)
     .stdout(/Webhooks can only be exported from master environment/)
     .stdout(/Roles can only be exported from master environment/)
-    .end((error) => {
-      if (error) {
-        throw new Error('Should not throw error')
-      }
+    .end(() => {
       const fileList = fs.readdirSync(tmpFolder)
       if (!fileList.length) {
         throw new Error('No file was exported. Did you set EXPORT_SPACE_ID and MANAGEMENT_TOKEN env variables?')
