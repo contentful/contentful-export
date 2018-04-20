@@ -2,9 +2,6 @@
   "name": "contentful-export",
   "version": "7.0.0-beta0",
   "description": "this tool allows you to export a space to a JSON dump",
-  "bin": {
-    "contentful-export": "./bin/contentful-export"
-  },
   "main": "dist/index.js",
   "engines": {
     "node": ">=6"
