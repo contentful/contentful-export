@@ -2,9 +2,6 @@
   "name": "contentful-export",
   "version": "7.0.0-beta0",
   "description": "this tool allows you to export a space to a JSON dump",
-  "bin": {
-    "contentful-export": "./bin/contentful-export"
-  },
   "main": "dist/index.js",
   "engines": {
     "node": ">=6"
@@ -26,7 +23,8 @@
     "prepublishOnly": "npm run build",
     "postpublish": "npm run clean",
     "precommit": "npm run lint",
-    "prepush": "npm run test"
+    "prepush": "npm run test",
+    "postinstall": "echo We moved the CLI version of this tool into our Contentful CLI. This allows our users to use and install only one single CLI tool to get the full Contentful experience. for more info please visit https://github.com/contentful/contentful-cli/tree/master/docs/space/export"
   },
   "repository": {
     "type": "git",
