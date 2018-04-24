@@ -90,7 +90,7 @@ contentfulExport(options)
 const options = {
   spaceId: '<space_id>',
   managementToken: '<content_management_api_key>',
-  environment: '<environment_id>'
+  environmentId: '<environment_id>'
 }
 
 contentfulExport(options)
