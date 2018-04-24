@@ -15,9 +15,9 @@ This is a library that help you backup your Content Model, Content and Assets or
 To import your exported data, please refer to the [contentful-import](https://github.com/contentful/contentful-import) repository.
 
 ## :exclamation: Usage as CLI
-We moved the CLI version of this tool into our [Contentful CLI](https://github.com/contentful/contentful-cli). This allows our users to use and install only one single CLI tool to get the full Contentful experience.
-
-Please have a look at the [Contentful CLI export command documentation](https://github.com/contentful/contentful-cli/tree/master/docs/space/export) to learn more about how to use this as command line tool.
+> We moved the CLI version of this tool into our [Contentful CLI](https://github.com/contentful/contentful-cli). This allows our users to use and install only one single CLI tool to get the full Contentful experience.
+>
+> Please have a look at the [Contentful CLI export command documentation](https://github.com/contentful/contentful-cli/tree/master/docs/space/export) to learn more about how to use this as command line tool.
 
 
 ## :cloud: Installation
@@ -90,7 +90,7 @@ contentfulExport(options)
 const options = {
   spaceId: '<space_id>',
   managementToken: '<content_management_api_key>',
-  environment: '<environment-id>'
+  environment: '<environment_id>'
 }
 
 contentfulExport(options)
