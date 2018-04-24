@@ -102,10 +102,10 @@ contentfulExport(options)
 ### Basics
 
 #### `spaceId` [string] [required]
-ID of the Space with source data
+ID of the space with source data
 
 #### `environmentId` [string] [default: 'master']
-ID the environment in the source space
+ID of the environment in the source space
 
 #### `managementToken` [string] [required]
 Contentful management API token for the space to be exported
@@ -113,10 +113,10 @@ Contentful management API token for the space to be exported
 ### Output
 
 #### `exportDir` [string] [default: current process working directory]
-Defines the path for storing the export json file
+Defines the path for storing the export JSON file
 
 #### `saveFile` [boolean] [default: true]
-Save the export as a json file
+Save the export as a JSON file
 
 #### `contentFile` [string]
 The filename for the exported data
@@ -142,13 +142,13 @@ Skip exporting webhooks
 Only export entries and assets
 
 #### `queryEntries` [array]
-Exports only entries that matches these queries
+Only export entries that match these queries
 
 #### `queryAssets` [array]
-Exports only assets that matches these queries
+Only export assets that match these queries
 
 #### `downloadAssets` [boolean]
-With this flag asset files will also be downloaded
+Download actual asset files
 
 ### Connection
 
@@ -159,7 +159,7 @@ The Management API host
 Proxy configuration in HTTP auth format: `host:port` or `user:password@host:port`
 
 #### `maxAllowedLimit` [number] [default: 1000]
-How many items per page per request
+The number of items per page per request
 
 ### Other
 
