@@ -102,7 +102,7 @@ contentfulExport(options)
 ### Basics
 
 #### `spaceId` [string] [required]
-ID of Space with source data
+ID of the Space with source data
 
 #### `environmentId` [string] [default: 'master']
 ID the environment in the source space
@@ -150,16 +150,16 @@ Exports only assets that matches these queries
 #### `downloadAssets` [boolean]
 With this flag asset files will also be downloaded
 
-#### `maxAllowedLimit` [number] [default: 1000]
-How many items per page per request
-
 ### Connection
 
-#### `managementHost` [string] [default: "api.contentful.com"]
-The Management API host.
+#### `managementHost` [string] [default: 'api.contentful.com']
+The Management API host
 
 #### `proxy` [string]
 Proxy configuration in HTTP auth format: `host:port` or `user:password@host:port`
+
+#### `maxAllowedLimit` [number] [default: 1000]
+How many items per page per request
 
 ### Other
 
