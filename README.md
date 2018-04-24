@@ -10,17 +10,24 @@
 
 [Contentful](https://www.contentful.com) provides a content infrastructure for digital teams to power content in websites, apps, and devices. Unlike a CMS, Contentful was built to integrate with the modern software stack. It offers a central hub for structured content, powerful management and delivery APIs, and a customizable web app that enable developers and content creators to ship digital products faster.
 
-This is a command line tool (CLI) that help you backup your published Content Model, Content and Assets or move them to a new Contentful space. _It will support Editor Interfaces, Webhooks and Roles & Permissions in a future version._
+This is a library that help you backup your Content Model, Content and Assets or move them to a new Contentful space. _It will support Roles & Permissions in a future version._
 
 To import your exported data, please refer to the [contentful-import](https://github.com/contentful/contentful-import) repository.
 
-## :cloud: Installation
+## :keyboard: Usage as CLI
+
+We moved the CLI version of this tool into our [Contentful CLI](https://github.com/contentful/contentful-cli). This allows our users to use and install only one single CLI tool to get the full Contentful experience.
+
+Please have a look at the [Contentful CLI export command documentation](https://github.com/contentful/contentful-cli/tree/master/docs/space/export) to learn more about how to use this as command line tool.
+
+
+## :cloud: Installation as library
 
 ```bash
 npm install contentful-export
 ```
 
-## :hand: Usage
+## :hand: Usage as library
 
 
 While this tool is intended for use as a command line tool, you can also use it as a Node library:
@@ -29,8 +36,8 @@ While this tool is intended for use as a command line tool, you can also use it 
 const contentfulExport = require('contentful-export')
 
 const options = {
-  spaceId: '<space-id>',
-  managementToken: '{content_management_api_key}',
+  spaceId: '<space_id>',
+  managementToken: '<content_management_api_key>',
   ...
 }
 
@@ -50,44 +57,30 @@ contentfulExport(options)
 To scope your export, you are able to pass query parameters. All search parameters of our API are supported as documented in our [API documentation](https://www.contentful.com/developers/docs/references/content-delivery-api/#/reference/search-parameters).
 
 ```javascript
-const contentfulExport = require('contentful-export')
-
 const options = {
-  spaceId: '<space-id>',
-  managementToken: '{content_management_api_key}',
-  queryEntries: 'content_type=contentTypeId'
+  spaceId: '<space_id>',
+  managementToken: '<content_management_api_key>',
+  queryEntries: 'content_type=<content_type_id>'
 }
 
 contentfulExport(options)
-  .then((result) => {
-    console.log('Your space data:', result)
-  })
-  .catch((err) => {
-    console.log('Oh no! Some errors occurred!', err)
-  })
+...
 ```
 
 The Export tool also support multiple inline queries.
 
 ```javascript
-const contentfulExport = require('contentful-export')
-
 const options = {
-  spaceId: '<space-id>',
-  managementToken: '{content_management_api_key}',
+  spaceId: '<space_id>',
+  managementToken: '<content_management_api_key>',
   queryEntries: [
-    'content_type=contentTypeId',
-    'sys.id=<entry-id>'
+    'content_type=<content_type_id>',
+    'sys.id=<entry_id>'
   ]
 }
 
 contentfulExport(options)
-  .then((result) => {
-    console.log('Your space data:', result)
-  })
-  .catch((err) => {
-    console.log('Oh no! Some errors occurred!', err)
-  })
+...
 ```
 
 `queryAssets` uses the same syntax as `queryEntries`
@@ -95,29 +88,15 @@ contentfulExport(options)
 ### Export an environment
 
 ```javascript
-const contentfulExport = require('contentful-export')
-
 const options = {
-  spaceId: '<space-id>',
-  managementToken: '{content_management_api_key}',
+  spaceId: '<space_id>',
+  managementToken: '<content_management_api_key>',
   environment: '<environment-id>'
 }
 
 contentfulExport(options)
-  .then((result) => {
-    console.log('Your space data:', result)
-  })
-  .catch((err) => {
-    console.log('Oh no! Some errors occurred!', err)
-  })
+...
 ```
-
-### Usage as CLI
-
-We moved the CLI version of this tool into our [Contentful CLI](https://github.com/contentful/contentful-cli). This allows our users to use and install only one single CLI tool to get the full Contentful experience.
-
-Please have a look at the [Contentful CLI export command documentation](https://github.com/contentful/contentful-cli/tree/master/docs/space/export) to learn more about how to use this as command line tool.
-
 
 ## :gear: Configuration options
 
