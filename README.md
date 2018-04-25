@@ -28,9 +28,6 @@ npm install contentful-export
 
 ## :hand: Usage
 
-
-While this tool is intended for use as a command line tool, you can also use it as a Node library:
-
 ```javascript
 const contentfulExport = require('contentful-export')
 
@@ -48,8 +45,6 @@ contentfulExport(options)
     console.log('Oh no! Some errors occurred!', err)
   })
 ```
-
-
 
 ### Querying
 
@@ -184,7 +179,6 @@ This is an overview of the exported data:
   "editorInterfaces": []
 }
 ```
-
 
 ## :warning: Limitations
 
