@@ -51,6 +51,8 @@ contentfulExport(options)
 To scope your export, you are able to pass query parameters. All search parameters of our API are supported as documented in our [API documentation](https://www.contentful.com/developers/docs/references/content-delivery-api/#/reference/search-parameters).
 
 ```javascript
+const contentfulExport = require('contentful-export')
+
 const options = {
   spaceId: '<space_id>',
   managementToken: '<content_management_api_key>',
@@ -64,6 +66,8 @@ contentfulExport(options)
 The Export tool also support multiple inline queries.
 
 ```javascript
+const contentfulExport = require('contentful-export')
+
 const options = {
   spaceId: '<space_id>',
   managementToken: '<content_management_api_key>',
@@ -82,6 +86,8 @@ contentfulExport(options)
 ### Export an environment
 
 ```javascript
+const contentfulExport = require('contentful-export')
+
 const options = {
   spaceId: '<space_id>',
   managementToken: '<content_management_api_key>',
