@@ -6,6 +6,9 @@
   "engines": {
     "node": ">=6"
   },
+  "bin": {
+    "contentful-export": "./bin/contentful-export"
+  },
   "scripts": {
     "build": "npm run clean && babel lib --out-dir dist",
     "build:watch": "babel lib --out-dir dist --watch",
