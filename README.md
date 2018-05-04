@@ -10,135 +10,167 @@
 
 [Contentful](https://www.contentful.com) provides a content infrastructure for digital teams to power content in websites, apps, and devices. Unlike a CMS, Contentful was built to integrate with the modern software stack. It offers a central hub for structured content, powerful management and delivery APIs, and a customizable web app that enable developers and content creators to ship digital products faster.
 
-This is a command line tool (CLI) that help you backup your published Content Model, Content and Assets or move them to a new Contentful space. _It will support Editor Interfaces, Webhooks and Roles & Permissions in a future version._
+This is a library that help you backup your Content Model, Content and Assets or move them to a new Contentful space. _It will support Roles & Permissions in a future version._
 
 To import your exported data, please refer to the [contentful-import](https://github.com/contentful/contentful-import) repository.
 
-## Installation
+## :exclamation: Usage as CLI
+> We moved the CLI version of this tool into our [Contentful CLI](https://github.com/contentful/contentful-cli). This allows our users to use and install only one single CLI tool to get the full Contentful experience.
+>
+> Please have a look at the [Contentful CLI export command documentation](https://github.com/contentful/contentful-cli/tree/master/docs/space/export) to learn more about how to use this as command line tool.
 
-We recommend the installation of this CLI via npm:
+
+## :cloud: Installation
 
 ```bash
-npm install -g contentful-export
+npm install contentful-export
 ```
 
-## Usage and examples
+## :hand: Usage
 
-```
-Usage: contentful-export [options]
+```javascript
+const contentfulExport = require('contentful-export')
 
-Options:
-  --version               Show version number                          [boolean]
+const options = {
+  spaceId: '<space_id>',
+  managementToken: '<content_management_api_key>',
+  ...
+}
 
-  --space-id              ID of Space with source data       [string] [required]
-  
-  --environment-id        ID the environment in the source space [default: 'master']
-  
-  --management-token      Contentful management API token for the space to be
-                          exported                           [string] [required]
-
-  --export-dir            Defines the path for storing the export json file
-                          (default path is the current directory)       [string]
-
-  --include-drafts        Include drafts in the exported entries
-                                                      [boolean] [default: false]
-
-  --skip-content-model    Skip exporting content models
-                                                      [boolean] [default: false]
-
-  --skip-content          Skip exporting assets and entries
-                                                      [boolean] [default: false]
-
-  --skip-roles            Skip exporting roles and permissions
-                                                      [boolean] [default: false]
-
-  --skip-webhooks         Skip exporting webhooks     [boolean] [default: false]
-
-  --content-only          Only export entries and assets [boolean] [default: false]
-
-  --query-entries         Exports only entries that matches these queries [array]
-
-  --query-assets          Exports only assets that matches these queries [array]
-
-  --content-file          The filename for the exported data [string]
-
-  --download-assets       With this flag asset files will also be downloaded
-                                                                       [boolean]
-
-  --max-allowed-limit     How many items per page per request
-                                                        [number] [default: 1000]
-
-  --host                  Management API host
-                                        [string] [default: "api.contentful.com"]
-
-  --proxy                 Proxy configuration in HTTP auth format: host:port or
-                          user:password@host:port                       [string]
-
-  --error-log-file        Full path to the error log file               [string]
-
-  --use-verbose-renderer  Display progress in new lines instead of displaying a
-                          busy spinner and the status in the same line. Useful
-                          for CI.                     [boolean] [default: false]
-
-  --save-file           Save the export as a json file [boolean] [default: true]
-
-  --config              An optional configuration JSON file containing all the
-                        options for a single run
+contentfulExport(options)
+  .then((result) => {
+    console.log('Your space data:', result)
+  })
+  .catch((err) => {
+    console.log('Oh no! Some errors occurred!', err)
+  })
 ```
 
-The `--management-token` parameter allows you to specify a token used for both spaces. If you request a token from [here](https://www.contentful.com/developers/docs/references/authentication/) and your user account has access to both spaces, this should be enough.
-
-Check the _example-config.json_ file for an example of what a configuration file looks like. If you use the configuration file, you don't need to specify the other options for tokens and space ids.
-
-### Example
-
-#### Basic Usage
-
-```shell
-contentful-export \
-  --space-id spaceID \
-  --management-token managementToken
-```
-
-or
-
-```shell
-contentful-export --config example-config.json
-```
-
-You can create your own configuration file based on the [_example-config.json_](example-config.json) file.
-
-#### Querying
+### Querying
 
 To scope your export, you are able to pass query parameters. All search parameters of our API are supported as documented in our [API documentation](https://www.contentful.com/developers/docs/references/content-delivery-api/#/reference/search-parameters).
 
-```shell
-contentful-export \
-  --space-id <space-id> \
-  --management-token <token>
-  --query-entries 'content_type=contentTypeId'
+```javascript
+const contentfulExport = require('contentful-export')
+
+const options = {
+  spaceId: '<space_id>',
+  managementToken: '<content_management_api_key>',
+  queryEntries: 'content_type=<content_type_id>'
+}
+
+contentfulExport(options)
+...
 ```
 
 The Export tool also support multiple inline queries.
 
-```shell
-contentful-export \
-  --space-id <space-id> \
-  --management-token <token>
-  --query-entries 'content_type=contentTypeId'
-  --query-entries 'sys.id=<entry-id>'
+```javascript
+const contentfulExport = require('contentful-export')
+
+const options = {
+  spaceId: '<space_id>',
+  managementToken: '<content_management_api_key>',
+  queryEntries: [
+    'content_type=<content_type_id>',
+    'sys.id=<entry_id>'
+  ]
+}
+
+contentfulExport(options)
+...
 ```
 
-`--query-assets` uses the same syntax as `--query-entries`
+`queryAssets` uses the same syntax as `queryEntries`
 
-#### Export an environment
+### Export an environment
 
+```javascript
+const contentfulExport = require('contentful-export')
+
+const options = {
+  spaceId: '<space_id>',
+  managementToken: '<content_management_api_key>',
+  environmentId: '<environment_id>'
+}
+
+contentfulExport(options)
+...
 ```
-contentful-export --space-id <space-id>\
- --management-token <token>\
- --environment-id <environment-id>
-```
-### Exported data
+
+## :gear: Configuration options
+
+### Basics
+
+#### `spaceId` [string] [required]
+ID of the space with source data
+
+#### `environmentId` [string] [default: 'master']
+ID of the environment in the source space
+
+#### `managementToken` [string] [required]
+Contentful management API token for the space to be exported
+
+### Output
+
+#### `exportDir` [string] [default: current process working directory]
+Defines the path for storing the export JSON file
+
+#### `saveFile` [boolean] [default: true]
+Save the export as a JSON file
+
+#### `contentFile` [string]
+The filename for the exported data
+
+### Filtering
+
+#### `includeDrafts` [boolean] [default: false]
+Include drafts in the exported entries
+
+#### `skipContentModel` [boolean] [default: false]
+Skip exporting content models
+
+#### `skipContent` [boolean] [default: false]
+Skip exporting assets and entries
+
+#### `skipRoles` [boolean] [default: false]
+Skip exporting roles and permissions
+
+#### `skipWebhooks` [boolean] [default: false]
+Skip exporting webhooks
+
+#### `contentOnly` [boolean] [default: false]
+Only export entries and assets
+
+#### `queryEntries` [array]
+Only export entries that match these queries
+
+#### `queryAssets` [array]
+Only export assets that match these queries
+
+#### `downloadAssets` [boolean]
+Download actual asset files
+
+### Connection
+
+#### `host` [string] [default: 'api.contentful.com']
+The Management API host
+
+#### `proxy` [string]
+Proxy configuration in HTTP auth format: `host:port` or `user:password@host:port`
+
+#### `maxAllowedLimit` [number] [default: 1000]
+The number of items per page per request
+
+### Other
+
+#### `errorLogFile` [string]
+Full path to the error log file
+
+#### `useVerboseRenderer` [boolean] [default: false]
+Display progress in new lines instead of displaying a busy spinner and the status in the same line. Useful for CI.
+
+## :card_file_box: Exported data structure
 
 This is an overview of the exported data:
 
@@ -154,42 +186,17 @@ This is an overview of the exported data:
 }
 ```
 
-### Usage as a library
-
-While this tool is intended for use as a command line tool, you can also use it as a Node library:
-
-```javascript
-var spaceExport = require('contentful-export')
-var options = {
-  spaceId: '{space_id}',
-  managementToken: '{content_management_api_key}',
-  maxAllowedItems: 100,
-  errorLogFile: 'filename',
-  saveFile: false
-  ...
-}
-spaceExport(options)
-.then((output) => {
-  console.log('Your space data:', output)
-})
-.catch((err) => {
-  console.log('Oh no! Some errors occurred!', err)
-})
-```
-
-The `options` object can contain any of the CLI options, but written with a camelCase pattern instead and no dashes. For example `--space-id` would become `spaceId`.
-
-## Limitations
+## :warning: Limitations
 
 - This tool currently does **not** support the export of space memberships.
 - Exported webhooks with credentials will be exported as normal webhooks. Credentials should be added manually afterwards.
 - If you have custom UI extensions, you need to reinstall them manually in the new space.
 
-## Changelog
+## :memo: Changelog
 
 Read the [releases](https://github.com/contentful/contentful-export/releases) page for more information.
 
-## License
+## :scroll: License
 
 This project is licensed under MIT license
 
