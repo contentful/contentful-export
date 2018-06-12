@@ -45,7 +45,7 @@
   "dependencies": {
     "bfj": "^5.2.1",
     "bluebird": "^3.3.3",
-    "cli-table2": "^0.2.0",
+    "cli-table3": "^0.5.0",
     "contentful-batch-libs": "^9.0.0",
     "contentful-management": "^5.0.0",
     "figures": "^2.0.0",
