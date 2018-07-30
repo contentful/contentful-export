@@ -1,11 +1,12 @@
 import { tmpdir } from 'os'
+import { resolve } from 'path'
 
 import nock from 'nock'
 import fs from 'fs-extra'
 
 import downloadAssets from '../../../lib/tasks/download-assets'
 
-const tmpDirectory = tmpdir()
+const tmpDirectory = resolve(tmpdir(), 'contentful-import-test')
 
 nock('https://images.contentful.com')
   .get('/kq9lln4hyr8s/2MTd2wBirYikEYkIIc0YSw/7aa4c06f3054996e45bb3f13964cb254/rocka-nutrition.png')
