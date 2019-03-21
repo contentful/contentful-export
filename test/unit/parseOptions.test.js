@@ -38,6 +38,7 @@ test('parseOptions sets correct default options', () => {
   expect(options.errorLogFile).toMatch(new RegExp(`^${resolve(basePath, errorFileNamePattern)}$`))
   expect(options.exportDir).toBe(basePath)
   expect(options.includeDrafts).toBe(false)
+  expect(options.includeArchived).toBe(false)
   expect(options.logFilePath).toMatch(new RegExp(`^${resolve(basePath, contentFileNamePattern)}$`))
   expect(options.application).toBe(`contentful.export/${version}`)
   expect(options.feature).toBe(`library-export`)
