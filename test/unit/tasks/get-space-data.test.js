@@ -254,6 +254,37 @@ test('Gets whole destination content with drafts', () => {
     })
 })
 
+test('Gets whole destination content with archived entries', () => {
+  return getSpaceData({
+    client: mockClient,
+    spaceId: 'spaceid',
+    maxAllowedLimit,
+    includeDrafts: true,
+    includeArchived: true
+  })
+    .run({
+      data: {}
+    })
+    .then((response) => {
+      expect(mockClient.getSpace.mock.calls).toHaveLength(1)
+      expect(mockSpace.getEnvironment.mock.calls).toHaveLength(1)
+      expect(mockEnvironment.getContentTypes.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
+      expect(mockEnvironment.getEntries.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
+      expect(mockEnvironment.getAssets.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
+      expect(mockEnvironment.getLocales.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
+      expect(mockSpace.getWebhooks.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
+      expect(mockSpace.getRoles.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
+      expect(getEditorInterface.mock.calls).toHaveLength(resultItemCount)
+      expect(response.data.contentTypes).toHaveLength(resultItemCount)
+      expect(response.data.entries).toHaveLength(resultItemCount)
+      expect(response.data.assets).toHaveLength(resultItemCount)
+      expect(response.data.locales).toHaveLength(resultItemCount)
+      expect(response.data.webhooks).toHaveLength(resultItemCount)
+      expect(response.data.roles).toHaveLength(resultItemCount)
+      expect(response.data.editorInterfaces).toHaveLength(resultItemCount)
+    })
+})
+
 test('Skips webhooks & roles for non-master environments', () => {
   return getSpaceData({
     client: mockClient,

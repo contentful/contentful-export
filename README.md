@@ -127,6 +127,9 @@ The filename for the exported data
 #### `includeDrafts` [boolean] [default: false]
 Include drafts in the exported entries
 
+#### `includeArchived` [boolean] [default: false]
+Include archived entries in the exported entries
+
 #### `skipContentModel` [boolean] [default: false]
 Skip exporting content models
 
