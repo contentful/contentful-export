@@ -20,7 +20,13 @@ To import your exported data, please refer to the [contentful-import](https://gi
 > Please have a look at the [Contentful CLI export command documentation](https://github.com/contentful/contentful-cli/tree/master/docs/space/export) to learn more about how to use this as command line tool.
 
 
-## :cloud: Installation
+## :cloud: Pre-requisites && Installation
+
+### Pre-requisites
+
+- Node LTS
+
+### :cloud: Installation
 
 ```bash
 npm install contentful-export
