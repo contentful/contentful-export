@@ -47,6 +47,7 @@ test('parseOptions sets correct default options', () => {
   expect(options.saveFile).toBe(true)
   expect(options.skipContent).toBe(false)
   expect(options.skipContentModel).toBe(false)
+  expect(options.skipEditorInterfaces).toBe(false)
   expect(options.skipRoles).toBe(false)
   expect(options.skipWebhooks).toBe(false)
   expect(options.spaceId).toBe(spaceId)
