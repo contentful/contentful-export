@@ -49,7 +49,7 @@
     "contentful-management": "^5.11.0",
     "echo-cli": "^1.0.8",
     "figures": "^2.0.0",
-    "fs-extra": "^7.0.0",
+    "fs-extra": "^8.1.0",
     "listr": "^0.14.1",
     "listr-update-renderer": "^0.4.0",
     "listr-verbose-renderer": "^0.4.0",
