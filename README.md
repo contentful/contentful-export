@@ -139,6 +139,9 @@ Include archived entries in the exported entries
 #### `skipContentModel` [boolean] [default: false]
 Skip exporting content models
 
+#### `skipEditorInterfaces` [boolean] [default: false]
+Skip exporting editor interfaces
+
 #### `skipContent` [boolean] [default: false]
 Skip exporting assets and entries
 
