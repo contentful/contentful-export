@@ -80,7 +80,7 @@
     "eslint-plugin-standard": "^3.1.0",
     "https-proxy-agent": "^3.0.0",
     "husky": "^0.14.3",
-    "jest": "^23.4.2",
+    "jest": "^25.2.4",
     "nixt": "^0.5.0",
     "nock": "^9.4.3",
     "opener": "^1.4.1",
