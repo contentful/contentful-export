@@ -48,7 +48,7 @@
     "contentful-batch-libs": "^9.0.1",
     "contentful-management": "^5.11.0",
     "echo-cli": "^1.0.8",
-    "figures": "^2.0.0",
+    "figures": "^3.2.0",
     "fs-extra": "^9.0.0",
     "listr": "^0.14.1",
     "listr-update-renderer": "^0.5.0",
