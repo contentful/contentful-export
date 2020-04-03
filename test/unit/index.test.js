@@ -78,7 +78,7 @@ jest.mock('contentful-batch-libs/dist/logging', () => ({
 jest.mock('fs', () => ({
   access: jest.fn((path, cb) => cb())
 }))
-jest.mock('mkdirp', () => jest.fn((path, cb) => cb()))
+jest.mock('mkdirp', (path) => jest.fn())
 jest.mock('bfj', () => ({
   write: jest.fn(() => Promise.resolve())
 }))
@@ -171,6 +171,7 @@ test('Creates a valid and correct opts object', () => {
   })
     .then(() => {
       expect(initClient.mock.calls[0][0].skipContentModel).toBeFalsy()
+      expect(initClient.mock.calls[0][0].skipEditorInterfaces).toBeFalsy()
       expect(initClient.mock.calls[0][0].errorLogFile).toBe(resolve(process.cwd(), errorLogFile))
       expect(initClient.mock.calls[0][0].spaceId).toBe(exampleConfig.spaceId)
       expect(initClient.mock.calls).toHaveLength(1)

@@ -42,51 +42,51 @@
     "url": "https://github.com/contentful/contentful-export/issues"
   },
   "dependencies": {
-    "bfj": "^6.1.1",
+    "bfj": "^7.0.2",
     "bluebird": "^3.3.3",
-    "cli-table3": "^0.5.1",
     "contentful": "^7.14.0",
+    "cli-table3": "^0.6.0",
     "contentful-batch-libs": "^9.0.1",
     "contentful-management": "^5.11.0",
     "echo-cli": "^1.0.8",
-    "figures": "^2.0.0",
-    "fs-extra": "^7.0.0",
+    "figures": "^3.2.0",
+    "fs-extra": "^9.0.0",
     "listr": "^0.14.1",
-    "listr-update-renderer": "^0.4.0",
-    "listr-verbose-renderer": "^0.4.0",
+    "listr-update-renderer": "^0.5.0",
+    "listr-verbose-renderer": "^0.6.0",
     "lodash": "^4.17.10",
-    "mkdirp": "^0.5.1",
+    "mkdirp": "^1.0.3",
     "moment": "^2.22.2",
     "request": "^2.87.0",
-    "yargs": "^12.0.1"
+    "yargs": "^15.3.1"
   },
   "devDependencies": {
     "babel-cli": "^6.24.0",
     "babel-core": "^6.26.3",
-    "babel-eslint": "^8.2.3",
-    "babel-jest": "^23.4.2",
-    "babel-plugin-add-module-exports": "^0.2.1",
+    "babel-eslint": "^10.1.0",
+    "babel-jest": "^25.2.6",
+    "babel-plugin-add-module-exports": "^1.0.2",
     "babel-plugin-transform-object-rest-spread": "^6.23.0",
     "babel-preset-env": "^1.7.0",
     "babel-template": "^6.23.0",
     "babel-types": "^6.23.0",
     "codecov": "^3.0.2",
-    "cz-conventional-changelog": "^2.0.0",
-    "eslint": "^5.2.0",
-    "eslint-config-standard": "^11.0.0",
+    "cz-conventional-changelog": "^3.1.0",
+    "eslint": "^6.8.0",
+    "eslint-config-standard": "^14.1.1",
     "eslint-plugin-import": "^2.12.0",
-    "eslint-plugin-jest": "^21.17.0",
-    "eslint-plugin-node": "^7.0.1",
-    "eslint-plugin-promise": "^3.8.0",
-    "eslint-plugin-standard": "^3.1.0",
-    "https-proxy-agent": "^3.0.0",
-    "husky": "^0.14.3",
-    "jest": "^23.4.2",
+    "eslint-plugin-jest": "^23.8.2",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1",
+    "https-proxy-agent": "^5.0.0",
+    "husky": "^4.2.3",
+    "jest": "^25.2.6",
     "nixt": "^0.5.0",
-    "nock": "^9.4.3",
+    "nock": "^12.0.3",
     "opener": "^1.4.1",
-    "rimraf": "^2.5.0",
-    "semantic-release": "^15.9.1",
+    "rimraf": "^3.0.2",
+    "semantic-release": "^17.0.4",
     "travis-deploy-once": "^5.0.0"
   },
   "files": [
@@ -99,6 +99,24 @@
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }
+  },
+  "release": {
+    "plugins": [
+      [
+        "@semantic-release/commit-analyzer",
+        {
+          "releaseRules": [
+            {
+              "type": "build",
+              "scope": "deps",
+              "release": "patch"
+            }
+          ]
+        }
+      ],
+      "@semantic-release/release-notes-generator",
+      "@semantic-release/npm"
+    ]
   },
   "jest": {
     "testEnvironment": "node",
