@@ -78,7 +78,7 @@ jest.mock('contentful-batch-libs/dist/logging', () => ({
 jest.mock('fs', () => ({
   access: jest.fn((path, cb) => cb())
 }))
-jest.mock('mkdirp', () => jest.fn((path, cb) => cb()))
+jest.mock('mkdirp', (path) => jest.fn())
 jest.mock('bfj', () => ({
   write: jest.fn(() => Promise.resolve())
 }))
