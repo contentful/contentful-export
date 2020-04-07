@@ -117,6 +117,14 @@ ID of the environment in the source space
 #### `managementToken` [string] [required]
 Contentful management API token for the space to be exported
 
+#### `deliveryToken` [string]
+Contentful Content Delivery API (CDA) token for the space to be exported.
+
+You may provide `deliveryToken` option if you only want to export the
+latest _published_ versions of entries and/or assets.
+As Contentful management API cannot
+do this, a separate token is required.
+
 ### Output
 
 #### `exportDir` [string] [default: current process working directory]
