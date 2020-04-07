@@ -41,7 +41,7 @@ test('parseOptions sets correct default options', () => {
   expect(options.includeArchived).toBe(false)
   expect(options.logFilePath).toMatch(new RegExp(`^${resolve(basePath, contentFileNamePattern)}$`))
   expect(options.application).toBe(`contentful.export/${version}`)
-  expect(options.feature).toBe(`library-export`)
+  expect(options.feature).toBe('library-export')
   expect(options.accessToken).toBe(managementToken)
   expect(options.maxAllowedLimit).toBe(1000)
   expect(options.saveFile).toBe(true)

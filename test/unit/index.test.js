@@ -35,9 +35,9 @@ jest.mock('../../lib/tasks/get-space-data', () => jest.fn(() => {
       title: 'mocked get full source space',
       task: (ctx) => {
         ctx.data = {
-          'contentTypes': [],
-          'entries': [],
-          'assets': [
+          contentTypes: [],
+          entries: [],
+          assets: [
             {
               sys: {
                 id: 'someValidAsset'
@@ -57,7 +57,7 @@ jest.mock('../../lib/tasks/get-space-data', () => jest.fn(() => {
               fields: {}
             }
           ],
-          'locales': []
+          locales: []
         }
       }
     }
@@ -196,7 +196,7 @@ test('Creates a valid and correct opts object', () => {
 
 test('Run Contentful export fails due to rejection', () => {
   const rejectError = new Error()
-  rejectError.request = {uri: 'erroruri'}
+  rejectError.request = { uri: 'erroruri' }
   getSpaceData.mockImplementation(() => Promise.reject(rejectError))
 
   return runContentfulExport({

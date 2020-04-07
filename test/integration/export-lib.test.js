@@ -20,9 +20,9 @@ afterAll(() => {
 })
 
 test('It should export space when used as a library', () => {
-  return runContentfulExport({spaceId, managementToken, saveFile: false, exportDir: tmpFolder})
+  return runContentfulExport({ spaceId, managementToken, saveFile: false, exportDir: tmpFolder })
     .catch((multierror) => {
-      const errors = multierror.errors.filter((error) => error.hasOwnProperty('error'))
+      const errors = multierror.errors.filter((error) => Object.prototype.hasOwnProperty.call(error, 'error'))
       expect(errors).toHaveLength(0)
     })
     .then((content) => {
@@ -38,9 +38,9 @@ test('It should export space when used as a library', () => {
 })
 
 test('It should export environment when used as a library', () => {
-  return runContentfulExport({spaceId, environmentId: 'staging', managementToken, saveFile: false, exportDir: tmpFolder})
+  return runContentfulExport({ spaceId, environmentId: 'staging', managementToken, saveFile: false, exportDir: tmpFolder })
     .catch((multierror) => {
-      const errors = multierror.errors.filter((error) => error.hasOwnProperty('error'))
+      const errors = multierror.errors.filter((error) => Object.prototype.hasOwnProperty.call(error, 'error'))
       expect(errors).toHaveLength(0)
     })
     .then((content) => {

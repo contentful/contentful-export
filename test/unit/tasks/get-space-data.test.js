@@ -6,7 +6,7 @@ const maxAllowedLimit = 100
 const resultItemCount = 420
 
 function pagedResult (query, maxItems, mock = {}) {
-  const {skip, limit} = query
+  const { skip, limit } = query
   const cnt = maxItems - skip > limit ? limit : maxItems - skip
   return {
     items: times(cnt, (n) => {
