@@ -171,3 +171,14 @@ test('parseOptions accepts custom application & feature', () => {
   expect(options.application).toBe(managementApplication)
   expect(options.feature).toBe(managementFeature)
 })
+
+test('parseOption parses deliveryToken option', () => {
+  const options = parseOptions({
+    spaceId,
+    managementToken,
+    deliveryToken: 'testDeliveryToken'
+  })
+  expect(options.accessToken).toBe(managementToken)
+  expect(options.spaceId).toBe(spaceId)
+  expect(options.deliveryToken).toBe('testDeliveryToken')
+})
