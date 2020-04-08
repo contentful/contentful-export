@@ -53,6 +53,7 @@ test('parseOptions sets correct default options', () => {
   expect(options.spaceId).toBe(spaceId)
   expect(options.startTime).toBeInstanceOf(moment)
   expect(options.useVerboseRenderer).toBe(false)
+  expect(options.deliveryToken).toBeUndefined()
 })
 
 test('parseOption accepts config file', () => {
