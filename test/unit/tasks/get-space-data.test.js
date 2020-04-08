@@ -6,7 +6,7 @@ const maxAllowedLimit = 100
 const resultItemCount = 420
 
 function pagedResult (query, maxItems, mock = {}) {
-  const {skip, limit} = query
+  const { skip, limit } = query
   const cnt = maxItems - skip > limit ? limit : maxItems - skip
   return {
     items: times(cnt, (n) => {
@@ -214,7 +214,7 @@ test('Gets whole destination content without roles', () => {
       expect(mockSpace.getWebhooks.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
       expect(mockSpace.getRoles.mock.calls).toHaveLength(0)
       expect(getEditorInterface.mock.calls).toHaveLength(resultItemCount)
-      expect(response.data.contentTypes.length).toBe(resultItemCount)
+      expect(response.data.contentTypes).toHaveLength(resultItemCount)
       expect(response.data.entries).toHaveLength(resultItemCount / 2)
       expect(response.data.assets).toHaveLength(resultItemCount / 2)
       expect(response.data.locales).toHaveLength(resultItemCount)
@@ -244,7 +244,7 @@ test('Gets whole destination content without editor interfaces', () => {
       expect(mockSpace.getWebhooks.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
       expect(mockSpace.getRoles.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
       expect(getEditorInterface.mock.calls).toHaveLength(0)
-      expect(response.data.contentTypes.length).toBe(resultItemCount)
+      expect(response.data.contentTypes).toHaveLength(resultItemCount)
       expect(response.data.entries).toHaveLength(resultItemCount / 2)
       expect(response.data.assets).toHaveLength(resultItemCount / 2)
       expect(response.data.locales).toHaveLength(resultItemCount)

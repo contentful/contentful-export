@@ -41,7 +41,7 @@ test('parseOptions sets correct default options', () => {
   expect(options.includeArchived).toBe(false)
   expect(options.logFilePath).toMatch(new RegExp(`^${resolve(basePath, contentFileNamePattern)}$`))
   expect(options.application).toBe(`contentful.export/${version}`)
-  expect(options.feature).toBe(`library-export`)
+  expect(options.feature).toBe('library-export')
   expect(options.accessToken).toBe(managementToken)
   expect(options.maxAllowedLimit).toBe(1000)
   expect(options.saveFile).toBe(true)
@@ -53,6 +53,7 @@ test('parseOptions sets correct default options', () => {
   expect(options.spaceId).toBe(spaceId)
   expect(options.startTime).toBeInstanceOf(moment)
   expect(options.useVerboseRenderer).toBe(false)
+  expect(options.deliveryToken).toBeUndefined()
 })
 
 test('parseOption accepts config file', () => {
@@ -170,4 +171,15 @@ test('parseOptions accepts custom application & feature', () => {
 
   expect(options.application).toBe(managementApplication)
   expect(options.feature).toBe(managementFeature)
+})
+
+test('parseOption parses deliveryToken option', () => {
+  const options = parseOptions({
+    spaceId,
+    managementToken,
+    deliveryToken: 'testDeliveryToken'
+  })
+  expect(options.accessToken).toBe(managementToken)
+  expect(options.spaceId).toBe(spaceId)
+  expect(options.deliveryToken).toBe('testDeliveryToken')
 })
