@@ -98,7 +98,6 @@ test('does create both clients when deliveryToken is set', () => {
   expect(contentful.createClient.mock.calls[0][0]).toMatchObject({
     space: opts.spaceId,
     accessToken: opts.deliveryToken,
-    host: 'cdn.contentful.com',
     resolveLinks: false
   })
   expect(contentfulManagement.createClient.mock.calls).toHaveLength(1)
