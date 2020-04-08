@@ -120,10 +120,26 @@ Contentful management API token for the space to be exported
 #### `deliveryToken` [string]
 Contentful Content Delivery API (CDA) token for the space to be exported.
 
-You may provide `deliveryToken` option if you only want to export the
-latest _published_ versions of entries and/or assets.
-As Contentful management API cannot
-do this, a separate token is required.
+Providing `deliveryToken` will export both entries and assets from the
+Contentful Delivery API, instead of the Contentful Management API.
+This may be useful if you want to export the latest _published_ versions,
+as the management API always only exports the entirety of items, with the latest
+unpublished content. So if you want to make sure only to see the latest
+published changes, provide the `deliveryToken`.
+
+Just to clarify: When Contentful Management API always returns the latest version (e.g. 50 in this case):
+
+```
+  "createdAt": "2020-01-06T12:00:00.000Z",
+  "updatedAt": "2020-04-07T11:00:00.000Z",
+  "publishedVersion": 23,
+  "publishedAt": "2020-04-05T14:00:00.000Z",
+  "publishedCounter": 1,
+  "version": 50,
+```
+
+the Content Delivery API would return the `publishedVersion` (23). CDA responses don't include
+version number.
 
 ### Output
 
@@ -139,7 +155,12 @@ The filename for the exported data
 ### Filtering
 
 #### `includeDrafts` [boolean] [default: false]
-Include drafts in the exported entries
+Include drafts in the exported entries.
+
+The `deliveryToken` option is ignored
+when `includeDrafts` has been set as `true`.
+If you want to include drafts, there's no point of getting them through the
+Content Delivery API.
 
 #### `includeArchived` [boolean] [default: false]
 Include archived entries in the exported entries
