@@ -21,7 +21,7 @@ afterAll(() => {
 })
 
 test('It should export space when used as a library', () => {
-  return runContentfulExport({ spaceId, managementToken, saveFile: false, exportDir: tmpFolder })
+  return runContentfulExport({ spaceId, managementToken, useVerboseRenderer: true, saveFile: true, exportDir: tmpFolder })
     .catch((multierror) => {
       const errors = multierror.errors.filter((error) => Object.prototype.hasOwnProperty.call(error, 'error'))
       expect(errors).toHaveLength(0)
@@ -33,6 +33,7 @@ test('It should export space when used as a library', () => {
       expect(content.entries).toHaveLength(4)
       expect(content.assets).toHaveLength(4)
       expect(content.locales).toHaveLength(1)
+      expect(content.tags).toHaveLength(3)
       expect(content.webhooks).toHaveLength(0)
       expect(content.roles).toHaveLength(7)
       // make sure entries are delivered from CMA
@@ -40,7 +41,7 @@ test('It should export space when used as a library', () => {
     })
 })
 
-test('It should export environment when used as a library', () => {
+test.only('It should export environment when used as a library', () => {
   return runContentfulExport({ spaceId, environmentId: 'staging', managementToken, saveFile: false, exportDir: tmpFolder })
     .catch((multierror) => {
       const errors = multierror.errors.filter((error) => Object.prototype.hasOwnProperty.call(error, 'error'))
@@ -53,12 +54,13 @@ test('It should export environment when used as a library', () => {
       expect(content.entries).toHaveLength(4)
       expect(content.assets).toHaveLength(4)
       expect(content.locales).toHaveLength(1)
+      expect(content.tags).toHaveLength(1)
       expect(content).not.toHaveProperty('webhooks')
       expect(content).not.toHaveProperty('roles')
     })
 })
 
-test('It should export space when used as a library, with deliveryToken', () => {
+test.only('It should export space when used as a library, with deliveryToken', () => {
   return runContentfulExport({ spaceId, managementToken, deliveryToken, saveFile: false, exportDir: tmpFolder })
     .catch((multierror) => {
       const errors = multierror.errors.filter((error) => Object.prototype.hasOwnProperty.call(error, 'error'))
@@ -71,6 +73,7 @@ test('It should export space when used as a library, with deliveryToken', () => 
       expect(content.entries).toHaveLength(4)
       expect(content.assets).toHaveLength(4)
       expect(content.locales).toHaveLength(1)
+      expect(content.tags).toBeUndefined()
       expect(content.webhooks).toHaveLength(0)
       expect(content.roles).toHaveLength(7)
       // entries returned from CDN don't have this property
