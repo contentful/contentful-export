@@ -21,7 +21,7 @@ afterAll(() => {
 })
 
 test('It should export space when used as a library', () => {
-  return runContentfulExport({ spaceId, managementToken, useVerboseRenderer: true, saveFile: true, exportDir: tmpFolder })
+  return runContentfulExport({ spaceId, managementToken, saveFile: false, exportDir: tmpFolder })
     .catch((multierror) => {
       const errors = multierror.errors.filter((error) => Object.prototype.hasOwnProperty.call(error, 'error'))
       expect(errors).toHaveLength(0)
@@ -41,7 +41,7 @@ test('It should export space when used as a library', () => {
     })
 })
 
-test.only('It should export environment when used as a library', () => {
+test('It should export environment when used as a library', () => {
   return runContentfulExport({ spaceId, environmentId: 'staging', managementToken, saveFile: false, exportDir: tmpFolder })
     .catch((multierror) => {
       const errors = multierror.errors.filter((error) => Object.prototype.hasOwnProperty.call(error, 'error'))
@@ -60,7 +60,7 @@ test.only('It should export environment when used as a library', () => {
     })
 })
 
-test.only('It should export space when used as a library, with deliveryToken', () => {
+test('It should export space when used as a library, with deliveryToken', () => {
   return runContentfulExport({ spaceId, managementToken, deliveryToken, saveFile: false, exportDir: tmpFolder })
     .catch((multierror) => {
       const errors = multierror.errors.filter((error) => Object.prototype.hasOwnProperty.call(error, 'error'))
