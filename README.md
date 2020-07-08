@@ -172,7 +172,8 @@ Skip exporting content models
 Skip exporting editor interfaces
 
 #### `skipContent` [boolean] [default: false]
-Skip exporting assets and entries
+Skip exporting assets and entries.
+If you have access to the tags feature, this will also skip exporting tags.
 
 #### `skipRoles` [boolean] [default: false]
 Skip exporting roles and permissions
@@ -236,11 +237,14 @@ This is an overview of the exported data:
   "entries": [],
   "assets": [],
   "locales": [],
+  "tags": [],
   "webhooks": [],
   "roles": [],
   "editorInterfaces": []
 }
 ```
+
+*Note:* Tags feature is not available for all users. If you do not have access to this feature, the tags array will be omitted from your exported data.
 
 ## :warning: Limitations
 
