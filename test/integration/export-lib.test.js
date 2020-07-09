@@ -33,6 +33,7 @@ test('It should export space when used as a library', () => {
       expect(content.entries).toHaveLength(4)
       expect(content.assets).toHaveLength(4)
       expect(content.locales).toHaveLength(1)
+      expect(content.tags).toHaveLength(3)
       expect(content.webhooks).toHaveLength(0)
       expect(content.roles).toHaveLength(7)
       // make sure entries are delivered from CMA
@@ -53,6 +54,7 @@ test('It should export environment when used as a library', () => {
       expect(content.entries).toHaveLength(4)
       expect(content.assets).toHaveLength(4)
       expect(content.locales).toHaveLength(1)
+      expect(content.tags).toHaveLength(1)
       expect(content).not.toHaveProperty('webhooks')
       expect(content).not.toHaveProperty('roles')
     })
@@ -71,6 +73,7 @@ test('It should export space when used as a library, with deliveryToken', () => 
       expect(content.entries).toHaveLength(4)
       expect(content.assets).toHaveLength(4)
       expect(content.locales).toHaveLength(1)
+      expect(content.tags).toBeUndefined()
       expect(content.webhooks).toHaveLength(0)
       expect(content.roles).toHaveLength(7)
       // entries returned from CDN don't have this property

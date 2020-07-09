@@ -141,6 +141,8 @@ Just to clarify: When Contentful Management API always returns the latest versio
 the Content Delivery API would return the `publishedVersion` (23). CDA responses don't include
 version number.
 
+Note: Tags are only available on the Contentful Management API, so they will not be exported if you provide a Contenful Delivery Token. Tags is a new feature that not all users have access to.
+
 ### Output
 
 #### `exportDir` [string] [default: current process working directory]
@@ -172,7 +174,7 @@ Skip exporting content models
 Skip exporting editor interfaces
 
 #### `skipContent` [boolean] [default: false]
-Skip exporting assets and entries
+Skip exporting assets and entries.
 
 #### `skipRoles` [boolean] [default: false]
 Skip exporting roles and permissions
@@ -236,11 +238,14 @@ This is an overview of the exported data:
   "entries": [],
   "assets": [],
   "locales": [],
+  "tags": [],
   "webhooks": [],
   "roles": [],
   "editorInterfaces": []
 }
 ```
+
+*Note:* Tags feature is not available for all users. If you do not have access to this feature, the tags array will always be empty.
 
 ## :warning: Limitations
 
