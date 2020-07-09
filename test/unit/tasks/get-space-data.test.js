@@ -105,6 +105,7 @@ test('Gets whole destination content', () => {
       expect(response.data.entries).toHaveLength(resultItemCount / 2)
       expect(response.data.assets).toHaveLength(resultItemCount / 2)
       expect(response.data.locales).toHaveLength(resultItemCount)
+      expect(response.data.tags).toHaveLength(resultItemCount)
       expect(response.data.webhooks).toHaveLength(resultItemCount)
       expect(response.data.roles).toHaveLength(resultItemCount)
       expect(response.data.editorInterfaces).toHaveLength(resultItemCount)
