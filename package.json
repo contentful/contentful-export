@@ -47,7 +47,7 @@
     "cli-table3": "^0.6.0",
     "contentful": "^7.14.0",
     "contentful-batch-libs": "^9.0.1",
-    "contentful-management": "^6.0.0",
+    "contentful-management": "^7.2.0",
     "echo-cli": "^1.0.8",
     "figures": "^3.2.0",
     "fs-extra": "^9.0.0",
