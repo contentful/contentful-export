@@ -1,7 +1,4 @@
 version: 2.1
-orbs:
-  polaris-scan: contentful/polaris-scan@1
-
 jobs:
   unit:
     docker:
@@ -42,10 +39,6 @@ workflows:
     jobs:
       - unit
       - integration
-      - polaris-scan/run-polaris-scan:
-          requires_build: false
-          context:
-            - sast-scan
       - release:
           requires:
             - unit
