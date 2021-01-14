@@ -444,7 +444,7 @@ test('Loads 1000 items per page by default', () => {
 })
 
 
-test.only('Query entry/asset respect limit query param', () => {
+test('Query entry/asset respect limit query param', () => {
   //overwrite the getAssets mock so maxItems is larger than default page size in pagedGet (get-space-data.js)
   mockEnvironment.getAssets = jest.fn((query) => {
     return Promise.resolve(pagedContentResult(query, 2000, mockEntry))
@@ -456,8 +456,8 @@ test.only('Query entry/asset respect limit query param', () => {
     skipWebhooks: true,
     skipRoles: true,
     includeDrafts: true,
-    queryEntries: {limit: 20},
-    queryAssets: {limit: 1001}
+    queryEntries: {limit: 20}, // test limit < pageSize
+    queryAssets: {limit: 1001} // test limit > pageSize
   })
     .run({
       data: {}
@@ -467,7 +467,7 @@ test.only('Query entry/asset respect limit query param', () => {
       expect(mockSpace.getEnvironment.mock.calls).toHaveLength(1)
       expect(mockEnvironment.getEntries.mock.calls[0][0].limit).toBe(20)
       expect(mockEnvironment.getAssets.mock.calls[0][0].limit).toBe(1000) // assets should be called 2x
-      expect(mockEnvironment.getAssets.mock.calls[1][0].limit).toBe(1000) // because it has to fetch two pages to get all 1001
+      expect(mockEnvironment.getAssets.mock.calls[1][0].limit).toBe(1) // because it has to fetch the final item in the second page
       expect(response.data.assets).toHaveLength(1001)
       expect(response.data.entries).toHaveLength(20)
     })
