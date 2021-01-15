@@ -208,6 +208,9 @@ Pass proxy config to Axios instead of creating a custom httpsAgent
 #### `maxAllowedLimit` [number] [default: 1000]
 The number of items per page per request
 
+#### 'limit' [number]
+The total number of items to return. Can be used with entries or assets. If not provided, then all entries or assets will be returned. The entries or assets will be ordered using: `sys.createdAt,sys.id`.
+
 ### Other
 
 #### `errorLogFile` [string]
