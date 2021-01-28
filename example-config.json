@@ -1,4 +1,32 @@
 {
   "spaceId": "source space id",
-  "managementToken": "destination space management token"
+  "environmentId": "master",
+  "managementToken": "destination space management token",
+  "deliveryToken": "token to export both entries and assets from the Contentful Delivery API",
+  "exportDir": "/path/to/export/directory",
+  "saveFile": true,
+  "contentFile": "export.json",
+  "includeDrafts": false,
+  "includeArchived": false,
+  "skipContentModel": false,
+  "skipEditorInterfaces": false,
+  "skipContent": false,
+  "skipRoles": false,
+  "skipWebhooks": false,
+  "contentOnly": false,
+  "queryEntries": [
+    "content_type=<content_type_id>",
+    "sys.id=<entry_id>"
+  ],
+  "queryAssets": [
+    "fields.title=Example"
+  ],
+  "downloadAssets": false,
+  "host": "api.contentful.com",
+  "proxy": "https://user:password@host:port",
+  "rawProxy": false,
+  "maxAllowedLimit": 1000,
+  "limit": 25000,
+  "errorLogFile": "/path/to/error.log",
+  "useVerboseRenderer": false
 }
