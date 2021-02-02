@@ -82,9 +82,9 @@ test('Downloads assets and properly counts failed attempts', () => {
   return task(ctx, taskProxy)
     .then(() => {
       expect(ctx.assetDownloads).toEqual({
-        successCount: 2,
+        successCount: 1,
         warningCount: 1,
-        errorCount: 1
+        errorCount: 2
       })
       expect(output.mock.calls).toHaveLength(4)
     })
