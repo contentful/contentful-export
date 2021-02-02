@@ -36,7 +36,7 @@ const mockClient = {}
 
 const getEditorInterface = jest.fn()
 
-const mockEntry = { metadata: {tags: []}}
+const mockEntry = { metadata: { tags: [] } }
 
 function setupMocks () {
   mockClient.getSpace = jest.fn(() => Promise.resolve(mockSpace))
@@ -443,9 +443,8 @@ test('Loads 1000 items per page by default', () => {
     })
 })
 
-
 test('Query entry/asset respect limit query param', () => {
-  //overwrite the getAssets mock so maxItems is larger than default page size in pagedGet (get-space-data.js)
+  // overwrite the getAssets mock so maxItems is larger than default page size in pagedGet (get-space-data.js)
   mockEnvironment.getAssets = jest.fn((query) => {
     return Promise.resolve(pagedContentResult(query, 2000, mockEntry))
   })
@@ -456,8 +455,8 @@ test('Query entry/asset respect limit query param', () => {
     skipWebhooks: true,
     skipRoles: true,
     includeDrafts: true,
-    queryEntries: {limit: 20}, // test limit < pageSize
-    queryAssets: {limit: 1001} // test limit > pageSize
+    queryEntries: { limit: 20 }, // test limit < pageSize
+    queryAssets: { limit: 1001 } // test limit > pageSize
   })
     .run({
       data: {}

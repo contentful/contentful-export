@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-var runContentfulExport = require('../dist/index')
-var usageParams = require('../dist/usageParams')
+const runContentfulExport = require('../dist/index')
+const usageParams = require('../dist/usageParams')
 
 console.log('We moved the CLI version of this tool into our Contentful CLI.\nThis allows our users to use and install only one single CLI tool to get the full Contentful experience.\nFor more info please visit https://github.com/contentful/contentful-cli/tree/master/docs/space/export')
 
