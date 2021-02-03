@@ -57,7 +57,7 @@ test('parseOptions sets correct default options', () => {
 })
 
 test('parseOption accepts config file', () => {
-  const configFileName = 'example-config.json'
+  const configFileName = 'example-config.test.json'
   const config = require(resolve(basePath, configFileName))
 
   const options = parseOptions({

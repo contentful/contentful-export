@@ -163,11 +163,11 @@ test('Runs Contentful Export and downloads assets', () => {
 
 test('Creates a valid and correct opts object', () => {
   const errorLogFile = 'errorlogfile'
-  const exampleConfig = require('../../example-config.json')
+  const exampleConfig = require('../../example-config.test.json')
 
   return runContentfulExport({
     errorLogFile,
-    config: resolve(__dirname, '..', '..', 'example-config.json')
+    config: resolve(__dirname, '..', '..', 'example-config.test.json')
   })
     .then(() => {
       expect(initClient.mock.calls[0][0].skipContentModel).toBeFalsy()
