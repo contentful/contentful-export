@@ -261,7 +261,7 @@ This is an overview of the exported data:
 Read the [releases](https://github.com/contentful/contentful-export/releases) page for more information.
 
 ## :scroll: License
-
+ 
 This project is licensed under MIT license
 
 [1]: https://www.contentful.com
