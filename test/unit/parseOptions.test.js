@@ -183,3 +183,18 @@ test('parseOption parses deliveryToken option', () => {
   expect(options.spaceId).toBe(spaceId)
   expect(options.deliveryToken).toBe('testDeliveryToken')
 })
+
+test('parseOption parses headers option', () => {
+  const options = parseOptions({
+    spaceId,
+    managementToken,
+    headers: {
+      header1: '1',
+      header2: '2'
+    }
+  })
+  expect(options.headers).toEqual({
+    header1: '1',
+    header2: '2'
+  })
+})
