@@ -212,9 +212,7 @@ The number of items per page per request
 The total number of items to return. Can be used with entries or assets. If not provided, then all entries or assets will be returned. The entries or assets will be ordered using: `sys.createdAt,sys.id`.
 
 #### `headers` [object]
-
 Additional headers to attach to the requests. 
-
 
 ### Other
 
