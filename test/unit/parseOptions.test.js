@@ -183,3 +183,27 @@ test('parseOption parses deliveryToken option', () => {
   expect(options.spaceId).toBe(spaceId)
   expect(options.deliveryToken).toBe('testDeliveryToken')
 })
+
+test('parseOption parses headers option', () => {
+  const options = parseOptions({
+    spaceId,
+    managementToken,
+    headers: {
+      header1: '1',
+      header2: '2'
+    }
+  })
+  expect(options.headers).toEqual({
+    header1: '1',
+    header2: '2'
+  })
+})
+
+test('parses params.header if provided', function () {
+  const config = parseOptions({
+    spaceId,
+    managementToken,
+    header: ['Accept   : application/json ', ' X-Header: 1']
+  })
+  expect(config.headers).toEqual({ Accept: 'application/json', 'X-Header': '1' })
+})
