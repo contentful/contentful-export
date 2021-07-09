@@ -61,7 +61,7 @@ const contentfulExport = require('contentful-export')
 const options = {
   spaceId: '<space_id>',
   managementToken: '<content_management_api_key>',
-  queryEntries: 'content_type=<content_type_id>'
+  queryEntries: ['content_type=<content_type_id>']
 }
 
 contentfulExport(options)
