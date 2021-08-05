@@ -20,6 +20,9 @@ yarn.lock
 tsconfig.json
 jsconfig.json
 
+# Export config
+config.json
+
 ### Linux ###
 *~
 
