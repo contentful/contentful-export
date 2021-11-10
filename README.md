@@ -223,7 +223,9 @@ Display progress in new lines instead of displaying a busy spinner and the statu
 
 ## :rescue_worker_helmet: Troubleshooting
 
-*  Unable to connect to Contentful through your proxy? Try to set the `rawProxy` option to `true`.
+### Proxy
+
+Unable to connect to Contentful through your proxy? Try to set the `rawProxy` option to `true`.
 
 ```javascript
 contentfulExport({
@@ -232,6 +234,20 @@ contentfulExport({
   ...
 })
 ```
+
+### Error: 400 - Bad Request - Response size too big.
+
+Contentful response sizes are limited (find more info in our [technical limit docs](https://www.contentful.com/developers/docs/technical-limits/)). In order to resolve this issue, limit the amount of entities received within a single request by setting the [`maxAllowedLimit`](#maxallowedlimit-number-default-1000) option:
+
+```javascript
+contentfulExport({
+  proxy: 'https://cat:dog@example.com:1234',
+  rawProxy: true,
+  maxAllowedLimit: 50
+  ...
+})
+```
+
 
 ## :card_file_box: Exported data structure
 
