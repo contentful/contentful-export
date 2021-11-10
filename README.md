@@ -237,7 +237,7 @@ contentfulExport({
 
 ### Error: 400 - Bad Request - Response size too big.
 
-Contentful response sizes are limited (find more info in our [technical limit docs](https://www.contentful.com/developers/docs/technical-limits/)). In order to resolve this issue, limit the amount of entites received within a single request by setting the [`maxAllowedLimit`](#maxallowedlimit-number-default-1000) option:
+Contentful response sizes are limited (find more info in our [technical limit docs](https://www.contentful.com/developers/docs/technical-limits/)). In order to resolve this issue, limit the amount of entities received within a single request by setting the [`maxAllowedLimit`](#maxallowedlimit-number-default-1000) option:
 
 ```javascript
 contentfulExport({
