@@ -9,7 +9,7 @@
 
 [Contentful](https://www.contentful.com) provides a content infrastructure for digital teams to power content in websites, apps, and devices. Unlike a CMS, Contentful was built to integrate with the modern software stack. It offers a central hub for structured content, powerful management and delivery APIs, and a customizable web app that enable developers and content creators to ship digital products faster.
 
-This is a library that help you backup your Content Model, Content and Assets or move them to a new Contentful space. _It will support Roles & Permissions in a future version._
+This is a library that helps you backup your Content Model, Content and Assets or move them to a new Contentful space. _It will support Roles & Permissions in a future version._
 
 To import your exported data, please refer to the [contentful-import](https://github.com/contentful/contentful-import) repository.
 
