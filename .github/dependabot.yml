@@ -12,6 +12,9 @@ updates:
     - dependency-name: husky
       versions:
         - ">=5.0.0"
+    - dependency-name: figures # Pure ESM module. Remove when supporting ESM
+      versions:
+        - ">=4.0.0"
     commit-message:
       prefix: build
       include: scope
