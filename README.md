@@ -166,6 +166,9 @@ Content Delivery API.
 #### `includeArchived` [boolean] [default: false]
 Include archived entries in the exported entries
 
+#### `includeChanged` [boolean] [default: false]
+Include changed entries in the exported entries
+
 #### `skipContentModel` [boolean] [default: false]
 Skip exporting content models
 

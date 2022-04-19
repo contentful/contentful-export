@@ -8,6 +8,7 @@
   "contentFile": "export.json",
   "includeDrafts": false,
   "includeArchived": false,
+  "includeChanged": false,
   "skipContentModel": false,
   "skipEditorInterfaces": false,
   "skipContent": false,
