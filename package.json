@@ -3,6 +3,7 @@
   "version": "0.0.0-determined-by-semantic-release",
   "description": "this tool allows you to export a space to a JSON dump",
   "main": "dist/index.js",
+  "types": "types.d.ts",
   "engines": {
     "node": ">=12"
   },
@@ -95,7 +96,8 @@
     "bin",
     "dist",
     "example-config.json",
-    "index.js"
+    "index.js",
+    "types.d.ts"
   ],
   "config": {
     "commitizen": {
