@@ -5,9 +5,11 @@ export interface Options {
   contentFile?: string;
   contentOnly?: boolean;
   deliveryToken?: string;
+  downloadAssets?: boolean;
   environmentId?: string;
   errorLogFile?: string;
   exportDir?: string;
+  headers?: string[];
   host?: string;
   includeArchived?: boolean;
   includeDrafts?: boolean;
@@ -16,7 +18,8 @@ export interface Options {
   managementFeature?: string;
   maxAllowedLimit?: boolean;
   proxy?: string;
-  queryEntries?: string | string[];
+  queryEntries?: string[];
+  queryAssets?: string[];
   rawProxy?: boolean;
   saveFile?: boolean;
   skipContent?: boolean;
