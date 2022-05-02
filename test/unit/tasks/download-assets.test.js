@@ -1,8 +1,8 @@
+import { promises as fs, rmSync } from 'fs'
 import { tmpdir } from 'os'
 import { resolve } from 'path'
 
 import nock from 'nock'
-import fs from 'fs-extra'
 
 import downloadAssets from '../../../lib/tasks/download-assets'
 
@@ -46,7 +46,7 @@ nock(`https://${API_HOST}`)
     expiresAt: /.+/i
   })
   .times(2)
-  .reply(200, { policy:POLICY, secret: SECRET })
+  .reply(200, { policy: POLICY, secret: SECRET })
 
 function getAssets ({ existing = 0, nonExisting = 0, missingUrl = 0, embargoed = 0 } = {}) {
   const existingUrl = `${BASE_PATH}${EXISTING_ASSET_URL}`
@@ -142,15 +142,16 @@ beforeEach(() => {
     }
   })
 })
-beforeAll(() => {
-  fs.mkdirsSync(tmpDirectory)
+beforeAll(async () => {
+  await fs.mkdir(tmpDirectory, { recursive: true })
 })
 
 afterAll(() => {
-  fs.removeSync(tmpDirectory)
+  // Couldn't get `fs.promises.rm` to work without permissions issues
+  rmSync(tmpDirectory, { recursive: true, force: true })
 
   if (!nock.isDone()) {
-    throw new Error(`pending mocks: ${nock.pendingMocks().join(", ")}`)
+    throw new Error(`pending mocks: ${nock.pendingMocks().join(', ')}`)
   }
 
   nock.cleanAll()
@@ -192,7 +193,7 @@ test('Downloads embargoed assets', () => {
     host: API_HOST,
     accessToken: ACCESS_TOKEN,
     spaceId: SPACE_ID,
-    environmentId:ENVIRONMENT_ID
+    environmentId: ENVIRONMENT_ID
   })
   const ctx = {
     data: {
@@ -235,7 +236,7 @@ test('it doesn\'t use fileStack url as fallback for the file url and throws a wa
       expect(output.mock.calls).toHaveLength(6)
 
       const missingUrlsOutputCount = output.mock.calls.filter(call =>
-          call[0]?.endsWith('asset.fields.file[en-US].url') ||
+        call[0]?.endsWith('asset.fields.file[en-US].url') ||
           call[0]?.endsWith('asset.fields.file[de-DE].url'))
 
       expect(missingUrlsOutputCount).toHaveLength(2)
