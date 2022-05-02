@@ -58,8 +58,7 @@
     "lodash": "^4.17.10",
     "mkdirp": "^1.0.3",
     "moment": "^2.22.2",
-    "request": "^2.87.0",
-    "request-promise": "^4.2.6",
+    "node-fetch": "^2.6.7",
     "yargs": "^17.1.1"
   },
   "devDependencies": {
