@@ -1,4 +1,4 @@
-import { resolve } from 'path'
+import { basename, isAbsolute, resolve, sep } from 'path'
 
 import moment from 'moment'
 import HttpsProxyAgent from 'https-proxy-agent'
@@ -8,6 +8,12 @@ import parseOptions from '../../lib/parseOptions'
 const spaceId = 'foo'
 const managementToken = 'someManagementToken'
 const basePath = resolve(__dirname, '..', '..')
+
+const toBeAbsolutePathWithPattern = (received, pattern) => {
+  const escapedPattern = [basename(basePath), pattern].join(`\\${sep}`)
+
+  return (!isAbsolute(received) || !RegExp(`/${escapedPattern}$/`).test(received))
+}
 
 test('parseOptions sets requires spaceId', () => {
   expect(
@@ -35,11 +41,11 @@ test('parseOptions sets correct default options', () => {
   const errorFileNamePattern = `contentful-export-error-log-${spaceId}-master-[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}-[0-9]{2}-[0-9]{2}\\.json`
 
   expect(options.contentFile).toMatch(new RegExp(`^${contentFileNamePattern}$`))
-  expect(options.errorLogFile).toMatch(new RegExp(`^${resolve(basePath, errorFileNamePattern)}$`))
+  expect(toBeAbsolutePathWithPattern(options.errorLogFile, errorFileNamePattern)).toBe(true)
   expect(options.exportDir).toBe(basePath)
   expect(options.includeDrafts).toBe(false)
   expect(options.includeArchived).toBe(false)
-  expect(options.logFilePath).toMatch(new RegExp(`^${resolve(basePath, contentFileNamePattern)}$`))
+  expect(toBeAbsolutePathWithPattern(options.logFilePath, contentFileNamePattern)).toBe(true)
   expect(options.application).toBe(`contentful.export/${version}`)
   expect(options.feature).toBe('library-export')
   expect(options.accessToken).toBe(managementToken)
