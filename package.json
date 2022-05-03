@@ -57,7 +57,7 @@
     "lodash.startcase": "^4.4.0",
     "mkdirp": "^1.0.3",
     "moment": "^2.22.2",
-    "node-fetch": "^2.6.7",
+    "node-fetch": "^3.2.4",
     "yargs": "^17.1.1"
   },
   "devDependencies": {
