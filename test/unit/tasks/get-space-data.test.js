@@ -1,5 +1,3 @@
-import { times } from 'lodash/util'
-
 import getSpaceData from '../../../lib/tasks/get-space-data'
 
 const maxAllowedLimit = 100
@@ -9,11 +7,9 @@ function pagedResult (query, maxItems, mock = {}) {
   const { skip, limit } = query
   const cnt = maxItems - skip > limit ? limit : maxItems - skip
   return {
-    items: times(cnt, (n) => {
+    items: Array.from({ length: cnt}, (n) => {
       const id = n * skip + 1
-      return Object.assign({
-        sys: { id }
-      }, mock)
+      return Object.assign({ sys: { id }}, mock)
     }),
     total: maxItems
   }
