@@ -1,0 +1,13 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: contentful-export
+  description: |
+    This tool allows you to export a Contentful space to a JSON dump.
+  annotations:
+    circleci.com/project-slug: github/contentful/contentful-export
+    github.com/project-slug: contentful/contentful-export
+spec:
+  type: cli
+  lifecycle: production
+  owner: group:team-dev-workflows
