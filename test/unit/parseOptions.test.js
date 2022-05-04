@@ -29,13 +29,11 @@ test('parseOptions sets requires managementToken', () => {
   ).toThrow('The `managementToken` option is required.')
 })
 
-test('parseOptions sets correct default options', () => {
-  const version = require(resolve(basePath, 'package.json')).version
+test('parseOptions sets correct default options', async () => {
+  const { default: packageJson } = await import(resolve(basePath, 'package.json'))
+  const version = packageJson.version
 
-  const options = parseOptions({
-    spaceId,
-    managementToken
-  })
+  const options = parseOptions({ spaceId, managementToken })
 
   const contentFileNamePattern = `contentful-export-${spaceId}-master-[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}-[0-9]{2}-[0-9]{2}\\.json`
   const errorFileNamePattern = `contentful-export-error-log-${spaceId}-master-[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}-[0-9]{2}-[0-9]{2}\\.json`
@@ -62,13 +60,11 @@ test('parseOptions sets correct default options', () => {
   expect(options.deliveryToken).toBeUndefined()
 })
 
-test('parseOption accepts config file', () => {
+test('parseOption accepts config file', async () => {
   const configFileName = 'example-config.test.json'
-  const config = require(resolve(basePath, configFileName))
+  const { default: config } = await import(resolve(basePath, configFileName))
 
-  const options = parseOptions({
-    config: configFileName
-  })
+  const options = parseOptions({ config: configFileName })
   Object.keys(config).forEach((key) => {
     expect(options[key]).toBe(config[key])
   })
