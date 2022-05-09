@@ -24,7 +24,7 @@ export interface Options {
   saveFile?: boolean;
   skipContent?: boolean;
   skipContentModel?: boolean;
-  skipEditorInferfaces?: boolean;
+  skipEditorInterfaces?: boolean;
   skipRoles?: boolean;
   skipWebhooks?: boolean;
   useVerboseRenderer?: boolean;
