@@ -16,7 +16,7 @@ export interface Options {
   limit?: number;
   managementApplication?: string;
   managementFeature?: string;
-  maxAllowedLimit?: boolean;
+  maxAllowedLimit?: number;
   proxy?: string;
   queryEntries?: string[];
   queryAssets?: string[];
