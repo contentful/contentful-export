@@ -1,7 +1,6 @@
 export interface Options {
   managementToken: string;
   spaceId: string;
-
   contentFile?: string;
   contentOnly?: boolean;
   deliveryToken?: string;
