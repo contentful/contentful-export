@@ -1,6 +1,5 @@
 import { basename, isAbsolute, resolve, sep } from 'path'
 
-import moment from 'moment'
 import HttpsProxyAgent from 'https-proxy-agent'
 
 import parseOptions from '../../lib/parseOptions'
@@ -55,7 +54,7 @@ test('parseOptions sets correct default options', async () => {
   expect(options.skipRoles).toBe(false)
   expect(options.skipWebhooks).toBe(false)
   expect(options.spaceId).toBe(spaceId)
-  expect(options.startTime).toBeInstanceOf(moment)
+  expect(options.startTime).toBeInstanceOf(Date)
   expect(options.useVerboseRenderer).toBe(false)
   expect(options.deliveryToken).toBeUndefined()
 })
