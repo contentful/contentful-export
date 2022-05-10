@@ -1,7 +1,6 @@
 export interface Options {
   managementToken: string;
   spaceId: string;
-
   contentFile?: string;
   contentOnly?: boolean;
   deliveryToken?: string;
@@ -16,7 +15,7 @@ export interface Options {
   limit?: number;
   managementApplication?: string;
   managementFeature?: string;
-  maxAllowedLimit?: boolean;
+  maxAllowedLimit?: number;
   proxy?: string;
   queryEntries?: string[];
   queryAssets?: string[];
