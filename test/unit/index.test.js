@@ -8,7 +8,7 @@ import {
   setupLogging,
   displayErrorLog,
   writeErrorLogFile
-} from 'contentful-batch-libs/dist/logging'
+} from 'contentful-batch-libs'
 
 import { mockDownloadAssets } from './mocks/download-assets'
 import { mockGetSpaceData } from './mocks/get-space-data'
