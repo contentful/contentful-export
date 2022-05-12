@@ -1,7 +1,5 @@
-import { basename, isAbsolute, resolve, sep } from 'path'
-
 import HttpsProxyAgent from 'https-proxy-agent'
-
+import { basename, isAbsolute, resolve, sep } from 'path'
 import parseOptions from '../../lib/parseOptions'
 
 const spaceId = 'foo'

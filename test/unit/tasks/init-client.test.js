@@ -2,7 +2,7 @@ import initClient from '../../../lib/tasks/init-client'
 
 import contentfulManagement from 'contentful-management'
 import contentful from 'contentful'
-import { logEmitter } from 'contentful-batch-libs/dist/logging'
+import { logEmitter } from 'contentful-batch-libs'
 
 jest.mock('contentful-management', () => {
   return {
@@ -16,7 +16,7 @@ jest.mock('contentful', () => {
   }
 })
 
-jest.mock('contentful-batch-libs/dist/logging', () => {
+jest.mock('contentful-batch-libs', () => {
   return {
     logEmitter: {
       emit: jest.fn()
