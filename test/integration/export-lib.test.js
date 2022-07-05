@@ -1,9 +1,12 @@
 import { join } from 'path'
+import fs from 'fs'
 
 import mkdirp from 'mkdirp'
 import rimraf from 'rimraf'
 
 import runContentfulExport from '../../dist/index'
+
+const fsPromises = fs.promises
 
 jest.setTimeout(15000)
 
@@ -11,6 +14,8 @@ const tmpFolder = join(__dirname, 'tmp-lib')
 const spaceId = process.env.EXPORT_SPACE_ID
 const managementToken = process.env.MANAGEMENT_TOKEN
 const deliveryToken = process.env.DELIVERY_TOKEN
+
+const spaceIdEmbargoedAssets = process.env.EXPORT_SPACE_ID_EMBARGOED_ASSETS
 
 beforeAll(() => {
   mkdirp.sync(tmpFolder)
@@ -78,5 +83,28 @@ test('It should export space when used as a library, with deliveryToken', () => 
       expect(content.roles).toHaveLength(7)
       // entries returned from CDN don't have this property
       expect(content.entries[0].sys).not.toHaveProperty('publishedVersion')
+    })
+})
+
+test('It should export embargoed assets space when used as a library', () => {
+  return runContentfulExport({
+    spaceId: spaceIdEmbargoedAssets,
+    managementToken,
+    saveFile: true,
+    downloadAssets: true,
+    exportDir: tmpFolder,
+    host: 'api.contentful.com'
+  })
+    .catch((multierror) => {
+      const errors = multierror.errors.filter((error) => Object.prototype.hasOwnProperty.call(error, 'error'))
+      expect(errors).toHaveLength(0)
+    })
+    .then(async (content) => {
+      expect(content.assets).toHaveLength(1)
+
+      // This code ensures that the protected/embargoed asset has actually been downloaded
+      const files = await fsPromises.readdir(tmpFolder, { withFileTypes: true })
+      const directories = files.filter(f => f.isDirectory())
+      expect(directories).toHaveLength(1)
     })
 })
