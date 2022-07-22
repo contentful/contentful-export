@@ -78,7 +78,9 @@ test('It should export space when used as a library, with deliveryToken', () => 
       expect(content.entries).toHaveLength(4)
       expect(content.assets).toHaveLength(4)
       expect(content.locales).toHaveLength(1)
-      expect(content.tags).toBeUndefined()
+      // TODO Tag one entry with one public tag in test space. Add one
+      // public and one private tag to the test setup.
+      expect(content.tags).toHaveLength(3)
       expect(content.webhooks).toHaveLength(0)
       expect(content.roles).toHaveLength(7)
       // entries returned from CDN don't have this property
