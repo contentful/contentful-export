@@ -32,7 +32,9 @@ const mockClient = {}
 
 const getEditorInterface = jest.fn()
 
-const mockEntry = { metadata: { tags: [] } }
+const mockAsset = { metadata: { tags: [{}] } }
+
+const mockEntry = { metadata: { tags: [{}] } }
 
 function setupMocks () {
   mockClient.getSpace = jest.fn(() => Promise.resolve(mockSpace))
@@ -46,7 +48,7 @@ function setupMocks () {
     return Promise.resolve(pagedContentResult(query, resultItemCount, mockEntry))
   })
   mockEnvironment.getAssets = jest.fn((query) => {
-    return Promise.resolve(pagedContentResult(query, resultItemCount))
+    return Promise.resolve(pagedContentResult(query, resultItemCount, mockAsset))
   })
   mockEnvironment.getLocales = jest.fn((query) => {
     return Promise.resolve(pagedResult(query, resultItemCount))
@@ -268,6 +270,38 @@ test('Gets whole destination content without editor interfaces', () => {
     })
 })
 
+test('Gets whole destination content without tags', () => {
+  return getSpaceData({
+    client: mockClient,
+    spaceId: 'spaceid',
+    maxAllowedLimit,
+    skipTags: true
+  })
+    .run({
+      data: {}
+    })
+    .then((response) => {
+      expect(mockClient.getSpace.mock.calls).toHaveLength(1)
+      expect(mockSpace.getEnvironment.mock.calls).toHaveLength(1)
+      expect(mockEnvironment.getContentTypes.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
+      expect(mockEnvironment.getEntries.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
+      expect(mockEnvironment.getAssets.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
+      expect(mockEnvironment.getLocales.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
+      expect(mockEnvironment.getTags.mock.calls).toHaveLength(0)
+      expect(mockSpace.getWebhooks.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
+      expect(mockSpace.getRoles.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
+      expect(getEditorInterface.mock.calls).toHaveLength(resultItemCount)
+      expect(response.data.contentTypes).toHaveLength(resultItemCount)
+      expect(response.data.entries).toHaveLength(resultItemCount / 2)
+      expect(response.data.assets).toHaveLength(resultItemCount / 2)
+      expect(response.data.locales).toHaveLength(resultItemCount)
+      expect(response.data.tags).toBeUndefined()
+      expect(response.data.webhooks).toHaveLength(resultItemCount)
+      expect(response.data.roles).toHaveLength(resultItemCount)
+      expect(response.data.editorInterfaces).toHaveLength(resultItemCount)
+    })
+})
+
 test('Gets whole destination content with drafts', () => {
   return getSpaceData({
     client: mockClient,
@@ -465,5 +499,24 @@ test('Query entry/asset respect limit query param', () => {
       expect(mockEnvironment.getAssets.mock.calls[1][0].limit).toBe(1) // because it has to fetch the final item in the second page
       expect(response.data.assets).toHaveLength(1001)
       expect(response.data.entries).toHaveLength(20)
+    })
+})
+
+test('Strips tags from entries and assets', () => {
+  return getSpaceData({
+    client: mockClient,
+    spaceId: 'spaceid',
+    maxAllowedLimit,
+    stripTags: true
+  })
+    .run({
+      data: {}
+    })
+    .then((response) => {
+      expect(response.data.entries).toHaveLength(resultItemCount / 2)
+      const hasAssetsWithTags = response.data.assets.some(asset => asset.metadata?.tags?.length > 0)
+      expect(hasAssetsWithTags).toBe(false)
+      const hasEntryWithTags = response.data.entries.some(entry => entry.metadata?.tags?.length > 0)
+      expect(hasEntryWithTags).toBe(false)
     })
 })

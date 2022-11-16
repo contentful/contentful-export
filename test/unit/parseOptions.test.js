@@ -51,6 +51,8 @@ test('parseOptions sets correct default options', async () => {
   expect(options.skipEditorInterfaces).toBe(false)
   expect(options.skipRoles).toBe(false)
   expect(options.skipWebhooks).toBe(false)
+  expect(options.skipTags).toBe(false)
+  expect(options.stripTags).toBe(false)
   expect(options.spaceId).toBe(spaceId)
   expect(options.startTime).toBeInstanceOf(Date)
   expect(options.useVerboseRenderer).toBe(false)
