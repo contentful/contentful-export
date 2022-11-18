@@ -178,8 +178,14 @@ Skip exporting assets and entries.
 #### `skipRoles` [boolean] [default: false]
 Skip exporting roles and permissions
 
+#### `skipTags` [boolean] [default: false]
+Skip exporting tags
+
 #### `skipWebhooks` [boolean] [default: false]
 Skip exporting webhooks
+
+#### `stripTags` [boolean] [default: false]
+Untag assets and entries
 
 #### `contentOnly` [boolean] [default: false]
 Only export entries and assets
