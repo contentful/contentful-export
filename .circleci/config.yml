@@ -1,4 +1,8 @@
 version: 2.1
+
+orbs:
+  vault: contentful/vault@1
+
 jobs:
   unit:
     docker:
@@ -25,17 +29,19 @@ jobs:
       - image: cimg/node:16.11
     steps:
       - checkout
+      - vault/get-secrets: # Loads vault secrets
+          template-preset: "semantic-release-ecosystem"
       - run: npm install
       - run: npm run build
       - run: npm run semantic-release
 workflows:
-  version: 2
   build_and_test:
     jobs:
       - unit
       - integration
       - release:
-          context: dev-workflows-release
+          context:
+            - vault
           requires:
             - unit
             - integration
