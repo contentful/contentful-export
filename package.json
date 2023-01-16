@@ -85,7 +85,7 @@
     "nixt": "^0.5.0",
     "nock": "^13.0.0",
     "opener": "^1.4.1",
-    "rimraf": "^3.0.2",
+    "rimraf": "^4.0.7",
     "semantic-release": "^19.0.2"
   },
   "files": [
