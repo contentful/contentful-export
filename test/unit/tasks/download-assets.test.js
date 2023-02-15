@@ -45,7 +45,7 @@ nock(`https://${API_HOST}`)
   .post(`/spaces/${SPACE_ID}/environments/${ENVIRONMENT_ID}/asset_keys`, {
     expiresAt: /.+/i
   })
-  .times(2)
+  .times(1)
   .reply(200, { policy: POLICY, secret: SECRET })
 
 function getAssets ({ existing = 0, nonExisting = 0, missingUrl = 0, embargoed = 0 } = {}) {
