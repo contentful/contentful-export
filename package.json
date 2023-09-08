@@ -43,7 +43,7 @@
     "url": "https://github.com/contentful/contentful-export/issues"
   },
   "dependencies": {
-    "bfj": "^7.0.2",
+    "bfj": "^8.0.0",
     "bluebird": "^3.3.3",
     "cli-table3": "^0.6.0",
     "contentful": "^9.0.0",
