@@ -6,7 +6,7 @@ orbs:
 jobs:
   unit:
     docker:
-      - image: cimg/node:16.11
+      - image: cimg/node:18.18.0
     steps:
       - checkout
       - restore_cache:
@@ -16,7 +16,7 @@ jobs:
       - run: npm run test:unit
   integration:
     docker:
-      - image: cimg/node:16.11
+      - image: cimg/node:18.18.0
     steps:
       - checkout
       - restore_cache:
@@ -26,7 +26,7 @@ jobs:
       - run: npm run test:integration
   release:
     docker:
-      - image: cimg/node:16.11
+      - image: cimg/node:18.18.0
     steps:
       - checkout
       - vault/get-secrets: # Loads vault secrets
