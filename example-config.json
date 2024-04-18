@@ -16,7 +16,8 @@
   "contentOnly": false,
   "queryEntries": [
     "content_type=<content_type_id>",
-    "sys.id=<entry_id>"
+    "sys.id=<entry_id>",
+    "limit=1000"
   ],
   "queryAssets": [
     "fields.title=Example"
@@ -26,7 +27,6 @@
   "proxy": "https://user:password@host:port",
   "rawProxy": false,
   "maxAllowedLimit": 1000,
-  "limit": 25000,
   "errorLogFile": "/path/to/error.log",
   "useVerboseRenderer": false
 }
