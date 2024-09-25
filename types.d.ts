@@ -26,6 +26,7 @@ export interface Options {
   skipEditorInterfaces?: boolean;
   skipRoles?: boolean;
   skipWebhooks?: boolean;
+  skipTags?: boolean;
   useVerboseRenderer?: boolean;
 }
 
