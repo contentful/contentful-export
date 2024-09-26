@@ -57,7 +57,6 @@
     "listr-verbose-renderer": "^0.6.0",
     "lodash.startcase": "^4.4.0",
     "mkdirp": "^2.0.0",
-    "node-fetch": "^2.6.7",
     "yargs": "^17.1.1"
   },
   "devDependencies": {
