@@ -48,7 +48,7 @@
     "cli-table3": "^0.6.0",
     "contentful": "11.1.4",
     "contentful-batch-libs": "^9.4.1",
-    "contentful-management": "^11.36.0-beta.1",
+    "contentful-management": "^11.36.0",
     "date-fns": "^4.1.0",
     "figures": "^3.2.0",
     "jsonwebtoken": "^9.0.0",
