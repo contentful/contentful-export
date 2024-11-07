@@ -45,3 +45,8 @@ workflows:
           requires:
             - unit
             - integration
+          filters:
+            branches:
+              only:
+                - main
+                - beta
