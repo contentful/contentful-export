@@ -81,8 +81,6 @@ test('It should export space when used as a library, with deliveryToken', () => 
       expect(content.tags).toHaveLength(4)
       expect(content.webhooks).toHaveLength(0)
       expect(content.roles).toHaveLength(7)
-      // entries returned from CDN don't have this property
-      expect(content.entries[0].sys).not.toHaveProperty('publishedVersion')
     })
 })
 

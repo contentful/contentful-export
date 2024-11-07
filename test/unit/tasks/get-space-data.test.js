@@ -502,6 +502,70 @@ test('Query entry/asset respect limit query param', () => {
     })
 })
 
+test('only skips fetched items', () => {
+  // overwrite the getLocales only returns 20 items in pages of 10
+  mockEnvironment.getLocales = jest.fn()
+    .mockResolvedValueOnce({
+      items: Array.from({ length: 10 }, (n) => {
+        const id = n + 1
+        return Object.assign({ sys: { id } })
+      }),
+      total: 20
+    })
+    .mockResolvedValueOnce({
+      items: Array.from({ length: 7 }, (n) => {
+        const id = n + 11
+        return Object.assign({ sys: { id } })
+      }),
+      total: 17
+    })
+  return getSpaceData({
+    client: mockClient,
+    spaceId: 'spaceid',
+    skipContent: true,
+    skipWebhooks: true,
+    skipRoles: true
+  })
+    .run({
+      data: {}
+    })
+    .then(() => {
+      expect(mockClient.getSpace.mock.calls).toHaveLength(1)
+      expect(mockSpace.getEnvironment.mock.calls).toHaveLength(1)
+      expect(mockEnvironment.getLocales.mock.calls).toHaveLength(2)
+      expect(mockEnvironment.getLocales.mock.calls[0][0].limit).toBe(1000)
+      expect(mockEnvironment.getLocales.mock.calls[0][0].skip).toBe(0)
+      expect(mockEnvironment.getLocales.mock.calls[1][0].limit).toBe(1000)
+      expect(mockEnvironment.getLocales.mock.calls[1][0].skip).toBe(10)
+    })
+})
+
+test('halts fetching when no items in page', () => {
+  // overwrite the getLocales returns 0 items
+  mockEnvironment.getLocales = jest.fn()
+    .mockResolvedValueOnce({
+      items: [],
+      total: 20
+    })
+  return getSpaceData({
+    client: mockClient,
+    spaceId: 'spaceid',
+    skipContent: true,
+    skipWebhooks: true,
+    skipRoles: true
+  })
+    .run({
+      data: {}
+    })
+    .then(() => {
+      expect(mockClient.getSpace.mock.calls).toHaveLength(1)
+      expect(mockSpace.getEnvironment.mock.calls).toHaveLength(1)
+      expect(mockEnvironment.getLocales.mock.calls).toHaveLength(1)
+      expect(mockEnvironment.getLocales.mock.calls[0][0].limit).toBe(1000)
+      expect(mockEnvironment.getLocales.mock.calls[0][0].skip).toBe(0)
+    })
+})
+
 test('Strips tags from entries and assets', () => {
   return getSpaceData({
     client: mockClient,
