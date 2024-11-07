@@ -86,7 +86,7 @@
     "nock": "^13.0.0",
     "opener": "^1.4.1",
     "rimraf": "^4.0.7",
-    "semantic-release": "^22.0.5"
+    "semantic-release": "^24.2.0"
   },
   "files": [
     "bin",
