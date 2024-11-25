@@ -204,6 +204,9 @@ Download actual asset files
 #### `host` [string] [default: 'api.contentful.com']
 The Management API host
 
+#### `hostDelivery` [string] [default: 'cdn.contentful.com']
+The Delivery API host
+
 #### `proxy` [string]
 Proxy configuration in HTTP auth format: `host:port` or `user:password@host:port`
 
