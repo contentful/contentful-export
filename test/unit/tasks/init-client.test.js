@@ -78,7 +78,8 @@ test('does create both clients when deliveryToken is set', () => {
     proxy: 'proxy',
     accessToken: 'accessToken',
     spaceId: 'spaceId',
-    deliveryToken: 'deliveryToken'
+    deliveryToken: 'deliveryToken',
+    hostDelivery: 'hostDelivery'
   }
 
   initClient(opts, true)
@@ -98,6 +99,15 @@ test('does create both clients when deliveryToken is set', () => {
   expect(contentful.createClient.mock.calls[0][0]).toMatchObject({
     space: opts.spaceId,
     accessToken: opts.deliveryToken,
+    host: opts.hostDelivery,
+    port: opts.port,
+    headers: opts.headers,
+    insecure: opts.insecure,
+    proxy: opts.proxy,
+    httpAgent: opts.httpAgent,
+    httpsAgent: opts.httpsAgent,
+    application: opts.application,
+    integration: opts.integration
   })
   expect(contentfulManagement.createClient.mock.calls).toHaveLength(1)
   expect(contentful.createClient.mock.calls).toHaveLength(1)
