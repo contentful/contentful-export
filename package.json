@@ -11,8 +11,9 @@
     "contentful-export": "./bin/contentful-export"
   },
   "scripts": {
-    "build": "npm run clean && babel lib --out-dir dist",
+    "build": "npm run clean && npm run check && babel lib --out-dir dist",
     "build:watch": "babel lib --out-dir dist --watch",
+    "check": "tsc",
     "clean": "rimraf dist && rimraf coverage",
     "lint": "eslint lib bin/* types.d.ts",
     "lint:fix": "npm run lint -- --fix",
@@ -44,6 +45,7 @@
     "url": "https://github.com/contentful/contentful-export/issues"
   },
   "dependencies": {
+    "axios": "^1.7.8",
     "bfj": "^8.0.0",
     "bluebird": "^3.3.3",
     "cli-table3": "^0.6.0",
@@ -58,7 +60,6 @@
     "listr-verbose-renderer": "^0.6.0",
     "lodash.startcase": "^4.4.0",
     "mkdirp": "^2.0.0",
-    "node-fetch": "^2.6.7",
     "yargs": "^17.1.1"
   },
   "devDependencies": {
@@ -136,5 +137,8 @@
     "coveragePathIgnorePatterns": [
       "usageParams.js"
     ]
+  },
+  "overrides": {
+    "cross-spawn": "^7.0.6"
   }
 }

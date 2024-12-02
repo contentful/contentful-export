@@ -138,7 +138,7 @@ beforeEach(() => {
         output(value)
         return value
       }
-      throw new Error(`It should not access task property ${prop} (value: ${value})`)
+      throw new Error(`It should not access task property ${String(prop)} (value: ${value})`)
     }
   })
 })
