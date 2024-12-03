@@ -97,7 +97,7 @@ test('parseOption accepts proxy config as string', () => {
   expect(options.httpsAgent).toBeInstanceOf(HttpsProxyAgent)
 })
 
-test.skip('parseOption accepts proxy config as object', () => {
+test('parseOption accepts proxy config as object', () => {
   const options = parseOptions({
     spaceId,
     managementToken,
@@ -110,7 +110,7 @@ test.skip('parseOption accepts proxy config as object', () => {
   })
   expect(options).not.toHaveProperty('proxy')
   expect(options.httpsAgent).toBeInstanceOf(HttpsProxyAgent)
-}, 'broken')
+})
 
 test('parseOptions parses queryEntries option', () => {
   const options = parseOptions({
