@@ -254,6 +254,21 @@ contentfulExport({
 })
 ```
 
+### Embargoed Assets
+
+If a space is configured to use the [embargoed assets feature](https://www.contentful.com/help/media/embargoed-assets/), certain options will need to be set to use the export/import tooling. When exporting content, the `downloadAssets` option must be set to `true`. This will download the asset files to your local machine. Then, when importing content ([using `contentful-import`](https://github.com/contentful/contentful-import)), the `uploadAssets` option must be set to `true` and the `assetsDirectory` must be set to the directory that contains all of the exported asset folders.
+
+```javascript
+const contentfulExport = require('contentful-export')
+
+const options = {
+  spaceId: '<space_id>',
+  managementToken: '<content_management_api_key>',
+  downloadAssets: true
+}
+
+contentfulExport(options)
+```
 
 ## :card_file_box: Exported data structure
 
