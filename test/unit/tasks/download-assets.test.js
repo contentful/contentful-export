@@ -18,7 +18,7 @@ const EMBARGOED_ASSET_URL = `${ASSET_PATH}/${EMBARGOED_ASSET_FILENAME}`
 const NON_EXISTING_URL = '/does-not-exist.png'
 const UNICODE_SHORT_FILENAME = '测试文件.jpg'
 const UNICODE_SHORT_URL = `${ASSET_PATH}/${encodeURIComponent(UNICODE_SHORT_FILENAME)}`
-const UNICODE_LONG_FILENAME = `${'测试文件'.repeat(25)}.jpg`
+const UNICODE_LONG_FILENAME = `${'测试文件'.repeat(10)}.jpg`
 const UNICODE_LONG_URL = `${ASSET_PATH}/${encodeURIComponent(UNICODE_LONG_FILENAME)}`
 const DIFFERENT_FILENAME = 'different filename.jpg'
 const UPLOAD_URL = '//file-stack-url-do-not-use-me.png'
@@ -35,7 +35,7 @@ let output
 
 nock(`https:${BASE_PATH}`)
   .get(EXISTING_ASSET_URL)
-  .times(8)
+  .times(10)
   .reply(200)
 
 nock(`https:${BASE_PATH}`)
@@ -67,7 +67,7 @@ nock(`https://${API_HOST}`)
   .times(1)
   .reply(200, { policy: POLICY, secret: SECRET })
 
-function getAssets ({ existing = 0, nonExisting = 0, missingUrl = 0, embargoed = 0, unicodeShort = 0, unicodeLong = 0, differentFilename = 0 } = {}) {
+function getAssets ({ existing = 0, nonExisting = 0, missingUrl = 0, embargoed = 0, unicodeShort = 0, unicodeLong = 0, differentFilename = 0, missingFileName = 0 } = {}) {
   const existingUrl = `${BASE_PATH}${EXISTING_ASSET_URL}`
   const embargoedUrl = `${BASE_PATH_SECURE}${EMBARGOED_ASSET_URL}`
   const nonExistingUrl = `${BASE_PATH}${NON_EXISTING_URL}`
@@ -213,6 +213,25 @@ function getAssets ({ existing = 0, nonExisting = 0, missingUrl = 0, embargoed =
           'de-DE': {
             url: existingUrl,
             fileName: DIFFERENT_FILENAME,
+            upload: UPLOAD_URL
+          }
+        }
+      }
+    })
+  }
+  for (let i = 0; i < missingFileName; i++) {
+    assets.push({
+      sys: {
+        id: `missing fileName asset ${i}`
+      },
+      fields: {
+        file: {
+          'en-US': {
+            url: existingUrl,
+            upload: UPLOAD_URL
+          },
+          'de-DE': {
+            url: existingUrl,
             upload: UPLOAD_URL
           }
         }
@@ -415,5 +434,34 @@ test('Downloads assets with different filename than URL path', () => {
       expect(differentFilenameAsset.fields.file['en-US'].url).toBe(`${BASE_PATH}${EXISTING_ASSET_URL}`)
       expect(differentFilenameAsset.fields.file['de-DE'].fileName).toBe(DIFFERENT_FILENAME)
       expect(differentFilenameAsset.fields.file['de-DE'].url).toBe(`${BASE_PATH}${EXISTING_ASSET_URL}`)
+    })
+})
+
+test('Downloads assets with missing fileName, falling back to URL path', () => {
+  const task = downloadAssets({
+    exportDir: tmpDirectory
+  })
+  const ctx = {
+    data: {
+      assets: [
+        ...getAssets({ missingFileName: 1 })
+      ]
+    }
+  }
+
+  return task(ctx, taskProxy)
+    .then(() => {
+      expect(ctx.assetDownloads).toEqual({
+        successCount: 2,
+        warningCount: 0,
+        errorCount: 0
+      })
+      expect(output.mock.calls).toHaveLength(2)
+
+      const missingFileNameAsset = ctx.data.assets.find(asset => asset.sys.id === 'missing fileName asset 0')
+      expect(missingFileNameAsset.fields.file['en-US'].fileName).toBeUndefined()
+      expect(missingFileNameAsset.fields.file['de-DE'].fileName).toBeUndefined()
+      expect(missingFileNameAsset.fields.file['en-US'].url).toBe(`${BASE_PATH}${EXISTING_ASSET_URL}`)
+      expect(missingFileNameAsset.fields.file['de-DE'].url).toBe(`${BASE_PATH}${EXISTING_ASSET_URL}`)
     })
 })

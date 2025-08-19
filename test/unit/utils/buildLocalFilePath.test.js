@@ -49,4 +49,20 @@ describe('buildLocalFilePath', () => {
 
     expect(result).toBe(path.join(customDirectory, 'images.ctfassets.net', 'space123/asset456/hash789/', fileName))
   })
+
+  test('fallback to URL pathname when fileName is undefined', () => {
+    const url = 'https://images.ctfassets.net/space123/asset456/hash789/encoded_filename.jpg'
+
+    const result = buildLocalFilePath(url, baseDirectory, undefined)
+
+    expect(result).toBe(path.join(baseDirectory, 'images.ctfassets.net', '/space123/asset456/hash789/encoded_filename.jpg'))
+  })
+
+  test('fallback handles Unicode filename in URL', () => {
+    const url = 'https://images.ctfassets.net/space123/asset456/hash789/测试文件.jpg'
+
+    const result = buildLocalFilePath(url, baseDirectory, null)
+
+    expect(result).toBe(path.join(baseDirectory, 'images.ctfassets.net', '/space123/asset456/hash789/测试文件.jpg'))
+  })
 })
