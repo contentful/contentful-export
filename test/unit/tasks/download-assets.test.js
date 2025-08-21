@@ -10,9 +10,18 @@ const tmpDirectory = resolve(tmpdir(), 'contentful-import-test')
 
 const BASE_PATH = '//images.contentful.com'
 const BASE_PATH_SECURE = '//images.secure.contentful.com'
-const EXISTING_ASSET_URL = '/kq9lln4hyr8s/2MTd2wBirYikEYkIIc0YSw/7aa4c06f3054996e45bb3f13964cb254/rocka-nutrition.png'
-const EMBARGOED_ASSET_URL = '/kq9lln4hyr8s/2MTd2wBirYikEYkIIc0YSw/7aa4c06f3054996e45bb3f13964cb254/space-dog.png'
+const ASSET_PATH = '/kq9lln4hyr8s/2MTd2wBirYikEYkIIc0YSw/7aa4c06f3054996e45bb3f13964cb254'
+const EXISTING_ASSET_FILENAME = 'rocka-nutrition.png'
+const EXISTING_ASSET_URL = `${ASSET_PATH}/${EXISTING_ASSET_FILENAME}`
+const EMBARGOED_ASSET_FILENAME = 'space-dog.png'
+const EMBARGOED_ASSET_URL = `${ASSET_PATH}/${EMBARGOED_ASSET_FILENAME}`
 const NON_EXISTING_URL = '/does-not-exist.png'
+const UNICODE_SHORT_FILENAME = '测试文件.jpg'
+const UNICODE_SHORT_URL = `${ASSET_PATH}/${encodeURIComponent(UNICODE_SHORT_FILENAME)}`
+const UNICODE_LONG_FILENAME = `${'测试文件'.repeat(10)}.jpg`
+const UNICODE_LONG_URL = `${ASSET_PATH}/${encodeURIComponent(UNICODE_LONG_FILENAME)}`
+const DIFFERENT_FILENAME = 'different filename.jpg'
+const UPLOAD_URL = '//file-stack-url-do-not-use-me.png'
 
 const API_HOST = 'api.contentful.com'
 const SPACE_ID = 'kq9lln4hyr8s'
@@ -26,12 +35,22 @@ let output
 
 nock(`https:${BASE_PATH}`)
   .get(EXISTING_ASSET_URL)
-  .times(6)
+  .times(8)
   .reply(200)
 
 nock(`https:${BASE_PATH}`)
   .get(NON_EXISTING_URL)
   .reply(404)
+
+nock(`https:${BASE_PATH}`)
+  .get(UNICODE_SHORT_URL)
+  .times(2)
+  .reply(200)
+
+nock(`https:${BASE_PATH}`)
+  .get(UNICODE_LONG_URL)
+  .times(2)
+  .reply(200)
 
 // Mock downloading assets using signed URLs
 nock(`https:${BASE_PATH_SECURE}`)
@@ -48,10 +67,12 @@ nock(`https://${API_HOST}`)
   .times(1)
   .reply(200, { policy: POLICY, secret: SECRET })
 
-function getAssets ({ existing = 0, nonExisting = 0, missingUrl = 0, embargoed = 0 } = {}) {
+function getAssets ({ existing = 0, nonExisting = 0, missingUrl = 0, embargoed = 0, unicodeShort = 0, unicodeLong = 0, differentFilename = 0 } = {}) {
   const existingUrl = `${BASE_PATH}${EXISTING_ASSET_URL}`
   const embargoedUrl = `${BASE_PATH_SECURE}${EMBARGOED_ASSET_URL}`
   const nonExistingUrl = `${BASE_PATH}${NON_EXISTING_URL}`
+  const unicodeShortUrl = `${BASE_PATH}${UNICODE_SHORT_URL}`
+  const unicodeLongUrl = `${BASE_PATH}${UNICODE_LONG_URL}`
   const assets = []
   for (let i = 0; i < nonExisting; i++) {
     assets.push({
@@ -62,11 +83,13 @@ function getAssets ({ existing = 0, nonExisting = 0, missingUrl = 0, embargoed =
         file: {
           'en-US': {
             url: nonExistingUrl,
-            upload: '//file-stack-url-do-not-use-me.png'
+            fileName: NON_EXISTING_URL,
+            upload: UPLOAD_URL
           },
           'de-DE': {
             url: nonExistingUrl,
-            upload: '//file-stack-url-do-not-use-me.png'
+            fileName: NON_EXISTING_URL,
+            upload: UPLOAD_URL
           }
         }
       }
@@ -81,11 +104,13 @@ function getAssets ({ existing = 0, nonExisting = 0, missingUrl = 0, embargoed =
         file: {
           'en-US': {
             url: existingUrl,
-            upload: '//file-stack-url-do-not-use-me.png'
+            fileName: EXISTING_ASSET_FILENAME,
+            upload: UPLOAD_URL
           },
           'de-DE': {
             url: existingUrl,
-            upload: '//file-stack-url-do-not-use-me.png'
+            fileName: EXISTING_ASSET_FILENAME,
+            upload: UPLOAD_URL
           }
         }
       }
@@ -100,11 +125,13 @@ function getAssets ({ existing = 0, nonExisting = 0, missingUrl = 0, embargoed =
         file: {
           'en-US': {
             url: embargoedUrl,
-            upload: '//file-stack-url-do-not-use-me.png'
+            fileName: EMBARGOED_ASSET_FILENAME,
+            upload: UPLOAD_URL
           },
           'de-DE': {
             url: embargoedUrl,
-            upload: '//file-stack-url-do-not-use-me.png'
+            fileName: EMBARGOED_ASSET_FILENAME,
+            upload: UPLOAD_URL
           }
         }
       }
@@ -118,10 +145,75 @@ function getAssets ({ existing = 0, nonExisting = 0, missingUrl = 0, embargoed =
       fields: {
         file: {
           'en-US': {
-            upload: '//file-stack-url-do-not-use-me.png'
+            upload: UPLOAD_URL,
+            fileName: DIFFERENT_FILENAME
           },
           'de-DE': {
-            upload: '//file-stack-url-do-not-use-me.png'
+            upload: UPLOAD_URL,
+            fileName: DIFFERENT_FILENAME
+          }
+        }
+      }
+    })
+  }
+  for (let i = 0; i < unicodeShort; i++) {
+    assets.push({
+      sys: {
+        id: `unicode short asset ${i}`
+      },
+      fields: {
+        file: {
+          'en-US': {
+            url: unicodeShortUrl,
+            fileName: UNICODE_SHORT_FILENAME,
+            upload: UPLOAD_URL
+          },
+          'de-DE': {
+            url: unicodeShortUrl,
+            fileName: UNICODE_SHORT_FILENAME,
+            upload: UPLOAD_URL
+          }
+        }
+      }
+    })
+  }
+  for (let i = 0; i < unicodeLong; i++) {
+    assets.push({
+      sys: {
+        id: `unicode long asset ${i}`
+      },
+      fields: {
+        file: {
+          'en-US': {
+            url: unicodeLongUrl,
+            fileName: UNICODE_LONG_FILENAME,
+            upload: UPLOAD_URL
+          },
+          'de-DE': {
+            url: unicodeLongUrl,
+            fileName: UNICODE_LONG_FILENAME,
+            upload: UPLOAD_URL
+          }
+        }
+      }
+    })
+  }
+  for (let i = 0; i < differentFilename; i++) {
+    assets.push({
+      sys: {
+        id: `different filename asset ${i}`
+      },
+      fields: {
+        file: {
+          'en-US': {
+            url: existingUrl,
+            fileName: DIFFERENT_FILENAME,
+            upload: UPLOAD_URL
+          },
+          'de-DE': {
+            url: existingUrl,
+            fileName: DIFFERENT_FILENAME,
+            upload: UPLOAD_URL
           }
         }
       }
@@ -240,5 +332,88 @@ test('it doesn\'t use fileStack url as fallback for the file url and throws a wa
           call[0]?.endsWith('asset.fields.file[de-DE].url'))
 
       expect(missingUrlsOutputCount).toHaveLength(2)
+    })
+})
+
+test('Downloads assets with short Unicode filenames', () => {
+  const task = downloadAssets({
+    exportDir: tmpDirectory
+  })
+  const ctx = {
+    data: {
+      assets: [
+        ...getAssets({ unicodeShort: 1 })
+      ]
+    }
+  }
+
+  return task(ctx, taskProxy)
+    .then(() => {
+      expect(ctx.assetDownloads).toEqual({
+        successCount: 2,
+        warningCount: 0,
+        errorCount: 0
+      })
+      expect(output.mock.calls).toHaveLength(2)
+
+      const unicodeShortAsset = ctx.data.assets.find(asset => asset.sys.id === 'unicode short asset 0')
+      expect(unicodeShortAsset.fields.file['en-US'].fileName).toBe(UNICODE_SHORT_FILENAME)
+      expect(unicodeShortAsset.fields.file['de-DE'].fileName).toBe(UNICODE_SHORT_FILENAME)
+    })
+})
+
+test('Downloads assets with long Unicode filenames', () => {
+  const task = downloadAssets({
+    exportDir: tmpDirectory
+  })
+  const ctx = {
+    data: {
+      assets: [
+        ...getAssets({ unicodeLong: 1 })
+      ]
+    }
+  }
+
+  return task(ctx, taskProxy)
+    .then(() => {
+      expect(ctx.assetDownloads).toEqual({
+        successCount: 2,
+        warningCount: 0,
+        errorCount: 0
+      })
+      expect(output.mock.calls).toHaveLength(2)
+
+      const unicodeLongAsset = ctx.data.assets.find(asset => asset.sys.id === 'unicode long asset 0')
+      expect(unicodeLongAsset.fields.file['en-US'].fileName).toBe(UNICODE_LONG_FILENAME)
+      expect(unicodeLongAsset.fields.file['de-DE'].fileName).toBe(UNICODE_LONG_FILENAME)
+    })
+})
+
+test('Downloads assets with different filename than URL path', () => {
+  const task = downloadAssets({
+    exportDir: tmpDirectory
+  })
+  const ctx = {
+    data: {
+      assets: [
+        ...getAssets({ differentFilename: 1 })
+      ]
+    }
+  }
+
+  return task(ctx, taskProxy)
+    .then(() => {
+      expect(ctx.assetDownloads).toEqual({
+        successCount: 2,
+        warningCount: 0,
+        errorCount: 0
+      })
+      expect(output.mock.calls).toHaveLength(2)
+
+      const differentFilenameAsset = ctx.data.assets.find(asset => asset.sys.id === 'different filename asset 0')
+      expect(differentFilenameAsset.fields.file['en-US'].fileName).toBe(DIFFERENT_FILENAME)
+      expect(differentFilenameAsset.fields.file['en-US'].url).toBe(`${BASE_PATH}${EXISTING_ASSET_URL}`)
+      expect(differentFilenameAsset.fields.file['de-DE'].fileName).toBe(DIFFERENT_FILENAME)
+      expect(differentFilenameAsset.fields.file['de-DE'].url).toBe(`${BASE_PATH}${EXISTING_ASSET_URL}`)
     })
 })
