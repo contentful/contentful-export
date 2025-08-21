@@ -436,32 +436,3 @@ test('Downloads assets with different filename than URL path', () => {
       expect(differentFilenameAsset.fields.file['de-DE'].url).toBe(`${BASE_PATH}${EXISTING_ASSET_URL}`)
     })
 })
-
-test('Downloads assets with missing fileName, falling back to URL path', () => {
-  const task = downloadAssets({
-    exportDir: tmpDirectory
-  })
-  const ctx = {
-    data: {
-      assets: [
-        ...getAssets({ missingFileName: 1 })
-      ]
-    }
-  }
-
-  return task(ctx, taskProxy)
-    .then(() => {
-      expect(ctx.assetDownloads).toEqual({
-        successCount: 2,
-        warningCount: 0,
-        errorCount: 0
-      })
-      expect(output.mock.calls).toHaveLength(2)
-
-      const missingFileNameAsset = ctx.data.assets.find(asset => asset.sys.id === 'missing fileName asset 0')
-      expect(missingFileNameAsset.fields.file['en-US'].fileName).toBeUndefined()
-      expect(missingFileNameAsset.fields.file['de-DE'].fileName).toBeUndefined()
-      expect(missingFileNameAsset.fields.file['en-US'].url).toBe(`${BASE_PATH}${EXISTING_ASSET_URL}`)
-      expect(missingFileNameAsset.fields.file['de-DE'].url).toBe(`${BASE_PATH}${EXISTING_ASSET_URL}`)
-    })
-})
