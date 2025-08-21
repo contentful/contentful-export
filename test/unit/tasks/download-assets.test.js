@@ -35,7 +35,7 @@ let output
 
 nock(`https:${BASE_PATH}`)
   .get(EXISTING_ASSET_URL)
-  .times(10)
+  .times(8)
   .reply(200)
 
 nock(`https:${BASE_PATH}`)
