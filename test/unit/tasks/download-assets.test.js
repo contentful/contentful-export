@@ -67,7 +67,7 @@ nock(`https://${API_HOST}`)
   .times(1)
   .reply(200, { policy: POLICY, secret: SECRET })
 
-function getAssets ({ existing = 0, nonExisting = 0, missingUrl = 0, embargoed = 0, unicodeShort = 0, unicodeLong = 0, differentFilename = 0, missingFileName = 0 } = {}) {
+function getAssets ({ existing = 0, nonExisting = 0, missingUrl = 0, embargoed = 0, unicodeShort = 0, unicodeLong = 0, differentFilename = 0 } = {}) {
   const existingUrl = `${BASE_PATH}${EXISTING_ASSET_URL}`
   const embargoedUrl = `${BASE_PATH_SECURE}${EMBARGOED_ASSET_URL}`
   const nonExistingUrl = `${BASE_PATH}${NON_EXISTING_URL}`
@@ -213,25 +213,6 @@ function getAssets ({ existing = 0, nonExisting = 0, missingUrl = 0, embargoed =
           'de-DE': {
             url: existingUrl,
             fileName: DIFFERENT_FILENAME,
-            upload: UPLOAD_URL
-          }
-        }
-      }
-    })
-  }
-  for (let i = 0; i < missingFileName; i++) {
-    assets.push({
-      sys: {
-        id: `missing fileName asset ${i}`
-      },
-      fields: {
-        file: {
-          'en-US': {
-            url: existingUrl,
-            upload: UPLOAD_URL
-          },
-          'de-DE': {
-            url: existingUrl,
             upload: UPLOAD_URL
           }
         }
