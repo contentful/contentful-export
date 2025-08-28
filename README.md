@@ -140,7 +140,7 @@ Just to clarify: When Contentful Management API always returns the latest versio
 the Content Delivery API would return the `publishedVersion` (23). CDA responses don't include
 version number.
 
-Note: Tags are only available on the Contentful Management API, so they will not be exported if you provide a Contenful Delivery Token. Tags is a new feature that not all users have access to.
+Note: Tags are only available on the Contentful Management API, so they will not be exported if you provide a Contentful Delivery Token. Tags is a new feature that not all users have access to.
 
 ### Output
 
