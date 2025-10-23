@@ -10,10 +10,10 @@ This is a library that helps you backup your Content Model, Content and Assets o
 To import your exported data, please refer to the [contentful-import](https://github.com/contentful/contentful-import) repository.
 
 ## :exclamation: Usage as CLI
+
 > We moved the CLI version of this tool into our [Contentful CLI](https://github.com/contentful/contentful-cli). This allows our users to use and install only one single CLI tool to get the full Contentful experience.
 >
 > Please have a look at the [Contentful CLI export command documentation](https://github.com/contentful/contentful-cli/tree/master/docs/space/export) to learn more about how to use this as command line tool.
-
 
 ## :cloud: Pre-requisites && Installation
 
@@ -28,6 +28,8 @@ npm install contentful-export
 ```
 
 ## :hand: Usage
+
+### CommonJS
 
 ```javascript
 const contentfulExport = require('contentful-export')
@@ -45,6 +47,21 @@ contentfulExport(options)
   .catch((err) => {
     console.log('Oh no! Some errors occurred!', err)
   })
+```
+
+### ESM
+
+```javascript
+import { default as contentfulExport } from 'contentful-export'
+
+const options = {
+  spaceId: '<space_id>',
+  managementToken: '<content_management_api_key>',
+  ...
+}
+
+// contentfulExport returns a Promise so you can use async/await, etc.
+await contentfulExport(options)
 ```
 
 ### Querying
@@ -104,15 +121,19 @@ contentfulExport(options)
 ### Basics
 
 #### `spaceId` [string] [required]
+
 ID of the space with source data
 
 #### `environmentId` [string] [default: 'master']
+
 ID of the environment in the source space
 
 #### `managementToken` [string] [required]
+
 Contentful management API token for the space to be exported
 
 #### `deliveryToken` [string]
+
 Contentful Content Delivery API (CDA) token for the space to be exported.
 
 Providing `deliveryToken` will export both entries and assets from the
@@ -141,17 +162,21 @@ Note: Tags are only available on the Contentful Management API, so they will not
 ### Output
 
 #### `exportDir` [string] [default: current process working directory]
+
 Defines the path for storing the export JSON file
 
 #### `saveFile` [boolean] [default: true]
+
 Save the export as a JSON file
 
 #### `contentFile` [string]
+
 The filename for the exported data
 
 ### Filtering
 
 #### `includeDrafts` [boolean] [default: false]
+
 Include drafts in the exported entries.
 
 The `deliveryToken` option is ignored
@@ -160,67 +185,87 @@ If you want to include drafts, there's no point of getting them through the
 Content Delivery API.
 
 #### `includeArchived` [boolean] [default: false]
+
 Include archived entries in the exported entries
 
 #### `skipContentModel` [boolean] [default: false]
+
 Skip exporting content models
 
 #### `skipEditorInterfaces` [boolean] [default: false]
+
 Skip exporting editor interfaces
 
 #### `skipContent` [boolean] [default: false]
+
 Skip exporting assets and entries.
 
 #### `skipRoles` [boolean] [default: false]
+
 Skip exporting roles and permissions
 
 #### `skipTags` [boolean] [default: false]
+
 Skip exporting tags
 
 #### `skipWebhooks` [boolean] [default: false]
+
 Skip exporting webhooks
 
 #### `stripTags` [boolean] [default: false]
+
 Untag assets and entries
 
 #### `contentOnly` [boolean] [default: false]
+
 Only export entries and assets
 
 #### `queryEntries` [array]
+
 Only export entries that match these queries
 
 #### `queryAssets` [array]
+
 Only export assets that match these queries
 
 #### `downloadAssets` [boolean]
+
 Download actual asset files
 
 ### Connection
 
 #### `host` [string] [default: 'api.contentful.com']
+
 The Management API host
 
 #### `hostDelivery` [string] [default: 'cdn.contentful.com']
+
 The Delivery API host
 
 #### `proxy` [string]
+
 Proxy configuration in HTTP auth format: `host:port` or `user:password@host:port`
 
 #### `rawProxy` [boolean]
+
 Pass proxy config to Axios instead of creating a custom httpsAgent
 
 #### `maxAllowedLimit` [number] [default: 1000]
+
 The number of items per page per request
 
 #### `headers` [object]
-Additional headers to attach to the requests. 
+
+Additional headers to attach to the requests.
 
 ### Other
 
 #### `errorLogFile` [string]
+
 Full path to the error log file
 
 #### `useVerboseRenderer` [boolean] [default: false]
+
 Display progress in new lines instead of displaying a busy spinner and the status in the same line. Useful for CI.
 
 ## :rescue_worker_helmet: Troubleshooting
@@ -255,15 +300,15 @@ contentfulExport({
 If a space is configured to use the [embargoed assets feature](https://www.contentful.com/help/media/embargoed-assets/), certain options will need to be set to use the export/import tooling. When exporting content, the `downloadAssets` option must be set to `true`. This will download the asset files to your local machine. Then, when importing content ([using `contentful-import`](https://github.com/contentful/contentful-import)), the `uploadAssets` option must be set to `true` and the `assetsDirectory` must be set to the directory that contains all of the exported asset folders.
 
 ```javascript
-const contentfulExport = require('contentful-export')
+const contentfulExport = require("contentful-export");
 
 const options = {
-  spaceId: '<space_id>',
-  managementToken: '<content_management_api_key>',
-  downloadAssets: true
-}
+  spaceId: "<space_id>",
+  managementToken: "<content_management_api_key>",
+  downloadAssets: true,
+};
 
-contentfulExport(options)
+contentfulExport(options);
 ```
 
 ## :card_file_box: Exported data structure
@@ -283,7 +328,7 @@ This is an overview of the exported data:
 }
 ```
 
-*Note:* Tags feature is not available for all users. If you do not have access to this feature, the tags array will always be empty.
+_Note:_ Tags feature is not available for all users. If you do not have access to this feature, the tags array will always be empty.
 
 ## :warning: Limitations
 
@@ -296,7 +341,7 @@ This is an overview of the exported data:
 Read the [releases](https://github.com/contentful/contentful-export/releases) page for more information.
 
 ## :scroll: License
- 
+
 This project is licensed under MIT license
 
 [1]: https://www.contentful.com
