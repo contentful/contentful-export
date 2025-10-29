@@ -52,7 +52,7 @@ contentfulExport(options)
 ### ESM
 
 ```javascript
-import { default as contentfulExport } from 'contentful-export'
+import contentfulExport from 'contentful-export'
 
 const options = {
   spaceId: '<space_id>',
