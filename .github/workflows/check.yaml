@@ -1,0 +1,60 @@
+name: Run Checks
+
+on:
+  workflow_call:
+    secrets:
+      VAULT_URL:
+        required: true
+      CMA_TOKEN:
+        required: true
+      CDA_TOKEN:
+        required: true
+      EXPORT_SPACE_ID:
+        required: true
+      EXPORT_SPACE_ID_EMBARGOED_ASSETS:
+        required: true
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Restore the build folders
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            dist
+          key: build-cache-${{ github.run_id }}-${{ github.run_attempt }}
+
+      # Prior CI pipeline did not lint or format, skipping for now
+      # - name: Run linter
+      #   run: npm run lint
+
+      # - name: Check formatting
+      #   run: npm run format:check
+
+      - name: Run unit tests
+        run: npm run test:unit
+
+      - name: Run integration tests
+        run: npm run test:integration
+        env:
+          CMA_TOKEN: ${{ secrets.CMA_TOKEN }}
+          DELIVERY_TOKEN: ${{ secrets.DELIVERY_TOKEN }}
+          EXPORT_SPACE_ID: ${{ secrets.EXPORT_SPACE_ID }}
+          EXPORT_SPACE_ID_EMBARGOED_ASSETS: ${{ secrets.EXPORT_SPACE_ID_EMBARGOED_ASSETS }}
