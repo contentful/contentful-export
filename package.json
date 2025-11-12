@@ -109,11 +109,6 @@
         "name": "beta",
         "channel": "beta",
         "prerelease": true
-      },
-      {
-        "name": "DX-541-gha-publishing",
-        "channel": "dev",
-        "prerelease": true
       }
     ],
     "plugins": [

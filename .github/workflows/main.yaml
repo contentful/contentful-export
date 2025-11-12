@@ -16,7 +16,7 @@ jobs:
     secrets: inherit
 
   release:
-    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/DX-541-gha-publishing')
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/beta')
     needs: [build, check]
     permissions:
       contents: write
