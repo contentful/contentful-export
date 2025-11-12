@@ -5,9 +5,9 @@ on:
     secrets:
       VAULT_URL:
         required: true
-      CMA_TOKEN:
+      MANAGEMENT_TOKEN:
         required: true
-      CDA_TOKEN:
+      DELIVERY_TOKEN:
         required: true
       EXPORT_SPACE_ID:
         required: true
@@ -54,7 +54,7 @@ jobs:
       - name: Run integration tests
         run: npm run test:integration
         env:
-          CMA_TOKEN: ${{ secrets.CMA_TOKEN }}
+          MANAGEMENT_TOKEN: ${{ secrets.MANAGEMENT_TOKEN }}
           DELIVERY_TOKEN: ${{ secrets.DELIVERY_TOKEN }}
           EXPORT_SPACE_ID: ${{ secrets.EXPORT_SPACE_ID }}
           EXPORT_SPACE_ID_EMBARGOED_ASSETS: ${{ secrets.EXPORT_SPACE_ID_EMBARGOED_ASSETS }}
