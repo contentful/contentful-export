@@ -64,9 +64,11 @@ jobs:
             dist
           key: build-cache-${{ github.run_id }}-${{ github.run_attempt }}
 
-      - name: NX Release
+      - name: Run Release
         run: |
-          npx nx release --yes
+          echo "Starting Semantic Release Process"
+          echo "npm version: $(npm -v)"
+          npm run semantic-release
         env:
           GITHUB_TOKEN: ${{ steps.vault.outputs.GITHUB_TOKEN }}
 
@@ -80,9 +82,7 @@ jobs:
 
       - name: Summary
         run: |
-          VERSION=$(echo "${{ steps.get-tag.outputs.tag }}" | sed 's/^v//')
           echo "## Release Summary" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "- **Version**: ${{ steps.get-tag.outputs.tag }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **GitHub Packages**: https://github.com/${{ github.repository }}/packages" >> $GITHUB_STEP_SUMMARY
           echo "- **GitHub Release**: https://github.com/${{ github.repository }}/releases/tag/${{ steps.get-tag.outputs.tag }}" >> $GITHUB_STEP_SUMMARY
