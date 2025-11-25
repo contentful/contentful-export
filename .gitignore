@@ -8,7 +8,6 @@ gh-pages
 *.dockerignore
 
 # Node package managers
-.npmrc
 yarn.lock
 
 # Created by https://www.gitignore.io/api/vim,code,linux,macos,windows,sublimetext,node
