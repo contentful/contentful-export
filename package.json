@@ -60,7 +60,7 @@
     "listr-verbose-renderer": "^0.6.0",
     "lodash.startcase": "^4.4.0",
     "mkdirp": "^2.0.0",
-    "yargs": "^18.0.0"
+    "yargs": "^17.7.2"
   },
   "devDependencies": {
     "@babel/cli": "^7.0.0",
@@ -90,7 +90,7 @@
     "rimraf": "^4.0.7",
     "semantic-release": "^25.0.2"
   },
-  "files": [
+  "files": [gh 
     "bin",
     "dist",
     "example-config.json",
