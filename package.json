@@ -90,7 +90,7 @@
     "rimraf": "^4.0.7",
     "semantic-release": "^25.0.2"
   },
-  "files": [gh 
+  "files": [
     "bin",
     "dist",
     "example-config.json",
