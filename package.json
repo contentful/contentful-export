@@ -51,7 +51,7 @@
     "cli-table3": "^0.6.0",
     "contentful": "^11.5.10",
     "contentful-batch-libs": "^9.4.1",
-    "contentful-management": "^11.48.1",
+    "contentful-management": "^12.0.0-new-beta.9",
     "date-fns": "^4.1.0",
     "figures": "^3.2.0",
     "jsonwebtoken": "^9.0.0",
@@ -60,7 +60,7 @@
     "listr-verbose-renderer": "^0.6.0",
     "lodash.startcase": "^4.4.0",
     "mkdirp": "^2.0.0",
-    "yargs": "^18.0.0"
+    "yargs": "^17.7.2"
   },
   "devDependencies": {
     "@babel/cli": "^7.0.0",
@@ -136,6 +136,9 @@
     ],
     "coveragePathIgnorePatterns": [
       "usageParams.js"
+    ],
+    "transformIgnorePatterns": [
+      "node_modules/(?!(contentful-batch-libs)/)"
     ]
   },
   "overrides": {
