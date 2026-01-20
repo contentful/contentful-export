@@ -3,8 +3,6 @@ name: Run Checks
 on:
   workflow_call:
     secrets:
-      VAULT_URL:
-        required: true
       MANAGEMENT_TOKEN:
         required: true
       DELIVERY_TOKEN:
