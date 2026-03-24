@@ -3,8 +3,6 @@ name: Run Checks
 on:
   workflow_call:
     secrets:
-      VAULT_URL:
-        required: true
       MANAGEMENT_TOKEN:
         required: true
       DELIVERY_TOKEN:
@@ -40,6 +38,7 @@ jobs:
           path: |
             dist
           key: build-cache-${{ github.run_id }}-${{ github.run_attempt }}
+          fail-on-cache-miss: true
 
       # Prior CI pipeline did not lint or format, skipping for now
       # - name: Run linter

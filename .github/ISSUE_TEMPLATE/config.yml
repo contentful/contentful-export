@@ -1,11 +1,11 @@
 blank_issues_enabled: true
 contact_links:
-  - name: Question or Discussion
-    url: https://github.com/username/repo-name/discussions
-    about: Ask questions or discuss ideas with the community
-  - name: Documentation
-    url: https://docs.yourproject.com
-    about: Check out our documentation for help and guides
-  - name: Security Vulnerability
-    url: https://github.com/username/repo-name/security/advisories/new
-    about: Report a security vulnerability privately
+  - name: Contentful Support & Help Center
+    url: https://support.contentful.com/hc/en-us/
+    about: Submit a support ticket or browse the help center.
+  - name: Contentful Developer Portal
+    url: https://www.contentful.com/developers/
+    about: Browse the developer portal for documentation, tutorials, and more.
+  - name: Contentful Community Discord
+    url: https://www.contentful.com/discord/
+    about: Get peer support on the Contentful Community Discord.
