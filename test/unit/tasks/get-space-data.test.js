@@ -24,62 +24,59 @@ function pagedContentResult (query, maxItems, mock = {}) {
   return result
 }
 
-const mockClient = {
-  space: {},
-  environment: {},
-  contentType: {},
-  entry: {},
-  asset: {},
-  locale: {},
-  tag: {},
-  webhook: {},
-  role: {},
-  editorInterface: {}
-}
+const mockSpace = {}
+
+const mockEnvironment = {}
+
+const mockClient = {}
+
+const getEditorInterface = jest.fn()
 
 const mockAsset = { metadata: { tags: [{}] } }
+
 const mockEntry = { metadata: { tags: [{}] } }
 
 function setupMocks () {
-  mockClient.space.get = jest.fn(() => Promise.resolve({}))
-  mockClient.environment.get = jest.fn(() => Promise.resolve({}))
-  mockClient.contentType.getMany = jest.fn((query) => {
-    return Promise.resolve(pagedResult(query, resultItemCount))
+  mockClient.getSpace = jest.fn(() => Promise.resolve(mockSpace))
+  mockSpace.getEnvironment = jest.fn(() => Promise.resolve(mockEnvironment))
+  mockEnvironment.getContentTypes = jest.fn((query) => {
+    return Promise.resolve(pagedResult(query, resultItemCount, {
+      getEditorInterface
+    }))
   })
-  mockClient.entry.getMany = jest.fn((query) => {
+  mockEnvironment.getEntries = jest.fn((query) => {
     return Promise.resolve(pagedContentResult(query, resultItemCount, mockEntry))
   })
-  mockClient.asset.getMany = jest.fn((query) => {
+  mockEnvironment.getAssets = jest.fn((query) => {
     return Promise.resolve(pagedContentResult(query, resultItemCount, mockAsset))
   })
-  mockClient.locale.getMany = jest.fn((query) => {
+  mockEnvironment.getLocales = jest.fn((query) => {
     return Promise.resolve(pagedResult(query, resultItemCount))
   })
-  mockClient.tag.getMany = jest.fn((query) => {
+  mockEnvironment.getTags = jest.fn((query) => {
     return Promise.resolve(pagedResult(query, resultItemCount))
   })
-  mockClient.webhook.getMany = jest.fn((query) => {
+  mockSpace.getWebhooks = jest.fn((query) => {
     return Promise.resolve(pagedResult(query, resultItemCount))
   })
-  mockClient.role.getMany = jest.fn((query) => {
+  mockSpace.getRoles = jest.fn((query) => {
     return Promise.resolve(pagedResult(query, resultItemCount))
   })
-  mockClient.editorInterface.get = jest.fn(() => Promise.resolve({}))
+  getEditorInterface.mockImplementation(() => Promise.resolve({}))
 }
 
 beforeEach(setupMocks)
 
 afterEach(() => {
-  mockClient.space.get.mockClear()
-  mockClient.environment.get.mockClear()
-  mockClient.contentType.getMany.mockClear()
-  mockClient.entry.getMany.mockClear()
-  mockClient.asset.getMany.mockClear()
-  mockClient.locale.getMany.mockClear()
-  mockClient.tag.getMany.mockClear()
-  mockClient.webhook.getMany.mockClear()
-  mockClient.role.getMany.mockClear()
-  mockClient.editorInterface.get.mockClear()
+  mockClient.getSpace.mockClear()
+  mockEnvironment.getContentTypes.mockClear()
+  mockEnvironment.getEntries.mockClear()
+  mockEnvironment.getAssets.mockClear()
+  mockEnvironment.getLocales.mockClear()
+  mockEnvironment.getTags.mockClear()
+  mockSpace.getWebhooks.mockClear()
+  mockSpace.getRoles.mockClear()
+  getEditorInterface.mockClear()
 })
 
 test('Gets whole destination content', () => {
@@ -92,16 +89,16 @@ test('Gets whole destination content', () => {
       data: {}
     })
     .then((response) => {
-      expect(mockClient.space.get.mock.calls).toHaveLength(1)
-      expect(mockClient.environment.get.mock.calls).toHaveLength(1)
-      expect(mockClient.contentType.getMany.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
-      expect(mockClient.entry.getMany.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
-      expect(mockClient.asset.getMany.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
-      expect(mockClient.locale.getMany.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
-      expect(mockClient.tag.getMany.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
-      expect(mockClient.webhook.getMany.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
-      expect(mockClient.role.getMany.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
-      expect(mockClient.editorInterface.get.mock.calls).toHaveLength(resultItemCount)
+      expect(mockClient.getSpace.mock.calls).toHaveLength(1)
+      expect(mockSpace.getEnvironment.mock.calls).toHaveLength(1)
+      expect(mockEnvironment.getContentTypes.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
+      expect(mockEnvironment.getEntries.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
+      expect(mockEnvironment.getAssets.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
+      expect(mockEnvironment.getLocales.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
+      expect(mockEnvironment.getTags.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
+      expect(mockSpace.getWebhooks.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
+      expect(mockSpace.getRoles.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
+      expect(getEditorInterface.mock.calls).toHaveLength(resultItemCount)
       expect(response.data.contentTypes).toHaveLength(resultItemCount)
       expect(response.data.entries).toHaveLength(resultItemCount / 2)
       expect(response.data.assets).toHaveLength(resultItemCount / 2)
@@ -124,16 +121,16 @@ test('Gets whole destination content without content model', () => {
       data: {}
     })
     .then((response) => {
-      expect(mockClient.space.get.mock.calls).toHaveLength(1)
-      expect(mockClient.environment.get.mock.calls).toHaveLength(1)
-      expect(mockClient.contentType.getMany.mock.calls).toHaveLength(0)
-      expect(mockClient.entry.getMany.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
-      expect(mockClient.asset.getMany.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
-      expect(mockClient.locale.getMany.mock.calls).toHaveLength(0)
-      expect(mockClient.tag.getMany.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
-      expect(mockClient.webhook.getMany.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
-      expect(mockClient.role.getMany.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
-      expect(mockClient.editorInterface.get.mock.calls).toHaveLength(0)
+      expect(mockClient.getSpace.mock.calls).toHaveLength(1)
+      expect(mockSpace.getEnvironment.mock.calls).toHaveLength(1)
+      expect(mockEnvironment.getContentTypes.mock.calls).toHaveLength(0)
+      expect(mockEnvironment.getEntries.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
+      expect(mockEnvironment.getAssets.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
+      expect(mockEnvironment.getLocales.mock.calls).toHaveLength(0)
+      expect(mockEnvironment.getTags.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
+      expect(mockSpace.getWebhooks.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
+      expect(mockSpace.getRoles.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
+      expect(getEditorInterface.mock.calls).toHaveLength(0)
       expect(response.data.contentTypes).toBeUndefined()
       expect(response.data.entries).toHaveLength(resultItemCount / 2)
       expect(response.data.assets).toHaveLength(resultItemCount / 2)
@@ -156,16 +153,16 @@ test('Gets whole destination content without content', () => {
       data: {}
     })
     .then((response) => {
-      expect(mockClient.space.get.mock.calls).toHaveLength(1)
-      expect(mockClient.environment.get.mock.calls).toHaveLength(1)
-      expect(mockClient.contentType.getMany.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
-      expect(mockClient.entry.getMany.mock.calls).toHaveLength(0)
-      expect(mockClient.asset.getMany.mock.calls).toHaveLength(0)
-      expect(mockClient.locale.getMany.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
-      expect(mockClient.tag.getMany.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
-      expect(mockClient.webhook.getMany.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
-      expect(mockClient.role.getMany.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
-      expect(mockClient.editorInterface.get.mock.calls).toHaveLength(resultItemCount)
+      expect(mockClient.getSpace.mock.calls).toHaveLength(1)
+      expect(mockSpace.getEnvironment.mock.calls).toHaveLength(1)
+      expect(mockEnvironment.getContentTypes.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
+      expect(mockEnvironment.getEntries.mock.calls).toHaveLength(0)
+      expect(mockEnvironment.getAssets.mock.calls).toHaveLength(0)
+      expect(mockEnvironment.getLocales.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
+      expect(mockEnvironment.getTags.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
+      expect(mockSpace.getWebhooks.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
+      expect(mockSpace.getRoles.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
+      expect(getEditorInterface.mock.calls).toHaveLength(resultItemCount)
       expect(response.data.contentTypes).toHaveLength(resultItemCount)
       expect(response.data.entries).toBeUndefined()
       expect(response.data.assets).toBeUndefined()
@@ -188,16 +185,16 @@ test('Gets whole destination content without webhooks', () => {
       data: {}
     })
     .then((response) => {
-      expect(mockClient.space.get.mock.calls).toHaveLength(1)
-      expect(mockClient.environment.get.mock.calls).toHaveLength(1)
-      expect(mockClient.contentType.getMany.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
-      expect(mockClient.entry.getMany.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
-      expect(mockClient.asset.getMany.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
-      expect(mockClient.locale.getMany.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
-      expect(mockClient.tag.getMany.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
-      expect(mockClient.webhook.getMany.mock.calls).toHaveLength(0)
-      expect(mockClient.role.getMany.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
-      expect(mockClient.editorInterface.get.mock.calls).toHaveLength(resultItemCount)
+      expect(mockClient.getSpace.mock.calls).toHaveLength(1)
+      expect(mockSpace.getEnvironment.mock.calls).toHaveLength(1)
+      expect(mockEnvironment.getContentTypes.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
+      expect(mockEnvironment.getEntries.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
+      expect(mockEnvironment.getAssets.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
+      expect(mockEnvironment.getLocales.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
+      expect(mockEnvironment.getTags.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
+      expect(mockSpace.getWebhooks.mock.calls).toHaveLength(0)
+      expect(mockSpace.getRoles.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
+      expect(getEditorInterface.mock.calls).toHaveLength(resultItemCount)
       expect(response.data.contentTypes).toHaveLength(resultItemCount)
       expect(response.data.entries).toHaveLength(resultItemCount / 2)
       expect(response.data.assets).toHaveLength(resultItemCount / 2)
@@ -220,16 +217,16 @@ test('Gets whole destination content without roles', () => {
       data: {}
     })
     .then((response) => {
-      expect(mockClient.space.get.mock.calls).toHaveLength(1)
-      expect(mockClient.environment.get.mock.calls).toHaveLength(1)
-      expect(mockClient.contentType.getMany.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
-      expect(mockClient.entry.getMany.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
-      expect(mockClient.asset.getMany.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
-      expect(mockClient.locale.getMany.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
-      expect(mockClient.tag.getMany.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
-      expect(mockClient.webhook.getMany.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
-      expect(mockClient.role.getMany.mock.calls).toHaveLength(0)
-      expect(mockClient.editorInterface.get.mock.calls).toHaveLength(resultItemCount)
+      expect(mockClient.getSpace.mock.calls).toHaveLength(1)
+      expect(mockSpace.getEnvironment.mock.calls).toHaveLength(1)
+      expect(mockEnvironment.getContentTypes.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
+      expect(mockEnvironment.getEntries.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
+      expect(mockEnvironment.getAssets.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
+      expect(mockEnvironment.getLocales.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
+      expect(mockEnvironment.getTags.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
+      expect(mockSpace.getWebhooks.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
+      expect(mockSpace.getRoles.mock.calls).toHaveLength(0)
+      expect(getEditorInterface.mock.calls).toHaveLength(resultItemCount)
       expect(response.data.contentTypes).toHaveLength(resultItemCount)
       expect(response.data.entries).toHaveLength(resultItemCount / 2)
       expect(response.data.assets).toHaveLength(resultItemCount / 2)
@@ -252,16 +249,16 @@ test('Gets whole destination content without editor interfaces', () => {
       data: {}
     })
     .then((response) => {
-      expect(mockClient.space.get.mock.calls).toHaveLength(1)
-      expect(mockClient.environment.get.mock.calls).toHaveLength(1)
-      expect(mockClient.contentType.getMany.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
-      expect(mockClient.entry.getMany.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
-      expect(mockClient.asset.getMany.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
-      expect(mockClient.locale.getMany.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
-      expect(mockClient.tag.getMany.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
-      expect(mockClient.webhook.getMany.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
-      expect(mockClient.role.getMany.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
-      expect(mockClient.editorInterface.get.mock.calls).toHaveLength(0)
+      expect(mockClient.getSpace.mock.calls).toHaveLength(1)
+      expect(mockSpace.getEnvironment.mock.calls).toHaveLength(1)
+      expect(mockEnvironment.getContentTypes.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
+      expect(mockEnvironment.getEntries.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
+      expect(mockEnvironment.getAssets.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
+      expect(mockEnvironment.getLocales.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
+      expect(mockEnvironment.getTags.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
+      expect(mockSpace.getWebhooks.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
+      expect(mockSpace.getRoles.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
+      expect(getEditorInterface.mock.calls).toHaveLength(0)
       expect(response.data.contentTypes).toHaveLength(resultItemCount)
       expect(response.data.entries).toHaveLength(resultItemCount / 2)
       expect(response.data.assets).toHaveLength(resultItemCount / 2)
@@ -284,16 +281,16 @@ test('Gets whole destination content without tags', () => {
       data: {}
     })
     .then((response) => {
-      expect(mockClient.space.get.mock.calls).toHaveLength(1)
-      expect(mockClient.environment.get.mock.calls).toHaveLength(1)
-      expect(mockClient.contentType.getMany.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
-      expect(mockClient.entry.getMany.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
-      expect(mockClient.asset.getMany.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
-      expect(mockClient.locale.getMany.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
-      expect(mockClient.tag.getMany.mock.calls).toHaveLength(0)
-      expect(mockClient.webhook.getMany.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
-      expect(mockClient.role.getMany.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
-      expect(mockClient.editorInterface.get.mock.calls).toHaveLength(resultItemCount)
+      expect(mockClient.getSpace.mock.calls).toHaveLength(1)
+      expect(mockSpace.getEnvironment.mock.calls).toHaveLength(1)
+      expect(mockEnvironment.getContentTypes.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
+      expect(mockEnvironment.getEntries.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
+      expect(mockEnvironment.getAssets.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
+      expect(mockEnvironment.getLocales.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
+      expect(mockEnvironment.getTags.mock.calls).toHaveLength(0)
+      expect(mockSpace.getWebhooks.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
+      expect(mockSpace.getRoles.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
+      expect(getEditorInterface.mock.calls).toHaveLength(resultItemCount)
       expect(response.data.contentTypes).toHaveLength(resultItemCount)
       expect(response.data.entries).toHaveLength(resultItemCount / 2)
       expect(response.data.assets).toHaveLength(resultItemCount / 2)
@@ -316,16 +313,16 @@ test('Gets whole destination content with drafts', () => {
       data: {}
     })
     .then((response) => {
-      expect(mockClient.space.get.mock.calls).toHaveLength(1)
-      expect(mockClient.environment.get.mock.calls).toHaveLength(1)
-      expect(mockClient.contentType.getMany.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
-      expect(mockClient.entry.getMany.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
-      expect(mockClient.asset.getMany.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
-      expect(mockClient.locale.getMany.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
-      expect(mockClient.tag.getMany.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
-      expect(mockClient.webhook.getMany.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
-      expect(mockClient.role.getMany.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
-      expect(mockClient.editorInterface.get.mock.calls).toHaveLength(resultItemCount)
+      expect(mockClient.getSpace.mock.calls).toHaveLength(1)
+      expect(mockSpace.getEnvironment.mock.calls).toHaveLength(1)
+      expect(mockEnvironment.getContentTypes.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
+      expect(mockEnvironment.getEntries.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
+      expect(mockEnvironment.getAssets.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
+      expect(mockEnvironment.getLocales.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
+      expect(mockEnvironment.getTags.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
+      expect(mockSpace.getWebhooks.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
+      expect(mockSpace.getRoles.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
+      expect(getEditorInterface.mock.calls).toHaveLength(resultItemCount)
       expect(response.data.contentTypes).toHaveLength(resultItemCount)
       expect(response.data.entries).toHaveLength(resultItemCount)
       expect(response.data.assets).toHaveLength(resultItemCount)
@@ -349,16 +346,16 @@ test('Gets whole destination content with archived entries', () => {
       data: {}
     })
     .then((response) => {
-      expect(mockClient.space.get.mock.calls).toHaveLength(1)
-      expect(mockClient.environment.get.mock.calls).toHaveLength(1)
-      expect(mockClient.contentType.getMany.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
-      expect(mockClient.entry.getMany.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
-      expect(mockClient.asset.getMany.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
-      expect(mockClient.locale.getMany.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
-      expect(mockClient.tag.getMany.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
-      expect(mockClient.webhook.getMany.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
-      expect(mockClient.role.getMany.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
-      expect(mockClient.editorInterface.get.mock.calls).toHaveLength(resultItemCount)
+      expect(mockClient.getSpace.mock.calls).toHaveLength(1)
+      expect(mockSpace.getEnvironment.mock.calls).toHaveLength(1)
+      expect(mockEnvironment.getContentTypes.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
+      expect(mockEnvironment.getEntries.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
+      expect(mockEnvironment.getAssets.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
+      expect(mockEnvironment.getLocales.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
+      expect(mockEnvironment.getTags.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
+      expect(mockSpace.getWebhooks.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
+      expect(mockSpace.getRoles.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
+      expect(getEditorInterface.mock.calls).toHaveLength(resultItemCount)
       expect(response.data.contentTypes).toHaveLength(resultItemCount)
       expect(response.data.entries).toHaveLength(resultItemCount)
       expect(response.data.assets).toHaveLength(resultItemCount)
@@ -382,16 +379,16 @@ test('Skips webhooks & roles for non-master environments', () => {
       data: {}
     })
     .then((response) => {
-      expect(mockClient.space.get.mock.calls).toHaveLength(1)
-      expect(mockClient.environment.get.mock.calls).toHaveLength(1)
-      expect(mockClient.contentType.getMany.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
-      expect(mockClient.entry.getMany.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
-      expect(mockClient.asset.getMany.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
-      expect(mockClient.locale.getMany.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
-      expect(mockClient.tag.getMany.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
-      expect(mockClient.webhook.getMany.mock.calls).toHaveLength(0)
-      expect(mockClient.role.getMany.mock.calls).toHaveLength(0)
-      expect(mockClient.editorInterface.get.mock.calls).toHaveLength(resultItemCount)
+      expect(mockClient.getSpace.mock.calls).toHaveLength(1)
+      expect(mockSpace.getEnvironment.mock.calls).toHaveLength(1)
+      expect(mockEnvironment.getContentTypes.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
+      expect(mockEnvironment.getEntries.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
+      expect(mockEnvironment.getAssets.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
+      expect(mockEnvironment.getLocales.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
+      expect(mockEnvironment.getTags.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
+      expect(mockSpace.getWebhooks.mock.calls).toHaveLength(0)
+      expect(mockSpace.getRoles.mock.calls).toHaveLength(0)
+      expect(getEditorInterface.mock.calls).toHaveLength(resultItemCount)
       expect(response.data.contentTypes).toHaveLength(resultItemCount)
       expect(response.data.entries).toHaveLength(resultItemCount)
       expect(response.data.assets).toHaveLength(resultItemCount)
@@ -404,7 +401,7 @@ test('Skips webhooks & roles for non-master environments', () => {
 })
 
 test('Gets whole destination content and detects missing editor interfaces', () => {
-  mockClient.editorInterface.get.mockImplementation(() => Promise.reject(new Error('No editor interface found')))
+  getEditorInterface.mockImplementation(() => Promise.reject(new Error('No editor interface found')))
 
   return getSpaceData({
     client: mockClient,
@@ -418,17 +415,17 @@ test('Gets whole destination content and detects missing editor interfaces', () 
       data: {}
     })
     .then((response) => {
-      expect(mockClient.space.get.mock.calls).toHaveLength(1)
-      expect(mockClient.environment.get.mock.calls).toHaveLength(1)
-      expect(mockClient.contentType.getMany.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
-      expect(mockClient.editorInterface.get.mock.calls).toHaveLength(resultItemCount)
+      expect(mockClient.getSpace.mock.calls).toHaveLength(1)
+      expect(mockSpace.getEnvironment.mock.calls).toHaveLength(1)
+      expect(mockEnvironment.getContentTypes.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
+      expect(getEditorInterface.mock.calls).toHaveLength(resultItemCount)
       expect(response.data.contentTypes).toHaveLength(resultItemCount)
       expect(response.data.editorInterfaces).toHaveLength(0)
     })
 })
 
 test('Skips editor interfaces since no content types are found', () => {
-  mockClient.contentType.getMany.mockImplementation(() => Promise.resolve({
+  mockEnvironment.getContentTypes.mockImplementation(() => Promise.resolve({
     items: [],
     total: 0
   }))
@@ -445,10 +442,10 @@ test('Skips editor interfaces since no content types are found', () => {
       data: {}
     })
     .then((response) => {
-      expect(mockClient.space.get.mock.calls).toHaveLength(1)
-      expect(mockClient.environment.get.mock.calls).toHaveLength(1)
-      expect(mockClient.contentType.getMany.mock.calls).toHaveLength(1)
-      expect(mockClient.editorInterface.get.mock.calls).toHaveLength(0)
+      expect(mockClient.getSpace.mock.calls).toHaveLength(1)
+      expect(mockSpace.getEnvironment.mock.calls).toHaveLength(1)
+      expect(mockEnvironment.getContentTypes.mock.calls).toHaveLength(1)
+      expect(getEditorInterface.mock.calls).toHaveLength(0)
       expect(response.data.contentTypes).toHaveLength(0)
       expect(response.data.editorInterfaces).toBeUndefined()
     })
@@ -466,11 +463,11 @@ test('Loads 1000 items per page by default', () => {
       data: {}
     })
     .then((response) => {
-      expect(mockClient.space.get.mock.calls).toHaveLength(1)
-      expect(mockClient.environment.get.mock.calls).toHaveLength(1)
-      expect(mockClient.contentType.getMany.mock.calls).toHaveLength(1)
-      expect(mockClient.contentType.getMany.mock.calls[0][0].limit).toBe(1000)
-      expect(mockClient.editorInterface.get.mock.calls).toHaveLength(resultItemCount)
+      expect(mockClient.getSpace.mock.calls).toHaveLength(1)
+      expect(mockSpace.getEnvironment.mock.calls).toHaveLength(1)
+      expect(mockEnvironment.getContentTypes.mock.calls).toHaveLength(1)
+      expect(mockEnvironment.getContentTypes.mock.calls[0][0].limit).toBe(1000)
+      expect(getEditorInterface.mock.calls).toHaveLength(resultItemCount)
       expect(response.data.contentTypes).toHaveLength(resultItemCount)
       expect(response.data.editorInterfaces).toHaveLength(resultItemCount)
     })
@@ -478,7 +475,7 @@ test('Loads 1000 items per page by default', () => {
 
 test('Query entry/asset respect limit query param', () => {
   // overwrite the getAssets mock so maxItems is larger than default page size in pagedGet (get-space-data.js)
-  mockClient.asset.getMany = jest.fn((query) => {
+  mockEnvironment.getAssets = jest.fn((query) => {
     return Promise.resolve(pagedContentResult(query, 2000, mockEntry))
   })
   return getSpaceData({
@@ -495,11 +492,11 @@ test('Query entry/asset respect limit query param', () => {
       data: {}
     })
     .then((response) => {
-      expect(mockClient.space.get.mock.calls).toHaveLength(1)
-      expect(mockClient.environment.get.mock.calls).toHaveLength(1)
-      expect(mockClient.entry.getMany.mock.calls[0][0].limit).toBe(20)
-      expect(mockClient.asset.getMany.mock.calls[0][0].limit).toBe(1000) // assets should be called 2x
-      expect(mockClient.asset.getMany.mock.calls[1][0].limit).toBe(1) // because it has to fetch the final item in the second page
+      expect(mockClient.getSpace.mock.calls).toHaveLength(1)
+      expect(mockSpace.getEnvironment.mock.calls).toHaveLength(1)
+      expect(mockEnvironment.getEntries.mock.calls[0][0].limit).toBe(20)
+      expect(mockEnvironment.getAssets.mock.calls[0][0].limit).toBe(1000) // assets should be called 2x
+      expect(mockEnvironment.getAssets.mock.calls[1][0].limit).toBe(1) // because it has to fetch the final item in the second page
       expect(response.data.assets).toHaveLength(1001)
       expect(response.data.entries).toHaveLength(20)
     })
@@ -507,7 +504,7 @@ test('Query entry/asset respect limit query param', () => {
 
 test('only skips fetched items', () => {
   // overwrite the getLocales only returns 20 items in pages of 10
-  mockClient.locale.getMany = jest.fn()
+  mockEnvironment.getLocales = jest.fn()
     .mockResolvedValueOnce({
       items: Array.from({ length: 10 }, (n) => {
         const id = n + 1
@@ -533,19 +530,19 @@ test('only skips fetched items', () => {
       data: {}
     })
     .then(() => {
-      expect(mockClient.space.get.mock.calls).toHaveLength(1)
-      expect(mockClient.environment.get.mock.calls).toHaveLength(1)
-      expect(mockClient.locale.getMany.mock.calls).toHaveLength(2)
-      expect(mockClient.locale.getMany.mock.calls[0][0].limit).toBe(1000)
-      expect(mockClient.locale.getMany.mock.calls[0][0].skip).toBe(0)
-      expect(mockClient.locale.getMany.mock.calls[1][0].limit).toBe(1000)
-      expect(mockClient.locale.getMany.mock.calls[1][0].skip).toBe(10)
+      expect(mockClient.getSpace.mock.calls).toHaveLength(1)
+      expect(mockSpace.getEnvironment.mock.calls).toHaveLength(1)
+      expect(mockEnvironment.getLocales.mock.calls).toHaveLength(2)
+      expect(mockEnvironment.getLocales.mock.calls[0][0].limit).toBe(1000)
+      expect(mockEnvironment.getLocales.mock.calls[0][0].skip).toBe(0)
+      expect(mockEnvironment.getLocales.mock.calls[1][0].limit).toBe(1000)
+      expect(mockEnvironment.getLocales.mock.calls[1][0].skip).toBe(10)
     })
 })
 
 test('halts fetching when no items in page', () => {
   // overwrite the getLocales returns 0 items
-  mockClient.locale.getMany = jest.fn()
+  mockEnvironment.getLocales = jest.fn()
     .mockResolvedValueOnce({
       items: [],
       total: 20
@@ -561,11 +558,11 @@ test('halts fetching when no items in page', () => {
       data: {}
     })
     .then(() => {
-      expect(mockClient.space.get.mock.calls).toHaveLength(1)
-      expect(mockClient.environment.get.mock.calls).toHaveLength(1)
-      expect(mockClient.locale.getMany.mock.calls).toHaveLength(1)
-      expect(mockClient.locale.getMany.mock.calls[0][0].limit).toBe(1000)
-      expect(mockClient.locale.getMany.mock.calls[0][0].skip).toBe(0)
+      expect(mockClient.getSpace.mock.calls).toHaveLength(1)
+      expect(mockSpace.getEnvironment.mock.calls).toHaveLength(1)
+      expect(mockEnvironment.getLocales.mock.calls).toHaveLength(1)
+      expect(mockEnvironment.getLocales.mock.calls[0][0].limit).toBe(1000)
+      expect(mockEnvironment.getLocales.mock.calls[0][0].skip).toBe(0)
     })
 })
 
