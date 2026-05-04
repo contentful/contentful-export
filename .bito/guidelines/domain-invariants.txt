@@ -1,0 +1,38 @@
+Critical domain invariants for contentful-export:
+
+1. types.d.ts and lib/usageParams.js must stay in sync with the actual Options interface.
+   Any new option added to parseOptions.js must be reflected in both files.
+
+2. dist/ is a build artifact compiled from lib/ via Babel. Never edit dist/ files directly.
+   The build command is: npm run build (which runs clean + tsc check + babel compile).
+
+3. package.json version is always "0.0.0-determined-by-semantic-release". Never set a
+   version number manually. semantic-release handles all versioning based on conventional
+   commit messages.
+
+4. Webhooks and roles can only be exported from the master environment. The code in
+   get-space-data.js explicitly skips these when environmentId !== 'master'. This is a
+   Contentful API constraint, not a bug.
+
+5. When deliveryToken is provided and includeDrafts is false, entries and assets are
+   fetched from the CDA (published-only). Tags are CMA-only and will not be exported
+   via CDA. Do not change this dual-client logic without understanding the implications
+   for downstream consumers.
+
+6. Asset downloads and editor interface fetching both use concurrency of 6 via
+   Bluebird Promise.map. Increasing concurrency risks hitting Contentful API rate limits.
+
+7. The contentOnly flag is a convenience shorthand that sets skipRoles, skipContentModel,
+   and skipWebhooks to true. Do not duplicate this logic elsewhere.
+
+8. bfj (Big-Friendly JSON) is used for writing export files to handle large spaces
+   without exhausting memory. Do not replace with JSON.stringify for the export write path.
+
+9. Embargoed assets (URLs where the subdomain matches {images|assets|downloads|videos}.secure.*)
+   require JWT-signed URLs via the asset_keys API. The signing cache key is
+   host:spaceId:environmentId with a 6-hour expiry window. Changes to this logic are
+   security-sensitive.
+
+10. The pretest script runs lint + build + clean test artifacts. Running npm test always
+    triggers a full build. For faster iteration during development, use npm run test:unit
+    directly (after an initial build).
