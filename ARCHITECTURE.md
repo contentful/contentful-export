@@ -120,13 +120,6 @@ This is an npm library, not a deployed service. Releases happen automatically vi
 | Embargoed asset download failure | Asset key creation fails or JWT signing error | Check that the space has embargoed assets enabled and the management token has permissions |
 | `ContentfulMultiError` | Aggregated errors during export (partial failure) | Check the error log file at the path printed in output |
 
-### Monitoring
-
-[NEEDS TEAM INPUT] -- This is an npm library, not a deployed service. Monitoring is the responsibility of consuming services (e.g., `contentful-cli`, `contentful-mcp-server`).
-
-### Incident Playbook
-
-[NEEDS TEAM INPUT] -- As a library, incidents would surface through consuming services. For npm publishing issues, check the GitHub Actions release workflow logs and Vault token validity.
 
 ## Integration Points
 
