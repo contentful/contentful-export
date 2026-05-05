@@ -163,6 +163,16 @@ Release credentials (GitHub token) are retrieved from HashiCorp Vault during CI.
 | `codeql` (CodeQL Scan) | Push to `main` changing `.github/workflows/` | Static analysis of GitHub Actions workflows |
 | `dependabot-approve-and-request-merge` | `pull_request_target` from dependabot | Auto-approve and request merge for Dependabot PRs |
 
+## Adding a New Component
+
+| What you're adding | Copy this as a template | Keep in sync |
+|---|---|---|
+| New entity type in export | Any entity block in `lib/tasks/get-space-data.js` (e.g., tags ~line 63) | `parseOptions.js` (default + `contentOnly`), `usageParams.js`, `types.d.ts` |
+| New top-level task | `lib/tasks/download-assets.js` (options closure pattern) or `get-space-data.js` (sub-list pattern) | Wire into `lib/index.js` tasks array |
+| New utility | `lib/utils/headers.js` | — |
+
+Tests mirror `lib/` structure: `test/unit/tasks/<name>.test.js` or `test/unit/utils/<name>.test.js`.
+
 ## File-Level Guidance
 
 | Path | Notes |
