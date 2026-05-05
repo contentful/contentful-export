@@ -120,6 +120,20 @@ This is an npm library, not a deployed service. Releases happen automatically vi
 | Embargoed asset download failure | Asset key creation fails or JWT signing error | Check that the space has embargoed assets enabled and the management token has permissions |
 | `ContentfulMultiError` | Aggregated errors during export (partial failure) | Check the error log file at the path printed in output |
 
+### Dependency Failure Behavior
+
+This library depends on the Contentful Management and Delivery APIs at runtime. If those APIs are unavailable:
+
+| Scenario | Behavior |
+|---|---|
+| CMA unreachable (network failure, DNS, timeout) | Export fails immediately with an Axios network error. No partial output is written. |
+| CMA returns 5xx errors | The SDK retries with exponential backoff (built into `contentful-management`). After retries are exhausted, the export fails with the error aggregated into `ContentfulMultiError`. |
+| CDA unreachable (when `deliveryToken` is provided) | Same as CMA — network error or retry exhaustion leads to export failure. |
+| Rate-limited (429) | The SDK handles 429 responses with automatic retry after the `X-Contentful-RateLimit-Reset` header delay. Large spaces may see slow exports but will eventually complete unless the rate limit is persistently exceeded. |
+| Asset CDN unreachable (during `downloadAssets`) | Individual asset downloads fail after Axios timeout. The export completes but reports failed asset downloads in the error log. |
+
+There is no partial-export resume capability — a failed export must be retried from scratch.
+
 
 ## Integration Points
 

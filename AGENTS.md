@@ -27,6 +27,17 @@ Read this file first. It tells you where to find context in this repo.
 - **`contentOnly` flag is a shorthand.** When set, it internally enables `skipRoles`, `skipContentModel`, and `skipWebhooks`. Do not duplicate this logic.
 - **Asset downloads use concurrency of 6.** Both `download-assets.js` and `get-space-data.js` (editor interfaces) use Bluebird `Promise.map` with `{ concurrency: 6 }`. Be careful about changing this -- it affects API rate limiting.
 
+## High-Traffic Areas
+
+These paths are the most critical and frequently exercised — changes here carry outsized risk:
+
+| Path | Why it's sensitive | What to watch |
+|---|---|---|
+| `lib/tasks/get-space-data.js` | Core export logic; every export invokes it | Pagination ordering (`sys.createdAt,sys.id`) is load-bearing for deterministic exports. Changing page size or concurrency affects API rate limits. |
+| `lib/parseOptions.js` | Validates and merges all user input | Adding/removing options here cascades to `usageParams.js`, `types.d.ts`, and all downstream consumers. |
+| `lib/index.js` | Listr task orchestration | Task ordering matters — e.g., `get-space-data` must complete before `download-assets` can reference fetched asset URLs. |
+| `lib/tasks/download-assets.js` | Network-heavy, concurrency-limited | Changing concurrency (currently 6) can trigger CMA rate limiting or exhaust memory on large spaces. |
+
 ## Key Conventions
 
 - **Commit format:** Conventional Commits enforced by Commitizen + Husky pre-commit hook
