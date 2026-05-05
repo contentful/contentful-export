@@ -20,7 +20,7 @@ Read this file first. It tells you where to find context in this repo.
 - **`types.d.ts` is hand-maintained.** It is NOT auto-generated. When changing the public API (options, return type), you must manually update `types.d.ts` to match.
 - **`usageParams.js` and `types.d.ts` must stay in sync.** CLI options (yargs definitions in `lib/usageParams.js`) and the TypeScript `Options` interface (`types.d.ts`) define the same option set. Changes to one must be reflected in the other.
 - **Webhooks and roles are master-only.** The code explicitly skips webhook and role export when `environmentId !== 'master'`. Do not change this -- it reflects a Contentful API constraint.
-- **The standalone CLI is deprecated.** `bin/contentful-export` prints a deprecation notice and directs users to `contentful-cli`. Do not add new CLI-only features here.
+- **The standalone CLI redirects to `contentful-cli`.** `bin/contentful-export` prints a notice that the CLI has moved to `contentful-cli`, then runs the export. Do not add new CLI-only features here.
 - **Integration tests require real Contentful spaces.** They are not mocked. CI provides the required secrets via environment variables. Do not commit tokens.
 - **`package.json` version is `0.0.0-determined-by-semantic-release`.** Never set a version manually. `semantic-release` handles all versioning.
 - **Babel target (Node 12) is lower than `engines.node` (>=22).** This is a known inconsistency in `babel.config.json`. The low target is harmless but confusing.

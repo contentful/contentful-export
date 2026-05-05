@@ -13,5 +13,5 @@ the change matches the documented intent.
   dependency, new persistence strategy, new integration).
 - Distinguish the current public API surface from internal implementation details.
   Public type/interface changes in types.d.ts require extra scrutiny.
-- The standalone CLI (bin/contentful-export) is deprecated. Changes should focus on
-  the library API, not CLI enhancements.
+- The standalone CLI (bin/contentful-export) prints a redirection notice pointing
+  users to contentful-cli. Changes should focus on the library API, not CLI enhancements.
