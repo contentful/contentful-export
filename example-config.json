@@ -9,7 +9,6 @@
   "includeDrafts": false,
   "includeArchived": false,
   "skipContentModel": false,
-  "skipEditorInterfaces": false,
   "skipContent": false,
   "skipRoles": false,
   "skipWebhooks": false,
