@@ -21,6 +21,7 @@ export interface Options {
   queryAssets?: string[];
   rawProxy?: boolean;
   saveFile?: boolean;
+  skipAssets?: boolean;
   skipContent?: boolean;
   skipContentModel?: boolean;
   skipEditorInterfaces?: boolean;
