@@ -67,7 +67,7 @@ nock(`https://${API_HOST}`)
   .times(1)
   .reply(200, { policy: POLICY, secret: SECRET })
 
-function getAssets ({ existing = 0, nonExisting = 0, missingUrl = 0, embargoed = 0, unicodeShort = 0, unicodeLong = 0, differentFilename = 0 } = {}) {
+function getAssets({ existing = 0, nonExisting = 0, missingUrl = 0, embargoed = 0, unicodeShort = 0, unicodeLong = 0, differentFilename = 0 } = {}) {
   const existingUrl = `${BASE_PATH}${EXISTING_ASSET_URL}`
   const embargoedUrl = `${BASE_PATH_SECURE}${EMBARGOED_ASSET_URL}`
   const nonExistingUrl = `${BASE_PATH}${NON_EXISTING_URL}`
@@ -329,7 +329,7 @@ test('it doesn\'t use fileStack url as fallback for the file url and throws a wa
 
       const missingUrlsOutputCount = output.mock.calls.filter(call =>
         call[0]?.endsWith('asset.fields.file[en-US].url') ||
-          call[0]?.endsWith('asset.fields.file[de-DE].url'))
+        call[0]?.endsWith('asset.fields.file[de-DE].url'))
 
       expect(missingUrlsOutputCount).toHaveLength(2)
     })
