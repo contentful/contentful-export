@@ -35,7 +35,7 @@ let output
 
 nock(`https:${BASE_PATH}`)
   .get(EXISTING_ASSET_URL)
-  .times(8)
+  .times(10)
   .reply(200)
 
 nock(`https:${BASE_PATH}`)
@@ -386,6 +386,27 @@ test('Downloads assets with long Unicode filenames', () => {
       const unicodeLongAsset = ctx.data.assets.find(asset => asset.sys.id === 'unicode long asset 0')
       expect(unicodeLongAsset.fields.file['en-US'].fileName).toBe(UNICODE_LONG_FILENAME)
       expect(unicodeLongAsset.fields.file['de-DE'].fileName).toBe(UNICODE_LONG_FILENAME)
+    })
+})
+
+test('Respects user-supplied timeout option', () => {
+  const task = downloadAssets({
+    exportDir: tmpDirectory,
+    timeout: 60_000
+  })
+  const ctx = {
+    data: {
+      assets: [...getAssets({ existing: 1 })]
+    }
+  }
+
+  return task(ctx, taskProxy)
+    .then(() => {
+      expect(ctx.assetDownloads).toEqual({
+        successCount: 2,
+        warningCount: 0,
+        errorCount: 0
+      })
     })
 })
 
