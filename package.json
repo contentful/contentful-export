@@ -109,6 +109,11 @@
         "name": "beta",
         "channel": "beta",
         "prerelease": true
+      },
+      {
+        "name": "exo",
+        "channel": "exo",
+        "prerelease": "exo"
       }
     ],
     "plugins": [
@@ -139,6 +144,7 @@
     ]
   },
   "overrides": {
-    "cross-spawn": "^7.0.6"
+    "cross-spawn": "^7.0.6",
+    "undici": "^6.27.0"
   }
 }
