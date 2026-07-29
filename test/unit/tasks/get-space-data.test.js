@@ -24,11 +24,27 @@ function pagedContentResult (query, maxItems, mock = {}) {
   return result
 }
 
+// ExO endpoints use cursor-based pagination (pageNext token) instead of skip/limit.
+function cursorPagedResult (query, maxItems, mock = {}) {
+  const start = query.pageNext ? Number(query.pageNext) : 0
+  const end = Math.min(start + query.limit, maxItems)
+  const items = Array.from({ length: end - start }, (n) => {
+    const id = start + n + 1
+    return Object.assign({ sys: { id } }, mock)
+  })
+  return {
+    items,
+    pages: end < maxItems ? { next: String(end) } : {}
+  }
+}
+
 const mockSpace = {}
 
 const mockEnvironment = {}
 
 const mockClient = {}
+
+const mockPlainClient = { designToken: {} }
 
 const getEditorInterface = jest.fn()
 
@@ -62,6 +78,9 @@ function setupMocks () {
   mockSpace.getRoles = jest.fn((query) => {
     return Promise.resolve(pagedResult(query, resultItemCount))
   })
+  mockPlainClient.designToken.getMany = jest.fn((query) => {
+    return Promise.resolve(cursorPagedResult(query, resultItemCount))
+  })
   getEditorInterface.mockImplementation(() => Promise.resolve({}))
 }
 
@@ -76,6 +95,7 @@ afterEach(() => {
   mockEnvironment.getTags.mockClear()
   mockSpace.getWebhooks.mockClear()
   mockSpace.getRoles.mockClear()
+  mockPlainClient.designToken.getMany.mockClear()
   getEditorInterface.mockClear()
 })
 
@@ -563,6 +583,63 @@ test('halts fetching when no items in page', () => {
       expect(mockEnvironment.getLocales.mock.calls).toHaveLength(1)
       expect(mockEnvironment.getLocales.mock.calls[0][0].limit).toBe(1000)
       expect(mockEnvironment.getLocales.mock.calls[0][0].skip).toBe(0)
+    })
+})
+
+test('Skips Design Tokens when includeExperienceOrchestration is not set', () => {
+  return getSpaceData({
+    client: mockClient,
+    plainClient: mockPlainClient,
+    spaceId: 'spaceid',
+    maxAllowedLimit
+  })
+    .run({
+      data: {}
+    })
+    .then((response) => {
+      expect(mockPlainClient.designToken.getMany.mock.calls).toHaveLength(0)
+      expect(response.data.designTokens).toBeUndefined()
+    })
+})
+
+test('Fetches Design Tokens via cursor pagination when includeExperienceOrchestration is set', () => {
+  return getSpaceData({
+    client: mockClient,
+    plainClient: mockPlainClient,
+    spaceId: 'spaceid',
+    environmentId: 'exo',
+    maxAllowedLimit,
+    includeExperienceOrchestration: true
+  })
+    .run({
+      data: {}
+    })
+    .then((response) => {
+      expect(mockPlainClient.designToken.getMany.mock.calls).toHaveLength(Math.ceil(resultItemCount / maxAllowedLimit))
+      expect(mockPlainClient.designToken.getMany.mock.calls[0][0]).toMatchObject({
+        spaceId: 'spaceid',
+        environmentId: 'exo',
+        limit: maxAllowedLimit
+      })
+      expect(response.data.designTokens).toHaveLength(resultItemCount)
+    })
+})
+
+test('Gracefully degrades Design Tokens export to [] on failure', () => {
+  mockPlainClient.designToken.getMany = jest.fn(() => Promise.reject(new Error('Forbidden')))
+
+  return getSpaceData({
+    client: mockClient,
+    plainClient: mockPlainClient,
+    spaceId: 'spaceid',
+    maxAllowedLimit,
+    includeExperienceOrchestration: true
+  })
+    .run({
+      data: {}
+    })
+    .then((response) => {
+      expect(response.data.designTokens).toEqual([])
     })
 })
 
