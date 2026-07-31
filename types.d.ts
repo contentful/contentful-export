@@ -31,7 +31,7 @@ export interface Options {
   includeExperienceOrchestration?: boolean;
 }
 
-type ContentfulExportField = 'contentTypes' | 'entries' | 'assets' | 'locales' | 'tags' | 'webhooks' | 'roles' | 'editorInterfaces' | 'designTokens' | 'componentTypes' | 'templates' | 'dataAssemblies' | 'fragments' | 'experiences';
+type ContentfulExportField = 'contentTypes' | 'entries' | 'assets' | 'locales' | 'tags' | 'webhooks' | 'roles' | 'editorInterfaces' | 'designTokens' | 'components' | 'experienceTemplates' | 'dataAssemblies' | 'experienceFragments' | 'experiences';
 
 declare const runContentfulExport: (params: Options) => Promise<Record<ContentfulExportField, unknown[]>>
 export default runContentfulExport
