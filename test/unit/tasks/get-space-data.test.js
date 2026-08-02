@@ -584,3 +584,198 @@ test('Strips tags from entries and assets', () => {
       expect(hasEntryWithTags).toBe(false)
     })
 })
+
+// --- Experience Orchestration (ExO) entities ---
+//
+// The ExO tasks are driven by the plain CMA client and cursor-based pagination.
+// They are gated behind `includeExperienceOrchestration` and are always skipped
+// unless it is enabled. These tests pin down the endpoint names, the exported
+// field names, pagination, and graceful degradation — the behaviour renamed in
+// AIS-388 when the entities became Component / Experience Fragment / Experience
+// Template.
+
+// Maps each exported field on `ctx.data` to the plain-client endpoint that must
+// back it. Deprecated endpoints (componentType/fragment/template) must NOT be
+// used — that is the core AIS-388 regression this suite guards.
+const exoEndpoints = {
+  designTokens: 'designToken',
+  components: 'component',
+  experienceTemplates: 'experienceTemplate',
+  dataAssemblies: 'dataAssembly',
+  experienceFragments: 'experienceFragment',
+  experiences: 'experience'
+}
+
+const deprecatedExoEndpoints = ['componentType', 'template', 'fragment']
+
+function cursorPage (items, next = null) {
+  return { items, pages: next ? { next } : {} }
+}
+
+const mockPlainClient = {}
+
+function setupExoMocks () {
+  // Each ExO endpoint returns a single page whose lone item's id encodes the
+  // endpoint, so we can assert the right endpoint feeds the right field.
+  Object.entries(exoEndpoints).forEach(([, endpoint]) => {
+    mockPlainClient[endpoint] = {
+      getMany: jest.fn(() => Promise.resolve(cursorPage([{ sys: { id: endpoint } }])))
+    }
+  })
+  // Deprecated endpoints are present as spies so we can assert they are never hit.
+  deprecatedExoEndpoints.forEach((endpoint) => {
+    mockPlainClient[endpoint] = {
+      getMany: jest.fn(() => Promise.resolve(cursorPage([{ sys: { id: endpoint } }])))
+    }
+  })
+}
+
+test('Skips all ExO entities by default', () => {
+  setupExoMocks()
+  return getSpaceData({
+    client: mockClient,
+    plainClient: mockPlainClient,
+    spaceId: 'spaceid',
+    maxAllowedLimit,
+    skipContent: true,
+    skipWebhooks: true,
+    skipRoles: true
+  })
+    .run({
+      data: {}
+    })
+    .then((response) => {
+      Object.entries(exoEndpoints).forEach(([field, endpoint]) => {
+        expect(mockPlainClient[endpoint].getMany.mock.calls).toHaveLength(0)
+        expect(response.data[field]).toBeUndefined()
+      })
+    })
+})
+
+test('Fetches all ExO entities into their renamed fields via the non-deprecated endpoints', () => {
+  setupExoMocks()
+  return getSpaceData({
+    client: mockClient,
+    plainClient: mockPlainClient,
+    spaceId: 'spaceid',
+    maxAllowedLimit,
+    skipContent: true,
+    skipWebhooks: true,
+    skipRoles: true,
+    includeExperienceOrchestration: true
+  })
+    .run({
+      data: {}
+    })
+    .then((response) => {
+      Object.entries(exoEndpoints).forEach(([field, endpoint]) => {
+        // Correct endpoint called exactly once (single page)...
+        expect(mockPlainClient[endpoint].getMany.mock.calls).toHaveLength(1)
+        // ...with the space/environment scoped cursor query.
+        expect(mockPlainClient[endpoint].getMany.mock.calls[0][0]).toEqual({
+          spaceId: 'spaceid',
+          environmentId: 'master',
+          limit: maxAllowedLimit
+        })
+        // ...and its result lands on the correctly-named field.
+        expect(response.data[field]).toHaveLength(1)
+        expect(response.data[field][0].sys.id).toBe(endpoint)
+      })
+      // The deprecated endpoints must never be touched.
+      deprecatedExoEndpoints.forEach((endpoint) => {
+        expect(mockPlainClient[endpoint].getMany.mock.calls).toHaveLength(0)
+      })
+    })
+})
+
+test('Follows cursor pagination across pages and aggregates ExO items', () => {
+  setupExoMocks()
+  // Make components span two pages driven by a `pages.next` token.
+  mockPlainClient.component.getMany = jest.fn()
+    .mockResolvedValueOnce(cursorPage([{ sys: { id: 'c1' } }, { sys: { id: 'c2' } }], 'CURSOR_PAGE_2'))
+    .mockResolvedValueOnce(cursorPage([{ sys: { id: 'c3' } }]))
+
+  return getSpaceData({
+    client: mockClient,
+    plainClient: mockPlainClient,
+    spaceId: 'spaceid',
+    maxAllowedLimit,
+    skipContent: true,
+    skipWebhooks: true,
+    skipRoles: true,
+    includeExperienceOrchestration: true
+  })
+    .run({
+      data: {}
+    })
+    .then((response) => {
+      expect(mockPlainClient.component.getMany.mock.calls).toHaveLength(2)
+      // First page carries no cursor token.
+      expect(mockPlainClient.component.getMany.mock.calls[0][0]).toEqual({
+        spaceId: 'spaceid',
+        environmentId: 'master',
+        limit: maxAllowedLimit
+      })
+      // Second page passes the `pageNext` token returned by the first.
+      expect(mockPlainClient.component.getMany.mock.calls[1][0]).toEqual({
+        spaceId: 'spaceid',
+        environmentId: 'master',
+        limit: maxAllowedLimit,
+        pageNext: 'CURSOR_PAGE_2'
+      })
+      expect(response.data.components).toHaveLength(3)
+      expect(response.data.components.map((item) => item.sys.id)).toEqual(['c1', 'c2', 'c3'])
+    })
+})
+
+test('Passes the target environment through to ExO endpoints', () => {
+  setupExoMocks()
+  return getSpaceData({
+    client: mockClient,
+    plainClient: mockPlainClient,
+    spaceId: 'spaceid',
+    environmentId: 'staging',
+    maxAllowedLimit,
+    skipContent: true,
+    skipWebhooks: true,
+    skipRoles: true,
+    includeExperienceOrchestration: true
+  })
+    .run({
+      data: {}
+    })
+    .then(() => {
+      expect(mockPlainClient.component.getMany.mock.calls[0][0].environmentId).toBe('staging')
+      expect(mockPlainClient.experienceFragment.getMany.mock.calls[0][0].environmentId).toBe('staging')
+    })
+})
+
+test('Degrades gracefully to an empty array when an ExO endpoint fails', () => {
+  setupExoMocks()
+  // One endpoint rejects (e.g. space lacks the exo_m1 entitlement); the rest succeed.
+  mockPlainClient.component.getMany = jest.fn(() => Promise.reject(new Error('missing entitlement')))
+
+  return getSpaceData({
+    client: mockClient,
+    plainClient: mockPlainClient,
+    spaceId: 'spaceid',
+    maxAllowedLimit,
+    skipContent: true,
+    skipWebhooks: true,
+    skipRoles: true,
+    includeExperienceOrchestration: true
+  })
+    .run({
+      data: {}
+    })
+    .then((response) => {
+      // Failing endpoint yields [] rather than aborting the whole export...
+      expect(response.data.components).toEqual([])
+      // ...and the remaining ExO entities are still exported.
+      expect(response.data.experienceFragments).toHaveLength(1)
+      expect(response.data.experienceTemplates).toHaveLength(1)
+      expect(response.data.dataAssemblies).toHaveLength(1)
+      expect(response.data.experiences).toHaveLength(1)
+      expect(response.data.designTokens).toHaveLength(1)
+    })
+})
