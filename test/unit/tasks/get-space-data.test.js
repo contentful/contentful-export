@@ -590,13 +590,13 @@ test('Strips tags from entries and assets', () => {
 // The ExO tasks are driven by the plain CMA client and cursor-based pagination.
 // They are gated behind `includeExperienceOrchestration` and are always skipped
 // unless it is enabled. These tests pin down the endpoint names, the exported
-// field names, pagination, and graceful degradation — the behaviour renamed in
-// AIS-388 when the entities became Component / Experience Fragment / Experience
+// field names, pagination, and graceful degradation — the behaviour renamed
+// when the entities became Component / Experience Fragment / Experience
 // Template.
 
 // Maps each exported field on `ctx.data` to the plain-client endpoint that must
 // back it. Deprecated endpoints (componentType/fragment/template) must NOT be
-// used — that is the core AIS-388 regression this suite guards.
+// used — that is the core regression this suite guards.
 const exoEndpoints = {
   designTokens: 'designToken',
   components: 'component',
