@@ -268,6 +268,12 @@ Full path to the error log file
 
 Display progress in new lines instead of displaying a busy spinner and the status in the same line. Useful for CI.
 
+### Experience Orchestration
+
+#### `includeExperienceOrchestration` [boolean] [default: false]
+
+Opt-in flag to export Experience Orchestration (ExO) entities — Design Tokens, Components, Experience Templates, Data Assemblies, Experience Fragments, and Experiences — if present in the source space. Requires the `exoM1` entitlement on the source space's organization. See the "Experience Orchestration (ExO) entities" section below for what happens when the space isn't entitled.
+
 ## :rescue_worker_helmet: Troubleshooting
 
 ### Proxy
@@ -324,11 +330,39 @@ This is an overview of the exported data:
   "tags": [],
   "webhooks": [],
   "roles": [],
-  "editorInterfaces": []
+  "editorInterfaces": [],
+  "designTokens": [],
+  "components": [],
+  "experienceTemplates": [],
+  "dataAssemblies": [],
+  "experienceFragments": [],
+  "experiences": []
 }
 ```
 
 _Note:_ Tags feature is not available for all users. If you do not have access to this feature, the tags array will always be empty.
+
+_Note:_ `designTokens`, `components`, `experienceTemplates`, `dataAssemblies`, `experienceFragments`, and `experiences` are Experience Orchestration (ExO) entities, only present when `includeExperienceOrchestration` is set — see the "Experience Orchestration (ExO) entities" section below.
+
+## :test_tube: Experience Orchestration (ExO) entities
+
+> **Experimental:** ExO entities (`designTokens`, `components`, `experienceTemplates`, `dataAssemblies`, `experienceFragments`, `experiences`) are `@internal` and considered experimental. Their shape and export behavior are subject to change without notice.
+
+ExO export is opt-in via the `includeExperienceOrchestration` option (see "Configuration options" above) and requires the `exoM1` entitlement on the source space's organization.
+
+```javascript
+const contentfulExport = require('contentful-export')
+
+const options = {
+  spaceId: '<space_id>',
+  managementToken: '<content_management_api_key>',
+  includeExperienceOrchestration: true
+}
+
+contentfulExport(options)
+```
+
+If the source space isn't entitled — or any single ExO entity type fails to fetch for any other reason — that entity type is logged as a **warning** and exported as an empty array; it does not fail the export. Unlike `contentful-import` (where the equivalent missing-entitlement case is logged at `error` level and causes the overall promise to reject even though the rest of the content imported), `contentful-export`'s `contentfulExport()` call still resolves successfully in this case. Check the console output or `errorLogFile` for `Skipping <Entity> export` if you expect ExO content but don't see it in the result.
 
 ## :warning: Limitations
 
