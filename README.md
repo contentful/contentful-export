@@ -362,11 +362,9 @@ const options = {
 contentfulExport(options)
 ```
 
-Unlike `contentful-import` (where this default is a complete no-op for source content with no ExO entities — the import-side entitlement check only runs if the source data actually has ExO entities to import), `contentful-export`'s six ExO fetch tasks in `lib/tasks/get-space-data.js` are gated only on `includeExperienceOrchestration`, not on whether the source space actually has any ExO content. That means every export now always attempts all six ExO endpoint calls. Against a non-entitled or ExO-empty space, each one fails or returns empty, gets caught, and logs a `Skipping <Entity> export` warning — six new warning lines and six extra network round-trips on every run, even for spaces with nothing to do with ExO. The export still succeeds either way (see below) — this is a cost/noise note, not a correctness one. Pass `includeExperienceOrchestration: false` if you want to avoid it.
+If the source space has no ExO entities, or lacks the `exoM1` entitlement, each ExO entity type logs a `Skipping <Entity> export` warning and exports as an empty array — it does not fail the export. Pass `includeExperienceOrchestration: false` if you want to avoid it.
 
 Requires the `exoM1` entitlement on the source space's organization. [contentful-cli](https://github.com/contentful/contentful-cli)'s `space export` command doesn't expose this option at all yet, so ExO export isn't reachable through that separate CLI regardless of default.
-
-If the source space isn't entitled — or any single ExO entity type fails to fetch for any other reason — that entity type is logged as a **warning** and exported as an empty array; it does not fail the export. Unlike `contentful-import` (where the equivalent missing-entitlement case is logged at `error` level and causes the overall promise to reject even though the rest of the content imported), `contentful-export`'s `contentfulExport()` call still resolves successfully in this case. Check the console output or `errorLogFile` for `Skipping <Entity> export` if you expect ExO content but don't see it in the result.
 
 ## :warning: Limitations
 
