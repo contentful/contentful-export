@@ -270,9 +270,9 @@ Display progress in new lines instead of displaying a busy spinner and the statu
 
 ### Experience Orchestration
 
-#### `includeExperienceOrchestration` [boolean] [default: false]
+#### `includeExperienceOrchestration` [boolean] [default: false via the module API; `true` via the bundled CLI — see below]
 
-Opt-in flag to export Experience Orchestration (ExO) entities — Design Tokens, Components, Experience Templates, Data Assemblies, Experience Fragments, and Experiences — if present in the source space. Requires the `exoM1` entitlement on the source space's organization. See the "Experience Orchestration (ExO) entities" section below for what happens when the space isn't entitled.
+Opt-in flag to export Experience Orchestration (ExO) entities — Design Tokens, Components, Experience Templates, Data Assemblies, Experience Fragments, and Experiences — if present in the source space. Requires the `exoM1` entitlement on the source space's organization. See the "Experience Orchestration (ExO) entities" section below for the CLI-vs-module default asymmetry and what happens when the space isn't entitled.
 
 ## :rescue_worker_helmet: Troubleshooting
 
@@ -361,6 +361,8 @@ const options = {
 
 contentfulExport(options)
 ```
+
+> **CLI users, note the flipped default:** the module API defaults `includeExperienceOrchestration` to `false` (opt-in), as shown above. The bundled `contentful-export` executable (`bin/contentful-export`, the same binary `npm install -g contentful-export` / `npx contentful-export` runs) defaults `--include-experience-orchestration` to `true` (opt-out) — so running the CLI with no flags exports ExO entities by default, while calling the module with no options does not. Pass `--include-experience-orchestration=false` to the CLI if you don't want ExO content. Separately, [contentful-cli](https://github.com/contentful/contentful-cli)'s `space export` command doesn't expose this option at all yet, so ExO export isn't reachable through that CLI regardless of default.
 
 If the source space isn't entitled — or any single ExO entity type fails to fetch for any other reason — that entity type is logged as a **warning** and exported as an empty array; it does not fail the export. Unlike `contentful-import` (where the equivalent missing-entitlement case is logged at `error` level and causes the overall promise to reject even though the rest of the content imported), `contentful-export`'s `contentfulExport()` call still resolves successfully in this case. Check the console output or `errorLogFile` for `Skipping <Entity> export` if you expect ExO content but don't see it in the result.
 
