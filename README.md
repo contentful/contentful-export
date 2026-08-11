@@ -268,6 +268,12 @@ Full path to the error log file
 
 Display progress in new lines instead of displaying a busy spinner and the status in the same line. Useful for CI.
 
+### Experience Orchestration
+
+#### `includeExperienceOrchestration` [boolean] [default: true]
+
+Flag controlling whether Experience Orchestration (ExO) entities — Design Tokens, Components, Experience Templates, Data Assemblies, Experience Fragments, and Experiences — are exported when present in the source space. Requires the `exoM1` entitlement on the source space's organization. Set to `false` to opt out. See the "Experience Orchestration (ExO) entities" section below for what happens when the space isn't entitled.
+
 ## :rescue_worker_helmet: Troubleshooting
 
 ### Proxy
@@ -324,11 +330,47 @@ This is an overview of the exported data:
   "tags": [],
   "webhooks": [],
   "roles": [],
-  "editorInterfaces": []
+  "editorInterfaces": [],
+  "designTokens": [],
+  "components": [],
+  "experienceTemplates": [],
+  "dataAssemblies": [],
+  "experienceFragments": [],
+  "experiences": []
 }
 ```
 
 _Note:_ Tags feature is not available for all users. If you do not have access to this feature, the tags array will always be empty.
+
+_Note:_ `designTokens`, `components`, `experienceTemplates`, `dataAssemblies`, `experienceFragments`, and `experiences` are Experience Orchestration (ExO) entities — present by default; absent only if you explicitly set `includeExperienceOrchestration: false` — see the "Experience Orchestration (ExO) entities" section below.
+
+## :test_tube: Experience Orchestration (ExO) entities
+
+Experience Orchestration (ExO) is Contentful's system for composing and rendering structured page experiences. It sits above the traditional entry/content-type layer and provides six dedicated entity types — Design Tokens, Components, Experience Templates, Data Assemblies, Experience Fragments, and Experiences — that together describe how content is fetched, assembled, and laid out.
+
+> **Experimental:** ExO entities (`designTokens`, `components`, `experienceTemplates`, `dataAssemblies`, `experienceFragments`, `experiences`) are `@internal` and considered experimental. Their shape and export behavior are subject to change without notice.
+
+ExO export is on by default (`includeExperienceOrchestration: true`) — for the CLI and the module API alike. Pass `includeExperienceOrchestration: false` (`--include-experience-orchestration=false` on the CLI) to opt out.
+
+```javascript
+import contentfulExport from 'contentful-export'
+
+const options = {
+  spaceId: '<space_id>',
+  managementToken: '<content_management_api_key>',
+  includeExperienceOrchestration: false // opt out; omit to export ExO entities when present (the default)
+}
+
+await contentfulExport(options)
+```
+
+If the source space has no ExO entities, or lacks the `exoM1` entitlement, each ExO entity type logs a `Skipping <Entity> export` warning and exports as an empty array — it does not fail the export. Pass `includeExperienceOrchestration: false` if you want to avoid it.
+
+Requires the `exoM1` entitlement on the source space's organization. [contentful-cli](https://github.com/contentful/contentful-cli)'s `space export` command doesn't expose this option at all yet, so ExO export isn't reachable through that separate CLI regardless of default.
+
+### Round-tripping into `contentful-import`
+
+The ExO entities exported here are designed to be fed directly into [`contentful-import`](https://github.com/contentful/contentful-import), which preserves source IDs, applies dependency ordering (a topological sort for Components and Experience Fragments, since either can reference others of the same type), and upgrades entities from older, pre-rename export files automatically. See `contentful-import`'s README "Experience Orchestration (ExO) entities" section for the import-side details.
 
 ## :warning: Limitations
 
