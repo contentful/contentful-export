@@ -270,9 +270,9 @@ Display progress in new lines instead of displaying a busy spinner and the statu
 
 ### Experience Orchestration
 
-#### `includeExperienceOrchestration` [boolean] [default: `true` when run via the CLI — the most common way this tool is used; `false` if you call the module API directly without setting it — see below]
+#### `includeExperienceOrchestration` [boolean] [default: true]
 
-Flag controlling whether Experience Orchestration (ExO) entities — Design Tokens, Components, Experience Templates, Data Assemblies, Experience Fragments, and Experiences — are exported when present in the source space. Requires the `exoM1` entitlement on the source space's organization. See the "Experience Orchestration (ExO) entities" section below for the CLI-vs-module default split and what happens when the space isn't entitled.
+Flag controlling whether Experience Orchestration (ExO) entities — Design Tokens, Components, Experience Templates, Data Assemblies, Experience Fragments, and Experiences — are exported when present in the source space. Requires the `exoM1` entitlement on the source space's organization. Set to `false` to opt out. See the "Experience Orchestration (ExO) entities" section below for what happens when the space isn't entitled.
 
 ## :rescue_worker_helmet: Troubleshooting
 
@@ -342,16 +342,13 @@ This is an overview of the exported data:
 
 _Note:_ Tags feature is not available for all users. If you do not have access to this feature, the tags array will always be empty.
 
-_Note:_ `designTokens`, `components`, `experienceTemplates`, `dataAssemblies`, `experienceFragments`, and `experiences` are Experience Orchestration (ExO) entities, only present when `includeExperienceOrchestration` is set — see the "Experience Orchestration (ExO) entities" section below.
+_Note:_ `designTokens`, `components`, `experienceTemplates`, `dataAssemblies`, `experienceFragments`, and `experiences` are Experience Orchestration (ExO) entities — present by default; absent only if you explicitly set `includeExperienceOrchestration: false` — see the "Experience Orchestration (ExO) entities" section below.
 
 ## :test_tube: Experience Orchestration (ExO) entities
 
 > **Experimental:** ExO entities (`designTokens`, `components`, `experienceTemplates`, `dataAssemblies`, `experienceFragments`, `experiences`) are `@internal` and considered experimental. Their shape and export behavior are subject to change without notice.
 
-ExO export behavior depends on how you run this tool — the default is not the same in both places:
-
-- **CLI** (`bin/contentful-export` — the executable `npm install -g contentful-export` / `npx contentful-export` runs, and the most common way this tool gets used): `--include-experience-orchestration` defaults to `true`. ExO entities export automatically with no flags passed; pass `--include-experience-orchestration=false` to opt out.
-- **Module API** (`require('contentful-export')(options)`): `includeExperienceOrchestration` defaults to `false`. You must explicitly set it to `true` to get ExO entities.
+ExO export is on by default (`includeExperienceOrchestration: true`) — for the CLI and the module API alike. Pass `includeExperienceOrchestration: false` (`--include-experience-orchestration=false` on the CLI) to opt out.
 
 ```javascript
 const contentfulExport = require('contentful-export')
@@ -359,13 +356,15 @@ const contentfulExport = require('contentful-export')
 const options = {
   spaceId: '<space_id>',
   managementToken: '<content_management_api_key>',
-  includeExperienceOrchestration: true // required here — the module API defaults to false, unlike the CLI
+  includeExperienceOrchestration: false // opt out; omit to export ExO entities when present (the default)
 }
 
 contentfulExport(options)
 ```
 
-Both paths require the `exoM1` entitlement on the source space's organization. Separately, [contentful-cli](https://github.com/contentful/contentful-cli)'s `space export` command doesn't expose this option at all yet, so ExO export isn't reachable through that CLI regardless of default.
+Unlike `contentful-import` (where this default is a complete no-op for source content with no ExO entities — the import-side entitlement check only runs if the source data actually has ExO entities to import), `contentful-export`'s six ExO fetch tasks in `lib/tasks/get-space-data.js` are gated only on `includeExperienceOrchestration`, not on whether the source space actually has any ExO content. That means every export now always attempts all six ExO endpoint calls. Against a non-entitled or ExO-empty space, each one fails or returns empty, gets caught, and logs a `Skipping <Entity> export` warning — six new warning lines and six extra network round-trips on every run, even for spaces with nothing to do with ExO. The export still succeeds either way (see below) — this is a cost/noise note, not a correctness one. Pass `includeExperienceOrchestration: false` if you want to avoid it.
+
+Requires the `exoM1` entitlement on the source space's organization. [contentful-cli](https://github.com/contentful/contentful-cli)'s `space export` command doesn't expose this option at all yet, so ExO export isn't reachable through that separate CLI regardless of default.
 
 If the source space isn't entitled — or any single ExO entity type fails to fetch for any other reason — that entity type is logged as a **warning** and exported as an empty array; it does not fail the export. Unlike `contentful-import` (where the equivalent missing-entitlement case is logged at `error` level and causes the overall promise to reject even though the rest of the content imported), `contentful-export`'s `contentfulExport()` call still resolves successfully in this case. Check the console output or `errorLogFile` for `Skipping <Entity> export` if you expect ExO content but don't see it in the result.
 
