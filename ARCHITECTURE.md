@@ -24,7 +24,7 @@ graph TD
 | `lib/index.js` | Main entry point. Orchestrates the export pipeline using Listr tasks: init client, fetch space data, download assets, write export file. |
 | `lib/parseOptions.js` | Merges defaults, config file, and user-supplied params. Validates required fields (`spaceId`, `managementToken`). Processes proxy settings, query strings, and file paths. |
 | `lib/tasks/init-client.js` | Creates CMA and/or CDA client instances using `contentful-management` and `contentful` SDKs. |
-| `lib/tasks/get-space-data.js` | Paginated fetching of all entity types (content types, entries, assets, locales, tags, webhooks, roles, editor interfaces). Handles draft/archived filtering and tag stripping. |
+| `lib/tasks/get-space-data.js` | Paginated fetching of all entity types (content types, entries, assets, locales, tags, webhooks, roles, editor interfaces). Handles draft/archived filtering and tag stripping. Also fetches ExO entities (Design Tokens, Components, Experience Templates, Data Assemblies, Experience Fragments, Experiences) when `includeExperienceOrchestration` is enabled. |
 | `lib/tasks/download-assets.js` | Downloads asset binary files to disk with concurrency of 6. Handles embargoed (signed URL) assets. |
 | `lib/usageParams.js` | Yargs CLI argument definitions. Consumed by the `bin/contentful-export` CLI entry point. |
 | `lib/utils/embargoedAssets.js` | JWT-based URL signing for embargoed (secure) assets. Caches asset keys per space/environment. |
@@ -37,7 +37,7 @@ graph TD
 
 1. **Option parsing** -- User passes options (programmatic or CLI). `parseOptions` merges defaults, config file, and params. Validates required fields.
 2. **Client initialization** -- Creates a CMA client. If `deliveryToken` is provided (and `includeDrafts` is false), also creates a CDA client for fetching published-only entries/assets.
-3. **Paginated fetching** -- `get-space-data.js` connects to the space/environment, then fetches each entity type in sequence using `pagedGet` (page size = `maxAllowedLimit`, default 1000, ordered by `sys.createdAt,sys.id`). Entries and assets are post-filtered for drafts/archived status and optionally have tags stripped.
+3. **Paginated fetching** -- `get-space-data.js` connects to the space/environment, then fetches each entity type in sequence using `pagedGet` (page size = `maxAllowedLimit`, default 1000, ordered by `sys.createdAt,sys.id`). Entries and assets are post-filtered for drafts/archived status and optionally have tags stripped. If `includeExperienceOrchestration` is enabled, six ExO entity types are fetched using cursor-based pagination (`cursorPagedGet`, which follows `response.pages.next` tokens) via the plain CMA client. ExO fetch errors are caught per entity type — a failing endpoint logs a warning and yields `[]` rather than aborting the export.
 4. **Asset download** (optional) -- If `downloadAssets` is true, asset files are streamed to disk under `exportDir/<host>/<path>`. Embargoed assets are signed via the asset_keys API with a 6-hour expiry window before download.
 5. **JSON export** -- The aggregated data object is written to disk using `bfj` (Big-Friendly JSON) for streaming large JSON writes without exhausting memory.
 6. **Summary** -- A table of exported entity counts is printed, along with duration and file path.
@@ -52,6 +52,7 @@ graph TD
 | **Embargoed Assets** | Assets hosted on `*.secure.*` domains that require JWT-signed URLs for access. The tool creates short-lived signed URLs via the `asset_keys` API. |
 | **Draft / Archived** | Entries and assets can be in draft (no `publishedVersion`) or archived (`archivedVersion` set) states. By default, only published items are exported. |
 | **CDA vs CMA export** | CMA returns all versions (latest, including unpublished changes). CDA returns only the published version. Providing a `deliveryToken` switches entry/asset fetching to CDA. Tags are CMA-only and will not be exported via CDA. |
+| **Experience Orchestration (ExO)** | Six ExO entity types (Design Tokens, Components, Experience Templates, Data Assemblies, Experience Fragments, Experiences) are exported when `includeExperienceOrchestration: true` is set. Requires the `exo_m1` Organization entitlement. Non-entitled spaces return empty arrays rather than failing. See [docs/exo-export.md](./docs/exo-export.md). |
 
 ## Key Dependencies
 
@@ -101,6 +102,7 @@ These are used in the GitHub Actions check workflow for integration tests:
 | `DELIVERY_TOKEN` | CDA token for test space |
 | `EXPORT_SPACE_ID` | Space ID for integration tests |
 | `EXPORT_SPACE_ID_EMBARGOED_ASSETS` | Space ID for embargoed asset tests |
+| `EXO_EXPORT_SPACE_ID` | Space ID with `exo_m1` entitlement for ExO integration tests (optional; ExO test is skipped when absent) |
 
 ## Operational Knowledge
 

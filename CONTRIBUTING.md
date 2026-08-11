@@ -94,6 +94,7 @@ Integration tests require these environment variables:
 - `DELIVERY_TOKEN` -- CDA API token
 - `EXPORT_SPACE_ID` -- Space ID for standard tests
 - `EXPORT_SPACE_ID_EMBARGOED_ASSETS` -- Space ID for embargoed asset tests
+- `EXO_EXPORT_SPACE_ID` -- Space ID with `exo_m1` entitlement for ExO tests (optional; test is skipped when absent)
 
 ## Code Style & Conventions
 

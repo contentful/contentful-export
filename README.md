@@ -216,6 +216,14 @@ Skip exporting webhooks
 
 Untag assets and entries
 
+#### `includeExperienceOrchestration` [boolean] [default: true]
+
+Export Experience Orchestration (ExO) entities: Design Tokens, Components, Experience Templates, Data Assemblies, Experience Fragments, and Experiences.
+
+Requires the Organization to have the `exo_m1` entitlement. If the Organization is not entitled, the export will not throw — each ExO array will be empty and a warning will be logged.
+
+See [docs/exo-export.md](./docs/exo-export.md) for full details.
+
 #### `contentOnly` [boolean] [default: false]
 
 Only export entries and assets
@@ -325,6 +333,19 @@ This is an overview of the exported data:
   "webhooks": [],
   "roles": [],
   "editorInterfaces": []
+}
+```
+
+When `includeExperienceOrchestration: true` is set, six additional arrays are included:
+
+```json
+{
+  "designTokens": [],
+  "components": [],
+  "experienceTemplates": [],
+  "dataAssemblies": [],
+  "experienceFragments": [],
+  "experiences": []
 }
 ```
 
