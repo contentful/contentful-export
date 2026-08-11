@@ -353,7 +353,7 @@ Experience Orchestration (ExO) is Contentful's system for composing and renderin
 ExO export is on by default (`includeExperienceOrchestration: true`) — for the CLI and the module API alike. Pass `includeExperienceOrchestration: false` (`--include-experience-orchestration=false` on the CLI) to opt out.
 
 ```javascript
-const contentfulExport = require('contentful-export')
+import contentfulExport from 'contentful-export'
 
 const options = {
   spaceId: '<space_id>',
@@ -361,7 +361,7 @@ const options = {
   includeExperienceOrchestration: false // opt out; omit to export ExO entities when present (the default)
 }
 
-contentfulExport(options)
+await contentfulExport(options)
 ```
 
 If the source space has no ExO entities, or lacks the `exoM1` entitlement, each ExO entity type logs a `Skipping <Entity> export` warning and exports as an empty array — it does not fail the export. Pass `includeExperienceOrchestration: false` if you want to avoid it.
