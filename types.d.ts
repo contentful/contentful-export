@@ -29,9 +29,10 @@ export interface Options {
   skipWebhooks?: boolean;
   skipTags?: boolean;
   useVerboseRenderer?: boolean;
+  includeExperienceOrchestration?: boolean;
 }
 
-type ContentfulExportField = 'contentTypes' | 'entries' | 'assets' | 'locales' | 'tags' | 'webhooks' | 'roles' | 'editorInterfaces';
+type ContentfulExportField = 'contentTypes' | 'entries' | 'assets' | 'locales' | 'tags' | 'webhooks' | 'roles' | 'editorInterfaces' | 'designTokens' | 'components' | 'experienceTemplates' | 'dataAssemblies' | 'experienceFragments' | 'experiences';
 
 declare const runContentfulExport: (params: Options) => Promise<Record<ContentfulExportField, unknown[]>>
 export default runContentfulExport
