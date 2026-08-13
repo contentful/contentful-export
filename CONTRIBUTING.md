@@ -150,7 +150,7 @@ Release credentials (GitHub token) are retrieved from HashiCorp Vault during CI.
 
 - No enforced PR title format
 - Required checks: Build job + Check job (unit tests + integration tests)
-- Dependabot PRs are auto-approved and auto-merged via the `dependabot-approve-and-request-merge` workflow
+- Renovate PRs are auto-approved and auto-merged via the org-level Renovate GitHub App (automerge is configured in `renovate.json`)
 - CI runs on all branches (push and PR events)
 
 ## CI/CD
@@ -161,7 +161,7 @@ Release credentials (GitHub token) are retrieved from HashiCorp Vault during CI.
 | `check` (Run Checks) | After build succeeds | Restore build cache, run unit tests, run integration tests (with secrets) |
 | `release` (Release) | Push to `main` or `beta`, after build + check pass | Retrieve Vault secrets, run `semantic-release` to publish to npm + create GitHub release |
 | `codeql` (CodeQL Scan) | Push to `main` changing `.github/workflows/` | Static analysis of GitHub Actions workflows |
-| `dependabot-approve-and-request-merge` | `pull_request_target` from dependabot | Auto-approve and request merge for Dependabot PRs |
+| _(removed)_ | _(Renovate automerge is handled by the org-level Renovate GitHub App)_ | — |
 
 ## Adding a New Component
 
