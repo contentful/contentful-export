@@ -25,6 +25,7 @@ Read this file first. It tells you where to find context in this repo.
 - **`package.json` version is `0.0.0-determined-by-semantic-release`.** Never set a version manually. `semantic-release` handles all versioning.
 - **Babel target (Node 12) is lower than `engines.node` (>=22).** This is a known inconsistency in `babel.config.json`. The low target is harmless but confusing.
 - **`contentOnly` flag is a shorthand.** When set, it internally enables `skipRoles`, `skipContentModel`, and `skipWebhooks`. Do not duplicate this logic.
+- **ExO entities Organization entitlement-gated.** `includeExperienceOrchestration` defaults to `true`. When enabled, six ExO entity types are fetched using the `plainClient`. If the space lacks the `exo_m1` entitlement, each fetch fails silently: the entity array is set to `[]` and a warning is emitted. The export does not abort. See [docs/exo-export.md](./docs/exo-export.md).
 - **Asset downloads use concurrency of 6.** Both `download-assets.js` and `get-space-data.js` (editor interfaces) use Bluebird `Promise.map` with `{ concurrency: 6 }`. Be careful about changing this -- it affects API rate limiting.
 
 ## High-Traffic Areas

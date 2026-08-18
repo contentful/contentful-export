@@ -94,6 +94,7 @@ Integration tests require these environment variables:
 - `DELIVERY_TOKEN` -- CDA API token
 - `EXPORT_SPACE_ID` -- Space ID for standard tests
 - `EXPORT_SPACE_ID_EMBARGOED_ASSETS` -- Space ID for embargoed asset tests
+- `EXPORT_ORGANIZATION_ID` -- Organization ID (must have the Experience Orchestration entitlement) used by `test/integration/export-exo.test.js` to provision and tear down its own throwaway space
 
 ## Code Style & Conventions
 
