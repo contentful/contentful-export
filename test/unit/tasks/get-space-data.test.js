@@ -661,9 +661,9 @@ test('Roles fetch paginates via skip/limit and does not duplicate or drop items 
     })
     .then((response) => {
       expect(mockClient.role.getMany.mock.calls).toHaveLength(3)
-      expect(mockClient.role.getMany.mock.calls[0][0]).toEqual({ spaceId: 'spaceid', query: { limit: 1000, order: 'sys.createdAt,sys.id' } })
-      expect(mockClient.role.getMany.mock.calls[1][0]).toEqual({ spaceId: 'spaceid', query: { limit: 1000, order: 'sys.createdAt,sys.id', skip: 25 } })
-      expect(mockClient.role.getMany.mock.calls[2][0]).toEqual({ spaceId: 'spaceid', query: { limit: 1000, order: 'sys.createdAt,sys.id', skip: 50 } })
+      expect(mockClient.role.getMany.mock.calls[0][0]).toEqual({ spaceId: 'spaceid', query: { limit: 1000 } })
+      expect(mockClient.role.getMany.mock.calls[1][0]).toEqual({ spaceId: 'spaceid', query: { limit: 1000, skip: 25 } })
+      expect(mockClient.role.getMany.mock.calls[2][0]).toEqual({ spaceId: 'spaceid', query: { limit: 1000, skip: 50 } })
       expect(response.data.roles).toHaveLength(60)
       expect(response.data.roles.map((role) => role.sys.id)).toEqual(
         Array.from({ length: 60 }, (_, i) => i + 1)
@@ -694,8 +694,8 @@ test('Roles fetch follows cursor-based pagination when the API returns pages.nex
     })
     .then((response) => {
       expect(mockClient.role.getMany.mock.calls).toHaveLength(2)
-      expect(mockClient.role.getMany.mock.calls[0][0]).toEqual({ spaceId: 'spaceid', query: { limit: 1000, order: 'sys.createdAt,sys.id' } })
-      expect(mockClient.role.getMany.mock.calls[1][0]).toEqual({ spaceId: 'spaceid', query: { limit: 1000, order: 'sys.createdAt,sys.id', pageNext: 'CURSOR_PAGE_2' } })
+      expect(mockClient.role.getMany.mock.calls[0][0]).toEqual({ spaceId: 'spaceid', query: { limit: 1000 } })
+      expect(mockClient.role.getMany.mock.calls[1][0]).toEqual({ spaceId: 'spaceid', query: { limit: 1000, pageNext: 'CURSOR_PAGE_2' } })
       expect(response.data.roles.map((role) => role.sys.id)).toEqual(['r1', 'r2', 'r3'])
     })
 })
@@ -805,7 +805,7 @@ test('Fetches all ExO entities into their renamed fields via the non-deprecated 
         expect(mockClient[endpoint].getMany.mock.calls[0][0]).toEqual({
           spaceId: 'spaceid',
           environmentId: 'master',
-          limit: maxAllowedLimit
+          query: { limit: maxAllowedLimit }
         })
         // ...and its result lands on the correctly-named field.
         expect(response.data[field]).toHaveLength(1)
@@ -843,14 +843,13 @@ test('Follows cursor pagination across pages and aggregates ExO items', () => {
       expect(mockClient.component.getMany.mock.calls[0][0]).toEqual({
         spaceId: 'spaceid',
         environmentId: 'master',
-        limit: maxAllowedLimit
+        query: { limit: maxAllowedLimit }
       })
       // Second page passes the `pageNext` token returned by the first.
       expect(mockClient.component.getMany.mock.calls[1][0]).toEqual({
         spaceId: 'spaceid',
         environmentId: 'master',
-        limit: maxAllowedLimit,
-        pageNext: 'CURSOR_PAGE_2'
+        query: { limit: maxAllowedLimit, pageNext: 'CURSOR_PAGE_2' }
       })
       expect(response.data.components).toHaveLength(3)
       expect(response.data.components.map((item) => item.sys.id)).toEqual(['c1', 'c2', 'c3'])
