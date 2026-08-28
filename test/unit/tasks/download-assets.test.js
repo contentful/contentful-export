@@ -3,6 +3,7 @@ import { tmpdir } from 'os'
 import { resolve } from 'path'
 
 import nock from 'nock'
+import figures from 'figures'
 
 import downloadAssets from '../../../lib/tasks/download-assets'
 
@@ -22,6 +23,10 @@ const UNICODE_LONG_FILENAME = `${'测试文件'.repeat(10)}.jpg`
 const UNICODE_LONG_URL = `${ASSET_PATH}/${encodeURIComponent(UNICODE_LONG_FILENAME)}`
 const DIFFERENT_FILENAME = 'different filename.jpg'
 const UPLOAD_URL = '//file-stack-url-do-not-use-me.png'
+const NETWORK_ERROR_FILENAME = 'network-error.png'
+const NETWORK_ERROR_URL = `${ASSET_PATH}/${NETWORK_ERROR_FILENAME}`
+const RETRY_ASSET_FILENAME = 'retry-me.png'
+const RETRY_ASSET_URL = `${ASSET_PATH}/${RETRY_ASSET_FILENAME}`
 
 const API_HOST = 'api.contentful.com'
 const SPACE_ID = 'kq9lln4hyr8s'
@@ -67,7 +72,23 @@ nock(`https://${API_HOST}`)
   .times(1)
   .reply(200, { policy: POLICY, secret: SECRET })
 
-function getAssets ({ existing = 0, nonExisting = 0, missingUrl = 0, embargoed = 0, unicodeShort = 0, unicodeLong = 0, differentFilename = 0 } = {}) {
+// Simulates a network error with no HTTP response (e.g. ECONNRESET), for both locales
+const networkError = new Error('socket hang up')
+networkError.code = 'ECONNRESET'
+nock(`https:${BASE_PATH}`)
+  .get(NETWORK_ERROR_URL)
+  .times(2)
+  .replyWithError(networkError)
+
+// First attempt fails with a retryable 503, second attempt (the retry) succeeds
+nock(`https:${BASE_PATH}`)
+  .get(RETRY_ASSET_URL)
+  .reply(503)
+nock(`https:${BASE_PATH}`)
+  .get(RETRY_ASSET_URL)
+  .reply(200)
+
+function getAssets({ existing = 0, nonExisting = 0, missingUrl = 0, embargoed = 0, unicodeShort = 0, unicodeLong = 0, differentFilename = 0 } = {}) {
   const existingUrl = `${BASE_PATH}${EXISTING_ASSET_URL}`
   const embargoedUrl = `${BASE_PATH_SECURE}${EMBARGOED_ASSET_URL}`
   const nonExistingUrl = `${BASE_PATH}${NON_EXISTING_URL}`
@@ -329,7 +350,7 @@ test('it doesn\'t use fileStack url as fallback for the file url and throws a wa
 
       const missingUrlsOutputCount = output.mock.calls.filter(call =>
         call[0]?.endsWith('asset.fields.file[en-US].url') ||
-          call[0]?.endsWith('asset.fields.file[de-DE].url'))
+        call[0]?.endsWith('asset.fields.file[de-DE].url'))
 
       expect(missingUrlsOutputCount).toHaveLength(2)
     })
@@ -415,5 +436,90 @@ test('Downloads assets with different filename than URL path', () => {
       expect(differentFilenameAsset.fields.file['en-US'].url).toBe(`${BASE_PATH}${EXISTING_ASSET_URL}`)
       expect(differentFilenameAsset.fields.file['de-DE'].fileName).toBe(DIFFERENT_FILENAME)
       expect(differentFilenameAsset.fields.file['de-DE'].url).toBe(`${BASE_PATH}${EXISTING_ASSET_URL}`)
+    })
+})
+
+test('Reports a clear error, not a TypeError, when there is no HTTP response', () => {
+  const task = downloadAssets({
+    exportDir: tmpDirectory
+  })
+  const networkErrorUrl = `${BASE_PATH}${NETWORK_ERROR_URL}`
+  const ctx = {
+    data: {
+      assets: [
+        {
+          sys: {
+            id: 'network error asset 0'
+          },
+          fields: {
+            file: {
+              'en-US': {
+                url: networkErrorUrl,
+                fileName: NETWORK_ERROR_FILENAME,
+                upload: UPLOAD_URL
+              },
+              'de-DE': {
+                url: networkErrorUrl,
+                fileName: NETWORK_ERROR_FILENAME,
+                upload: UPLOAD_URL
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+
+  return task(ctx, taskProxy)
+    .then(() => {
+      expect(ctx.assetDownloads).toEqual({
+        successCount: 0,
+        warningCount: 0,
+        errorCount: 2
+      })
+      expect(output.mock.calls).toHaveLength(2)
+
+      for (const [message] of output.mock.calls) {
+        expect(message).not.toContain('TypeError')
+        expect(message).toContain('network error asset 0')
+      }
+    })
+})
+
+test('Retries a transient failure and succeeds without logging an error', () => {
+  const task = downloadAssets({
+    exportDir: tmpDirectory
+  })
+  const retryAssetUrl = `${BASE_PATH}${RETRY_ASSET_URL}`
+  const ctx = {
+    data: {
+      assets: [
+        {
+          sys: {
+            id: 'retry asset 0'
+          },
+          fields: {
+            file: {
+              'en-US': {
+                url: retryAssetUrl,
+                fileName: RETRY_ASSET_FILENAME,
+                upload: UPLOAD_URL
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+
+  return task(ctx, taskProxy)
+    .then(() => {
+      expect(ctx.assetDownloads).toEqual({
+        successCount: 1,
+        warningCount: 0,
+        errorCount: 0
+      })
+      expect(output.mock.calls).toHaveLength(1)
+      expect(output.mock.calls[0][0]).toContain(`${figures.tick} downloaded`)
     })
 })

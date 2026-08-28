@@ -1,3 +1,4 @@
+import { logEmitter } from 'contentful-batch-libs'
 import getSpaceData from '../../../lib/tasks/get-space-data'
 
 const maxAllowedLimit = 100
@@ -334,6 +335,38 @@ test('Gets whole destination content without tags', () => {
     })
 })
 
+test('Aborts the export when fetching tags fails', () => {
+  mockEnvironment.getTags = jest.fn(() => Promise.reject(new Error('tags service unavailable')))
+
+  // Production always calls setupLogging() before any task runs, which
+  // registers a permanent 'error' listener. Without one, Node treats a
+  // listener-less 'error' emit as unhandled and throws its own wrapper error.
+  const errors = []
+  const onError = (err) => errors.push(err)
+  logEmitter.on('error', onError)
+
+  return getSpaceData({
+    client: mockClient,
+    spaceId: 'spaceid',
+    maxAllowedLimit
+  })
+    .run({
+      data: {}
+    })
+    .then(
+      () => Promise.reject(new Error('Expected the export to reject when tags fails')),
+      (err) => {
+        expect(err.message).toContain('tags service unavailable')
+        expect(errors).toHaveLength(1)
+        expect(errors[0].message).toBe('Fetching tags failed: tags service unavailable')
+        expect(errors[0].cause.message).toBe('tags service unavailable')
+      }
+    )
+    .finally(() => {
+      logEmitter.off('error', onError)
+    })
+})
+
 test('Gets whole destination content with drafts', () => {
   return getSpaceData({
     client: mockClient,
@@ -453,6 +486,42 @@ test('Gets whole destination content and detects missing editor interfaces', () 
       expect(getEditorInterface.mock.calls).toHaveLength(resultItemCount)
       expect(response.data.contentTypes).toHaveLength(resultItemCount)
       expect(response.data.editorInterfaces).toHaveLength(0)
+    })
+})
+
+test('Logs the content type name, or falls back to sys.id, when no editor interface is found', () => {
+  getEditorInterface.mockImplementation(() => Promise.reject(new Error('No editor interface found')))
+  mockEnvironment.getContentTypes.mockImplementation(() => Promise.resolve({
+    items: [
+      { sys: { id: 'named-content-type' }, name: 'Named Content Type', getEditorInterface },
+      { sys: { id: 'unnamed-content-type' }, getEditorInterface }
+    ],
+    total: 2
+  }))
+
+  const warnings = []
+  const onWarning = (message) => warnings.push(message)
+  logEmitter.on('warning', onWarning)
+
+  return getSpaceData({
+    client: mockClient,
+    spaceId: 'spaceid',
+    maxAllowedLimit,
+    skipContent: true,
+    skipWebhooks: true,
+    skipRoles: true
+  })
+    .run({
+      data: {}
+    })
+    .then((response) => {
+      expect(response.data.editorInterfaces).toHaveLength(0)
+      expect(warnings).toContain('No editor interface found for Named Content Type')
+      expect(warnings).toContain('No editor interface found for unnamed-content-type')
+      expect(warnings.some((message) => message.includes('[object Object]'))).toBe(false)
+    })
+    .finally(() => {
+      logEmitter.off('warning', onWarning)
     })
 })
 
