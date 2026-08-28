@@ -1,3 +1,4 @@
+import { logEmitter } from 'contentful-batch-libs'
 import getSpaceData from '../../../lib/tasks/get-space-data'
 
 const maxAllowedLimit = 100
@@ -331,6 +332,38 @@ test('Gets whole destination content without tags', () => {
       expect(response.data.webhooks).toHaveLength(resultItemCount)
       expect(response.data.roles).toHaveLength(resultItemCount)
       expect(response.data.editorInterfaces).toHaveLength(resultItemCount)
+    })
+})
+
+test('Aborts the export when fetching tags fails', () => {
+  mockEnvironment.getTags = jest.fn(() => Promise.reject(new Error('tags service unavailable')))
+
+  // Production always calls setupLogging() before any task runs, which
+  // registers a permanent 'error' listener. Without one, Node treats a
+  // listener-less 'error' emit as unhandled and throws its own wrapper error.
+  const errors = []
+  const onError = (err) => errors.push(err)
+  logEmitter.on('error', onError)
+
+  return getSpaceData({
+    client: mockClient,
+    spaceId: 'spaceid',
+    maxAllowedLimit
+  })
+    .run({
+      data: {}
+    })
+    .then(
+      () => Promise.reject(new Error('Expected the export to reject when tags fails')),
+      (err) => {
+        expect(err.message).toContain('tags service unavailable')
+        expect(errors).toHaveLength(1)
+        expect(errors[0].message).toBe('Fetching tags failed: tags service unavailable')
+        expect(errors[0].cause.message).toBe('tags service unavailable')
+      }
+    )
+    .finally(() => {
+      logEmitter.off('error', onError)
     })
 })
 
