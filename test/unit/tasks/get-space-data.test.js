@@ -1,5 +1,14 @@
 import { logEmitter } from 'contentful-batch-libs'
+import { withTimeout, TimeoutError } from '../../../lib/utils/withTimeout'
 import getSpaceData from '../../../lib/tasks/get-space-data'
+
+jest.mock('../../../lib/utils/withTimeout', () => {
+  const actual = jest.requireActual('../../../lib/utils/withTimeout')
+  return {
+    ...actual,
+    withTimeout: jest.fn((operation) => operation())
+  }
+})
 
 const maxAllowedLimit = 100
 const resultItemCount = 420
@@ -338,6 +347,112 @@ test('Gets whole destination content without tags', () => {
       expect(response.data.webhooks).toHaveLength(resultItemCount)
       expect(response.data.roles).toHaveLength(resultItemCount)
       expect(response.data.editorInterfaces).toHaveLength(resultItemCount)
+    })
+})
+
+test('Emits a running "Fetching <entity>: X / Y" progress line for each page', () => {
+  const infoMessages = []
+  const onInfo = (message) => infoMessages.push(message)
+  logEmitter.on('info', onInfo)
+
+  return getSpaceData({
+    client: mockClient,
+    spaceId: 'spaceid',
+    maxAllowedLimit,
+    skipWebhooks: true,
+    skipRoles: true,
+    skipEditorInterfaces: true
+  })
+    .run({
+      data: {}
+    })
+    .then(() => {
+      const pages = Math.ceil(resultItemCount / maxAllowedLimit)
+      for (let page = 1; page <= pages; page++) {
+        const fetched = Math.min(page * maxAllowedLimit, resultItemCount)
+        expect(infoMessages).toContain(`Fetching entries: ${fetched.toLocaleString()} / ${resultItemCount.toLocaleString()}`)
+        expect(infoMessages).toContain(`Fetching assets: ${fetched.toLocaleString()} / ${resultItemCount.toLocaleString()}`)
+        expect(infoMessages).toContain(`Fetching content types: ${fetched.toLocaleString()} / ${resultItemCount.toLocaleString()}`)
+      }
+    })
+    .finally(() => {
+      logEmitter.off('info', onInfo)
+    })
+})
+
+test('Logs an error and continues past a page that times out, without retrying it', () => {
+  let entriesCallCount = 0
+  withTimeout.mockImplementation((operation, { label }) => {
+    if (label.startsWith('Fetching entries')) {
+      entriesCallCount++
+      if (entriesCallCount === 2) {
+        return Promise.reject(new TimeoutError(`${label} timed out after 20s`))
+      }
+    }
+    return operation()
+  })
+
+  const errors = []
+  const onError = (err) => errors.push(err)
+  logEmitter.on('error', onError)
+
+  return getSpaceData({
+    client: mockClient,
+    spaceId: 'spaceid',
+    maxAllowedLimit,
+    skipWebhooks: true,
+    skipRoles: true,
+    skipEditorInterfaces: true
+  })
+    .run({
+      data: {}
+    })
+    .then((response) => {
+      expect(errors.some((err) => err.message.includes('Fetching entries') && err.message.includes('timed out after 20s'))).toBe(true)
+      expect(errors.some((err) => err.message.includes('skipping this page and continuing with the export'))).toBe(true)
+      // The timed-out page's items are never retried, so the export completes with a gap instead of hanging.
+      expect(response.data.entries.length).toBeLessThan(resultItemCount / 2)
+      // Other entities are unaffected by the one entries page that timed out.
+      expect(response.data.contentTypes).toHaveLength(resultItemCount)
+    })
+    .finally(() => {
+      logEmitter.off('error', onError)
+      withTimeout.mockImplementation((operation) => operation())
+    })
+})
+
+test('Gives up gracefully when the very first page of an entity times out', () => {
+  withTimeout.mockImplementation((operation, { label }) => {
+    if (label.startsWith('Fetching content types')) {
+      return Promise.reject(new TimeoutError(`${label} timed out after 20s`))
+    }
+    return operation()
+  })
+
+  const errors = []
+  const onError = (err) => errors.push(err)
+  logEmitter.on('error', onError)
+
+  return getSpaceData({
+    client: mockClient,
+    spaceId: 'spaceid',
+    maxAllowedLimit,
+    skipWebhooks: true,
+    skipRoles: true,
+    skipEditorInterfaces: true
+  })
+    .run({
+      data: {}
+    })
+    .then((response) => {
+      expect(errors.some((err) => err.message.includes('Fetching content types') && err.message.includes('timed out after 20s'))).toBe(true)
+      expect(response.data.contentTypes).toEqual([])
+      // Other entities are unaffected.
+      expect(response.data.entries).toHaveLength(resultItemCount / 2)
+    })
+    .finally(() => {
+      logEmitter.off('error', onError)
+      withTimeout.mockImplementation((operation) => operation())
     })
 })
 
