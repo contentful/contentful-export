@@ -489,6 +489,42 @@ test('Gets whole destination content and detects missing editor interfaces', () 
     })
 })
 
+test('Logs the content type name, or falls back to sys.id, when no editor interface is found', () => {
+  getEditorInterface.mockImplementation(() => Promise.reject(new Error('No editor interface found')))
+  mockEnvironment.getContentTypes.mockImplementation(() => Promise.resolve({
+    items: [
+      { sys: { id: 'named-content-type' }, name: 'Named Content Type', getEditorInterface },
+      { sys: { id: 'unnamed-content-type' }, getEditorInterface }
+    ],
+    total: 2
+  }))
+
+  const warnings = []
+  const onWarning = (message) => warnings.push(message)
+  logEmitter.on('warning', onWarning)
+
+  return getSpaceData({
+    client: mockClient,
+    spaceId: 'spaceid',
+    maxAllowedLimit,
+    skipContent: true,
+    skipWebhooks: true,
+    skipRoles: true
+  })
+    .run({
+      data: {}
+    })
+    .then((response) => {
+      expect(response.data.editorInterfaces).toHaveLength(0)
+      expect(warnings).toContain('No editor interface found for Named Content Type')
+      expect(warnings).toContain('No editor interface found for unnamed-content-type')
+      expect(warnings.some((message) => message.includes('[object Object]'))).toBe(false)
+    })
+    .finally(() => {
+      logEmitter.off('warning', onWarning)
+    })
+})
+
 test('Skips editor interfaces since no content types are found', () => {
   mockEnvironment.getContentTypes.mockImplementation(() => Promise.resolve({
     items: [],
