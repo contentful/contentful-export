@@ -342,7 +342,7 @@ test('Gets whole destination content without tags', () => {
 })
 
 test('Aborts the export when fetching tags fails', () => {
-  mockEnvironment.getTags = jest.fn(() => Promise.reject(new Error('tags service unavailable')))
+  mockClient.tag.getMany = jest.fn(() => Promise.reject(new Error('tags service unavailable')))
 
   // Production always calls setupLogging() before any task runs, which
   // registers a permanent 'error' listener. Without one, Node treats a
@@ -496,11 +496,11 @@ test('Gets whole destination content and detects missing editor interfaces', () 
 })
 
 test('Logs the content type name, or falls back to sys.id, when no editor interface is found', () => {
-  getEditorInterface.mockImplementation(() => Promise.reject(new Error('No editor interface found')))
-  mockEnvironment.getContentTypes.mockImplementation(() => Promise.resolve({
+  mockClient.editorInterface.get = jest.fn(() => Promise.reject(new Error('No editor interface found')))
+  mockClient.contentType.getMany = jest.fn(() => Promise.resolve({
     items: [
-      { sys: { id: 'named-content-type' }, name: 'Named Content Type', getEditorInterface },
-      { sys: { id: 'unnamed-content-type' }, getEditorInterface }
+      { sys: { id: 'named-content-type' }, name: 'Named Content Type' },
+      { sys: { id: 'unnamed-content-type' } }
     ],
     total: 2
   }))
