@@ -1112,3 +1112,50 @@ test('Skips Experience/Fragment variant fetch entirely when there are no parents
       expect(mockClient.experienceFragmentVariant.getMany.mock.calls).toHaveLength(0)
     })
 })
+
+test('Filters out the API-synthesized default pseudo-variant, which represents the parent itself', () => {
+  // The optimization_variants list endpoint always leads with a sys.variantType: 'default'
+  // item representing the parent's own base view (a real record, or the baseline
+  // Experience/Fragment itself if none exists) -- not a real personalization variant.
+  // That entity is already exported as its own top-level Experience/ExperienceFragment, so
+  // it must not also show up inside optimizationVariants (double-counting it as a variant).
+  setupExoMocks()
+  mockClient.experience.getMany = jest.fn(() => Promise.resolve(cursorPage([{ sys: { id: 'exp1' } }])))
+  mockClient.experienceFragment.getMany = jest.fn(() => Promise.resolve(cursorPage([{ sys: { id: 'frag1' } }])))
+  mockClient.experienceVariant = {
+    getMany: jest.fn(() => Promise.resolve({
+      sys: { type: 'Array' },
+      items: [
+        { sys: { id: 'exp1', variant: 'default', variantType: 'default' } },
+        { sys: { id: 'exp1', variant: 'v1', variantType: 'personalization' } }
+      ]
+    }))
+  }
+  mockClient.experienceFragmentVariant = {
+    // A parent with zero real variants still gets the synthesized default entry back --
+    // filtering it must leave optimizationVariants empty, not length 1.
+    getMany: jest.fn(() => Promise.resolve({
+      sys: { type: 'Array' },
+      items: [{ sys: { id: 'frag1', variant: 'default', variantType: 'default' } }]
+    }))
+  }
+
+  return getSpaceData({
+    client: mockClient,
+    spaceId: 'spaceid',
+    maxAllowedLimit,
+    skipContent: true,
+    skipWebhooks: true,
+    skipRoles: true,
+    includeExperienceOrchestration: true,
+    includeExoVariants: true
+  })
+    .run({
+      data: {}
+    })
+    .then((response) => {
+      expect(response.data.experiences[0].optimizationVariants)
+        .toEqual([{ sys: { id: 'exp1', variant: 'v1', variantType: 'personalization' } }])
+      expect(response.data.experienceFragments[0].optimizationVariants).toEqual([])
+    })
+})
