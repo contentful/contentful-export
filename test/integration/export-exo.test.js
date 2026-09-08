@@ -206,6 +206,21 @@ beforeAll(async () => {
   )
   const publishedFragmentA = await client.experienceFragment.publish({ experienceFragmentId: fragmentA.sys.id, version: fragmentA.sys.version })
 
+  // Optimization Variant (1) on Fragment A only -- Fragment B is left without one to also
+  // cover the zero-variants case (optimizationVariants should be [], not undefined, and must
+  // not include the API-synthesized `variantType: 'default'` entry representing the parent
+  // itself -- see AIS-139 / projects/decisions/0001-exo-variant-export-storage-shape.md).
+  const fragmentAVariant = await client.experienceFragmentVariant.create(
+    { experienceFragmentId: publishedFragmentA.sys.id },
+    {
+      name: 'Fragment A Variant',
+      description: 'Optimization variant of Fragment A',
+      viewports: [VIEWPORT],
+      designProperties: {},
+      component: resourceLink('Contentful:Component', componentUrn(publishedBaseComponent.sys.id))
+    }
+  )
+
   const compositeComponent = await client.component.create(
     {},
     {
@@ -321,6 +336,19 @@ beforeAll(async () => {
   )
   const publishedExperienceA = await client.experience.publish({ experienceId: experienceA.sys.id, version: experienceA.sys.version })
 
+  // Optimization Variant (1) on Experience A only -- Experience B is left without one, same
+  // zero-variants coverage rationale as Fragment B above.
+  const experienceAVariant = await client.experienceVariant.create(
+    { experienceId: publishedExperienceA.sys.id },
+    {
+      name: 'Experience A Variant',
+      description: 'Optimization variant of Experience A',
+      viewports: [VIEWPORT],
+      designProperties: {},
+      experienceTemplate: resourceLink('Contentful:ExperienceTemplate', `${EXO_URN_BASE}/experienceTemplates/${publishedTemplateA.sys.id}`)
+    }
+  )
+
   const experienceB = await client.experience.create(
     {},
     {
@@ -363,6 +391,45 @@ describe('Experience Orchestration', () => {
       const exportedFragmentB = content.experienceFragments.find((f) => f.name === 'Fragment B')
       expect(exportedFragmentB.contentBindings.sys.urn).toBe(dataAssemblyUrn(createdIds.dataAssemblies[1]))
       expect(exportedFragmentB.contentBindings.parameters.p_entry.sys.urn).toBe(entryUrn(entryId))
+
+      // includeExoVariants defaults to false -- optimizationVariants must be absent
+      // entirely (not an empty array) when the flag isn't passed.
+      expect('optimizationVariants' in content.experiences[0]).toBe(false)
+      expect('optimizationVariants' in content.experienceFragments[0]).toBe(false)
+    })
+  })
+
+  it('nests Optimization Variants onto their parent when includeExoVariants is true, excluding the API-synthesized default entry', () => {
+    return runContentfulExport({
+      spaceId,
+      managementToken,
+      saveFile: false,
+      exportDir: tmpFolder,
+      includeExperienceOrchestration: true,
+      includeExoVariants: true
+    }).then((content) => {
+      const exportedExperienceA = content.experiences.find((e) => e.name === 'Experience A')
+      const exportedExperienceB = content.experiences.find((e) => e.name === 'Experience B')
+      const exportedFragmentA = content.experienceFragments.find((f) => f.name === 'Fragment A')
+      const exportedFragmentB = content.experienceFragments.find((f) => f.name === 'Fragment B')
+
+      // Experience A / Fragment A each got exactly one real variant seeded above --
+      // optimizationVariants must contain exactly that variant, not the parent's own
+      // `variantType: 'default'` view (which the API always leads the list with).
+      expect(exportedExperienceA.optimizationVariants).toHaveLength(1)
+      expect(exportedExperienceA.optimizationVariants[0].name).toBe('Experience A Variant')
+      expect(exportedExperienceA.optimizationVariants[0].sys.variantType).toBe('personalization')
+      expect(exportedExperienceA.optimizationVariants[0].sys.id).toBe(exportedExperienceA.sys.id)
+
+      expect(exportedFragmentA.optimizationVariants).toHaveLength(1)
+      expect(exportedFragmentA.optimizationVariants[0].name).toBe('Fragment A Variant')
+      expect(exportedFragmentA.optimizationVariants[0].sys.variantType).toBe('personalization')
+      expect(exportedFragmentA.optimizationVariants[0].sys.id).toBe(exportedFragmentA.sys.id)
+
+      // Experience B / Fragment B got no variants seeded -- optimizationVariants must be
+      // [], not undefined and not [default-pseudo-variant].
+      expect(exportedExperienceB.optimizationVariants).toEqual([])
+      expect(exportedFragmentB.optimizationVariants).toEqual([])
     })
   })
 })

@@ -389,6 +389,23 @@ If the source space has no ExO entities, or lacks the `exoM1` entitlement, each 
 
 Requires the `exoM1` entitlement on the source space's organization. [contentful-cli](https://github.com/contentful/contentful-cli)'s `space export` command doesn't expose this option at all yet, so ExO export isn't reachable through that separate CLI regardless of default.
 
+### Optimization Variants
+
+Experiences and Experience Fragments each support **Optimization Variants** — alternate versions used for personalization. Variants are a separate opt-in on top of `includeExperienceOrchestration`, defaulting to `false`:
+
+```javascript
+const options = {
+  spaceId: '<space_id>',
+  managementToken: '<content_management_api_key>',
+  includeExperienceOrchestration: true,
+  includeExoVariants: true
+}
+
+await contentfulExport(options)
+```
+
+Unlike the six entity types above, variants are **not** exported as a seventh top-level array — they're nested onto their parent as `experience.optimizationVariants` / `experienceFragment.optimizationVariants`, because a variant has no globally-unique `sys.id` of its own (the API's variant response reuses the parent's `sys.id`; the variant is identified by `sys.variant`/`sys.variantType`/`sys.variantDimension` instead). When `includeExoVariants` is omitted or `false`, the `optimizationVariants` field is absent entirely — not an empty array — so default export output is unaffected. See [`docs/exo-export.md`](./docs/exo-export.md#optimization-variants) for the full shape, the ADR behind the nested-storage decision, and the corresponding `contentful-import` behavior.
+
 ### Round-tripping into `contentful-import`
 
 The ExO entities exported here are designed to be fed directly into [`contentful-import`](https://github.com/contentful/contentful-import), which preserves source IDs, applies dependency ordering (a topological sort for Components and Experience Fragments, since either can reference others of the same type), and upgrades entities from older, pre-rename export files automatically. See `contentful-import`'s README "Experience Orchestration (ExO) entities" section for the import-side details.
