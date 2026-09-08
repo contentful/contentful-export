@@ -946,7 +946,7 @@ test('Degrades gracefully to an empty array when an ExO endpoint fails', () => {
     })
 })
 
-// --- Releases (Timeline) ---
+// --- Timeline (Releases) ---
 //
 // Releases is a separate, GA Contentful feature, not part of Experience
 // Orchestration — it is fetched unconditionally (unlike the ExO entities
