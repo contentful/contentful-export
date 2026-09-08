@@ -209,7 +209,7 @@ beforeAll(async () => {
   // Optimization Variant (1) on Fragment A only -- Fragment B is left without one to also
   // cover the zero-variants case (optimizationVariants should be [], not undefined, and must
   // not include the API-synthesized `variantType: 'default'` entry representing the parent
-  // itself -- see AIS-139 / projects/decisions/0001-exo-variant-export-storage-shape.md).
+  // itself -- see AIS-139).
   const fragmentAVariant = await client.experienceFragmentVariant.create(
     { experienceFragmentId: publishedFragmentA.sys.id },
     {

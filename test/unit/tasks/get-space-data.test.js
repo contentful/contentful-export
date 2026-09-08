@@ -949,8 +949,7 @@ test('Degrades gracefully to an empty array when an ExO endpoint fails', () => {
 // --- Optimization Variants ---
 //
 // Variants are nested onto their parent Experience/ExperienceFragment
-// (`parent.optimizationVariants`), not exported as their own top-level field — see
-// projects/decisions/0001-exo-variant-export-storage-shape.md (ecosystem-os repo).
+// (`parent.optimizationVariants`), not exported as their own top-level field.
 // This is because a variant's `sys.id` is borrowed from its parent (not unique to
 // the variant itself), so a flat array would collide; nesting sidesteps that by
 // construction. These tests exist specifically to guard that nesting behavior and

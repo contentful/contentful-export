@@ -145,10 +145,9 @@ test('Creates a valid and correct opts object', async () => {
 })
 
 test('Adds a computed row to the summary table for nested Optimization Variants', async () => {
-  // Variants are nested onto their parent (projects/decisions/0001-exo-variant-export-storage-shape.md,
-  // ecosystem-os repo), so they have no top-level ctx.data field and their count isn't
-  // free from the generic per-field loop in lib/index.js — this exercises the computed
-  // rows added specifically to cover that.
+  // Variants are nested onto their parent, so they have no top-level ctx.data field
+  // and their count isn't free from the generic per-field loop in lib/index.js — this
+  // exercises the computed rows added specifically to cover that.
   getSpaceData.mockImplementationOnce(() => new Listr([
     {
       title: 'mocked get full source space with variants',
