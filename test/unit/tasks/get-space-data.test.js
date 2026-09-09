@@ -979,7 +979,7 @@ test('Fetches Releases data by default', () => {
         spaceId: 'spaceid',
         environmentId: 'master',
         query: {
-          'metadata.annotations.Contentful:Timeline.type[nin]': 'Staging',
+          'metadata.annotations.Contentful:Timeline.type[nin]': 'Staging,Hidden',
           'sys.schemaVersion': 'Release.v2',
           'sys.status[in]': 'active',
           limit: maxAllowedLimit
