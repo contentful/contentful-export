@@ -1177,7 +1177,7 @@ function setupReleaseMock() {
   }
 }
 
-test('Fetches Releases data by default', () => {
+test('Fetches only active Releases by default', () => {
   setupReleaseMock()
   return getSpaceData({
     client: mockClient,

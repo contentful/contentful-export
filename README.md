@@ -186,7 +186,7 @@ Content Delivery API.
 
 #### `includeArchived` [boolean] [default: false]
 
-Include archived entries in the exported entries
+Include archived entries and assets in the exported data. This option does not include archived Releases.
 
 #### `skipContentModel` [boolean] [default: false]
 
@@ -424,6 +424,8 @@ The ExO entities exported here are designed to be fed directly into [`contentful
 Releases export is on by default (`skipReleases: false`) — for the CLI and the module API alike. Pass `skipReleases: true` (`--skip-releases` on the CLI) to opt out.
 
 Only releases with `sys.schemaVersion: "Release.v2"` ("Releases") are fetched. `Release.v1` ("Launch") releases are excluded by the export query itself, since [`contentful-import`](https://github.com/contentful/contentful-import) only supports `Release.v2` on the import side.
+
+Only active Releases are exported. Archived Releases are omitted, regardless of `includeArchived`, because that option currently applies only to entries and assets.
 
 If the source space's organization lacks the Releases entitlement, or the fetch otherwise fails, a `Skipping Releases export` warning is logged and `releases` exports as an empty array — it does not fail the export.
 
