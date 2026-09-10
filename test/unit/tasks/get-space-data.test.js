@@ -945,3 +945,220 @@ test('Degrades gracefully to an empty array when an ExO endpoint fails', () => {
       expect(response.data.designTokens).toHaveLength(1)
     })
 })
+
+// --- Optimization Variants ---
+//
+// Variants are nested onto their parent Experience/ExperienceFragment
+// (`parent.optimizationVariants`), not exported as their own top-level field.
+// This is because a variant's `sys.id` is borrowed from its parent (not unique to
+// the variant itself), so a flat array would collide; nesting sidesteps that by
+// construction. These tests exist specifically to guard that nesting behavior and
+// its gating.
+
+function setupVariantMocks() {
+  mockClient.experienceVariant = {
+    getMany: jest.fn(() => Promise.resolve({ sys: { type: 'Array' }, items: [] }))
+  }
+  mockClient.experienceFragmentVariant = {
+    getMany: jest.fn(() => Promise.resolve({ sys: { type: 'Array' }, items: [] }))
+  }
+}
+
+test('Skips Optimization Variants by default even when ExO is enabled', () => {
+  setupExoMocks()
+  setupVariantMocks()
+  return getSpaceData({
+    client: mockClient,
+    spaceId: 'spaceid',
+    maxAllowedLimit,
+    skipContent: true,
+    skipWebhooks: true,
+    skipRoles: true,
+    includeExperienceOrchestration: true
+  })
+    .run({
+      data: {}
+    })
+    .then((response) => {
+      expect(mockClient.experienceVariant.getMany.mock.calls).toHaveLength(0)
+      expect(mockClient.experienceFragmentVariant.getMany.mock.calls).toHaveLength(0)
+      expect(response.data.experiences[0].optimizationVariants).toBeUndefined()
+      expect(response.data.experienceFragments[0].optimizationVariants).toBeUndefined()
+    })
+})
+
+test('Nests fetched variants onto their parent Experience/ExperienceFragment when includeExoVariants is true', () => {
+  setupExoMocks()
+  mockClient.experience.getMany = jest.fn(() => Promise.resolve(
+    cursorPage([{ sys: { id: 'exp1' } }, { sys: { id: 'exp2' } }])
+  ))
+  mockClient.experienceFragment.getMany = jest.fn(() => Promise.resolve(
+    cursorPage([{ sys: { id: 'frag1' } }])
+  ))
+  mockClient.experienceVariant = {
+    getMany: jest.fn((params) => Promise.resolve({
+      sys: { type: 'Array' },
+      items: [{ sys: { id: params.experienceId, variant: `${params.experienceId}-v1` } }]
+    }))
+  }
+  mockClient.experienceFragmentVariant = {
+    getMany: jest.fn((params) => Promise.resolve({
+      sys: { type: 'Array' },
+      items: [{ sys: { id: params.experienceFragmentId, variant: `${params.experienceFragmentId}-v1` } }]
+    }))
+  }
+
+  return getSpaceData({
+    client: mockClient,
+    spaceId: 'spaceid',
+    maxAllowedLimit,
+    skipContent: true,
+    skipWebhooks: true,
+    skipRoles: true,
+    includeExperienceOrchestration: true,
+    includeExoVariants: true
+  })
+    .run({
+      data: {}
+    })
+    .then((response) => {
+      // One call per parent (N+1), each scoped by that parent's ID via the
+      // endpoint-specific param name (experienceId vs experienceFragmentId).
+      expect(mockClient.experienceVariant.getMany.mock.calls).toHaveLength(2)
+      expect(mockClient.experienceVariant.getMany.mock.calls[0][0]).toEqual({
+        spaceId: 'spaceid',
+        environmentId: 'master',
+        experienceId: 'exp1',
+        query: {}
+      })
+      expect(mockClient.experienceFragmentVariant.getMany.mock.calls).toHaveLength(1)
+      expect(mockClient.experienceFragmentVariant.getMany.mock.calls[0][0]).toEqual({
+        spaceId: 'spaceid',
+        environmentId: 'master',
+        experienceFragmentId: 'frag1',
+        query: {}
+      })
+      // Variants land nested on their own parent, not as a top-level field, and
+      // not cross-mixed between the two parents fetched in the same run.
+      expect(response.data.experiences.find((e) => e.sys.id === 'exp1').optimizationVariants)
+        .toEqual([{ sys: { id: 'exp1', variant: 'exp1-v1' } }])
+      expect(response.data.experiences.find((e) => e.sys.id === 'exp2').optimizationVariants)
+        .toEqual([{ sys: { id: 'exp2', variant: 'exp2-v1' } }])
+      expect(response.data.experienceFragments[0].optimizationVariants)
+        .toEqual([{ sys: { id: 'frag1', variant: 'frag1-v1' } }])
+      expect(response.data.experienceVariants).toBeUndefined()
+      expect(response.data.experienceFragmentVariants).toBeUndefined()
+    })
+})
+
+test('Degrades gracefully to an empty array when a single parent\'s variant fetch fails', () => {
+  setupExoMocks()
+  mockClient.experience.getMany = jest.fn(() => Promise.resolve(
+    cursorPage([{ sys: { id: 'exp1' } }, { sys: { id: 'exp2' } }])
+  ))
+  mockClient.experienceVariant = {
+    getMany: jest.fn((params) => params.experienceId === 'exp1'
+      ? Promise.reject(new Error('missing entitlement'))
+      : Promise.resolve({ sys: { type: 'Array' }, items: [{ sys: { id: 'exp2', variant: 'exp2-v1' } }] }))
+  }
+  mockClient.experienceFragmentVariant = {
+    getMany: jest.fn(() => Promise.resolve({ sys: { type: 'Array' }, items: [] }))
+  }
+
+  return getSpaceData({
+    client: mockClient,
+    spaceId: 'spaceid',
+    maxAllowedLimit,
+    skipContent: true,
+    skipWebhooks: true,
+    skipRoles: true,
+    includeExperienceOrchestration: true,
+    includeExoVariants: true
+  })
+    .run({
+      data: {}
+    })
+    .then((response) => {
+      // The failing parent gets [] rather than aborting the whole export...
+      expect(response.data.experiences.find((e) => e.sys.id === 'exp1').optimizationVariants).toEqual([])
+      // ...and the other parent's variants are still fetched.
+      expect(response.data.experiences.find((e) => e.sys.id === 'exp2').optimizationVariants)
+        .toEqual([{ sys: { id: 'exp2', variant: 'exp2-v1' } }])
+      // The failure is counted separately so it isn't indistinguishable from a
+      // parent that genuinely has zero variants.
+      expect(response.optimizationVariantFailures.experiences).toBe(1)
+      expect(response.optimizationVariantFailures.experienceFragments).toBe(0)
+    })
+})
+
+test('Skips Experience/Fragment variant fetch entirely when there are no parents to fetch for', () => {
+  setupExoMocks()
+  mockClient.experience.getMany = jest.fn(() => Promise.resolve(cursorPage([])))
+  mockClient.experienceFragment.getMany = jest.fn(() => Promise.resolve(cursorPage([])))
+  setupVariantMocks()
+
+  return getSpaceData({
+    client: mockClient,
+    spaceId: 'spaceid',
+    maxAllowedLimit,
+    skipContent: true,
+    skipWebhooks: true,
+    skipRoles: true,
+    includeExperienceOrchestration: true,
+    includeExoVariants: true
+  })
+    .run({
+      data: {}
+    })
+    .then(() => {
+      expect(mockClient.experienceVariant.getMany.mock.calls).toHaveLength(0)
+      expect(mockClient.experienceFragmentVariant.getMany.mock.calls).toHaveLength(0)
+    })
+})
+
+test('Filters out the API-synthesized default pseudo-variant, which represents the parent itself', () => {
+  // The optimization_variants list endpoint always leads with a sys.variantType: 'default'
+  // item representing the parent's own base view (a real record, or the baseline
+  // Experience/Fragment itself if none exists) -- not a real personalization variant.
+  // That entity is already exported as its own top-level Experience/ExperienceFragment, so
+  // it must not also show up inside optimizationVariants (double-counting it as a variant).
+  setupExoMocks()
+  mockClient.experience.getMany = jest.fn(() => Promise.resolve(cursorPage([{ sys: { id: 'exp1' } }])))
+  mockClient.experienceFragment.getMany = jest.fn(() => Promise.resolve(cursorPage([{ sys: { id: 'frag1' } }])))
+  mockClient.experienceVariant = {
+    getMany: jest.fn(() => Promise.resolve({
+      sys: { type: 'Array' },
+      items: [
+        { sys: { id: 'exp1', variant: 'default', variantType: 'default' } },
+        { sys: { id: 'exp1', variant: 'v1', variantType: 'personalization' } }
+      ]
+    }))
+  }
+  mockClient.experienceFragmentVariant = {
+    // A parent with zero real variants still gets the synthesized default entry back --
+    // filtering it must leave optimizationVariants empty, not length 1.
+    getMany: jest.fn(() => Promise.resolve({
+      sys: { type: 'Array' },
+      items: [{ sys: { id: 'frag1', variant: 'default', variantType: 'default' } }]
+    }))
+  }
+
+  return getSpaceData({
+    client: mockClient,
+    spaceId: 'spaceid',
+    maxAllowedLimit,
+    skipContent: true,
+    skipWebhooks: true,
+    skipRoles: true,
+    includeExperienceOrchestration: true,
+    includeExoVariants: true
+  })
+    .run({
+      data: {}
+    })
+    .then((response) => {
+      expect(response.data.experiences[0].optimizationVariants)
+        .toEqual([{ sys: { id: 'exp1', variant: 'v1', variantType: 'personalization' } }])
+      expect(response.data.experienceFragments[0].optimizationVariants).toEqual([])
+    })
+})
