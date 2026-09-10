@@ -186,7 +186,7 @@ Content Delivery API.
 
 #### `includeArchived` [boolean] [default: false]
 
-Include archived entries in the exported entries
+Include archived entries and assets in the exported data. This option does not include archived Releases.
 
 #### `skipContentModel` [boolean] [default: false]
 
@@ -211,6 +211,10 @@ Skip exporting tags
 #### `skipWebhooks` [boolean] [default: false]
 
 Skip exporting webhooks
+
+#### `skipReleases` [boolean] [default: false]
+
+Skip exporting [Releases](https://www.contentful.com/help/releases/). See the "Releases" section below for what's exported when this is on.
 
 #### `stripTags` [boolean] [default: false]
 
@@ -339,6 +343,7 @@ This is an overview of the exported data:
   "webhooks": [],
   "roles": [],
   "editorInterfaces": [],
+  "releases": [],
   "designTokens": [],
   "components": [],
   "experienceTemplates": [],
@@ -364,6 +369,8 @@ When `includeExperienceOrchestration: true` is set, six additional arrays are in
 _Note:_ Tags feature is not available for all users. If you do not have access to this feature, the tags array will always be empty.
 
 _Note:_ `designTokens`, `components`, `experienceTemplates`, `dataAssemblies`, `experienceFragments`, and `experiences` are Experience Orchestration (ExO) entities — present by default; absent only if you explicitly set `includeExperienceOrchestration: false` — see the "Experience Orchestration (ExO) entities" section below.
+
+_Note:_ `releases` is present by default; absent only if you explicitly set `skipReleases: true` — see the "Releases" section below. It's a separate, GA Contentful feature, not part of ExO.
 
 ## :test_tube: Experience Orchestration (ExO) entities
 
@@ -409,6 +416,20 @@ Unlike the six entity types above, variants are **not** exported as a seventh to
 ### Round-tripping into `contentful-import`
 
 The ExO entities exported here are designed to be fed directly into [`contentful-import`](https://github.com/contentful/contentful-import), which preserves source IDs, applies dependency ordering (a topological sort for Components and Experience Fragments, since either can reference others of the same type), and upgrades entities from older, pre-rename export files automatically. See `contentful-import`'s README "Experience Orchestration (ExO) entities" section for the import-side details.
+
+## :package: Releases
+
+[Releases](https://www.contentful.com/help/releases/) (Timeline) is a separate, GA Contentful feature — not part of Experience Orchestration, and gated by its own organization entitlement rather than `exoM1`.
+
+Releases export is on by default (`skipReleases: false`) — for the CLI and the module API alike. Pass `skipReleases: true` (`--skip-releases` on the CLI) to opt out.
+
+Only releases with `sys.schemaVersion: "Release.v2"` ("Releases") are fetched. `Release.v1` ("Launch") releases are excluded by the export query itself, since [`contentful-import`](https://github.com/contentful/contentful-import) only supports `Release.v2` on the import side.
+
+Only active Releases are exported. Archived Releases are omitted, regardless of `includeArchived`, because that option currently applies only to entries and assets.
+
+If the source space's organization lacks the Releases entitlement, or the fetch otherwise fails, a `Skipping Releases export` warning is logged and `releases` exports as an empty array — it does not fail the export.
+
+Round-trips into [`contentful-import`](https://github.com/contentful/contentful-import), which imports each release found in the exported data. See `contentful-import`'s README "Releases" section for the import-side details, including a real limitation worth knowing before you rely on this for repeated imports: Releases have no ID-preserving create, so re-importing the same export creates additional releases rather than updating existing ones.
 
 ## :warning: Limitations
 

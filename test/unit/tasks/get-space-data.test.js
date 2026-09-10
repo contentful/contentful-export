@@ -1162,3 +1162,113 @@ test('Filters out the API-synthesized default pseudo-variant, which represents t
       expect(response.data.experienceFragments[0].optimizationVariants).toEqual([])
     })
 })
+
+// --- Timeline (Releases) ---
+//
+// Releases is a separate, GA Contentful feature, not part of Experience
+// Orchestration — it is fetched unconditionally (unlike the ExO entities
+// above, which are gated behind `includeExperienceOrchestration`) unless
+// `skipReleases` opts out. It uses the same cursor-based pagination helper
+// as the ExO entities, driven by `client.release.query`.
+
+function setupReleaseMock() {
+  mockClient.release = {
+    query: jest.fn(() => Promise.resolve(cursorPage([{ sys: { id: 'release1' } }])))
+  }
+}
+
+test('Fetches only active Releases by default', () => {
+  setupReleaseMock()
+  return getSpaceData({
+    client: mockClient,
+    spaceId: 'spaceid',
+    maxAllowedLimit,
+    skipContent: true,
+    skipWebhooks: true,
+    skipRoles: true
+  })
+    .run({
+      data: {}
+    })
+    .then((response) => {
+      expect(mockClient.release.query.mock.calls).toHaveLength(1)
+      expect(mockClient.release.query.mock.calls[0][0]).toEqual({
+        spaceId: 'spaceid',
+        environmentId: 'master',
+        query: {
+          'metadata.annotations.Contentful:Timeline.type[nin]': 'Staging,Hidden',
+          'sys.schemaVersion': 'Release.v2',
+          'sys.status[in]': 'active',
+          limit: maxAllowedLimit
+        }
+      })
+      expect(response.data.releases).toHaveLength(1)
+      expect(response.data.releases[0].sys.id).toBe('release1')
+    })
+})
+
+test('Skips Releases when skipReleases is set', () => {
+  setupReleaseMock()
+  return getSpaceData({
+    client: mockClient,
+    spaceId: 'spaceid',
+    maxAllowedLimit,
+    skipContent: true,
+    skipWebhooks: true,
+    skipRoles: true,
+    skipReleases: true
+  })
+    .run({
+      data: {}
+    })
+    .then((response) => {
+      expect(mockClient.release.query.mock.calls).toHaveLength(0)
+      expect(response.data.releases).toBeUndefined()
+    })
+})
+
+test('Follows cursor pagination across pages for Releases', () => {
+  setupReleaseMock()
+  mockClient.release.query = jest.fn()
+    .mockResolvedValueOnce(cursorPage([{ sys: { id: 'r1' } }, { sys: { id: 'r2' } }], 'RELEASE_PAGE_2'))
+    .mockResolvedValueOnce(cursorPage([{ sys: { id: 'r3' } }]))
+
+  return getSpaceData({
+    client: mockClient,
+    spaceId: 'spaceid',
+    maxAllowedLimit,
+    skipContent: true,
+    skipWebhooks: true,
+    skipRoles: true
+  })
+    .run({
+      data: {}
+    })
+    .then((response) => {
+      expect(mockClient.release.query.mock.calls).toHaveLength(2)
+      expect(mockClient.release.query.mock.calls[0][0].query).not.toHaveProperty('pageNext')
+      expect(mockClient.release.query.mock.calls[1][0].query.pageNext).toBe('RELEASE_PAGE_2')
+      expect(response.data.releases).toHaveLength(3)
+      expect(response.data.releases.map((item) => item.sys.id)).toEqual(['r1', 'r2', 'r3'])
+    })
+})
+
+test('Degrades gracefully to an empty array when the Releases endpoint fails', () => {
+  setupReleaseMock()
+  mockClient.release.query = jest.fn(() => Promise.reject(new Error('Timeline is not enabled for this organization')))
+
+  return getSpaceData({
+    client: mockClient,
+    spaceId: 'spaceid',
+    maxAllowedLimit,
+    skipContent: true,
+    skipWebhooks: true,
+    skipRoles: true
+  })
+    .run({
+      data: {}
+    })
+    .then((response) => {
+      expect(response.data.releases).toEqual([])
+    })
+})
