@@ -1084,6 +1084,10 @@ test('Degrades gracefully to an empty array when a single parent\'s variant fetc
       // ...and the other parent's variants are still fetched.
       expect(response.data.experiences.find((e) => e.sys.id === 'exp2').optimizationVariants)
         .toEqual([{ sys: { id: 'exp2', variant: 'exp2-v1' } }])
+      // The failure is counted separately so it isn't indistinguishable from a
+      // parent that genuinely has zero variants.
+      expect(response.optimizationVariantFailures.experiences).toBe(1)
+      expect(response.optimizationVariantFailures.experienceFragments).toBe(0)
     })
 })
 
