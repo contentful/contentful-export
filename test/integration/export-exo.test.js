@@ -107,7 +107,6 @@ beforeAll(async () => {
         p_entry: {
           name: 'Entry',
           type: 'ResourceLink',
-          linkType: 'Contentful:Entry',
           allowedResources: [
             { type: 'Contentful:Entry', source: 'crn:contentful:::content:spaces/$self/environments/$self', allowedTypes: [CONTENT_TYPE_ID] }
           ]
@@ -136,7 +135,6 @@ beforeAll(async () => {
         p_entry: {
           name: 'Entry',
           type: 'ResourceLink',
-          linkType: 'Contentful:Entry',
           allowedResources: [
             { type: 'Contentful:Entry', source: 'crn:contentful:::content:spaces/$self/environments/$self', allowedTypes: [CONTENT_TYPE_ID] }
           ]
