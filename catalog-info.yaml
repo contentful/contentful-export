@@ -7,8 +7,11 @@ metadata:
   annotations:
     circleci.com/project-slug: github/contentful/contentful-export
     github.com/project-slug: contentful/contentful-export
-    contentful.com/ci-alert-slack: prd-phoenix-ci-alerts
+    contentful.com/ci-alert-slack: prd-ecosystem-dx-bots
+    contentful.com/service-tier: "4"
+  tags:
+    - tier-4
 spec:
   type: cli
   lifecycle: production
-  owner: group:team-phoenix
+  owner: group:group-applied-ai-solutions

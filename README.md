@@ -1,11 +1,7 @@
 # Contentful export tool
 
-[![npm](https://img.shields.io/npm/v/contentful-export.svg)](https://www.npmjs.com/package/contentful-export)
-[![Build Status](https://travis-ci.org/contentful/contentful-export.svg?branch=master)](https://travis-ci.org/contentful/contentful-export)
-[![Dependency Status](https://img.shields.io/david/contentful/contentful-export.svg)](https://david-dm.org/contentful/contentful-export)
-[![devDependency Status](https://img.shields.io/david/dev/contentful/contentful-import.svg)](https://david-dm.org/contentful/contentful-export#info=devDependencies)
-
-[![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release) [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)
+[![CI](https://github.com/contentful/contentful-export/actions/workflows/main.yaml/badge.svg)](https://github.com/contentful/contentful-export/actions/workflows/main.yaml)
+[![npm](https://img.shields.io/npm/v/contentful-export.svg)](https://www.npmjs.com/package/contentful-export) [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
 
 [Contentful](https://www.contentful.com) provides a content infrastructure for digital teams to power content in websites, apps, and devices. Unlike a CMS, Contentful was built to integrate with the modern software stack. It offers a central hub for structured content, powerful management and delivery APIs, and a customizable web app that enable developers and content creators to ship digital products faster.
 
@@ -14,10 +10,10 @@ This is a library that helps you backup your Content Model, Content and Assets o
 To import your exported data, please refer to the [contentful-import](https://github.com/contentful/contentful-import) repository.
 
 ## :exclamation: Usage as CLI
+
 > We moved the CLI version of this tool into our [Contentful CLI](https://github.com/contentful/contentful-cli). This allows our users to use and install only one single CLI tool to get the full Contentful experience.
 >
 > Please have a look at the [Contentful CLI export command documentation](https://github.com/contentful/contentful-cli/tree/master/docs/space/export) to learn more about how to use this as command line tool.
-
 
 ## :cloud: Pre-requisites && Installation
 
@@ -32,6 +28,8 @@ npm install contentful-export
 ```
 
 ## :hand: Usage
+
+### CommonJS
 
 ```javascript
 const contentfulExport = require('contentful-export')
@@ -49,6 +47,21 @@ contentfulExport(options)
   .catch((err) => {
     console.log('Oh no! Some errors occurred!', err)
   })
+```
+
+### ESM
+
+```javascript
+import contentfulExport from 'contentful-export'
+
+const options = {
+  spaceId: '<space_id>',
+  managementToken: '<content_management_api_key>',
+  ...
+}
+
+// contentfulExport returns a Promise so you can use async/await, etc.
+await contentfulExport(options)
 ```
 
 ### Querying
@@ -108,15 +121,19 @@ contentfulExport(options)
 ### Basics
 
 #### `spaceId` [string] [required]
+
 ID of the space with source data
 
 #### `environmentId` [string] [default: 'master']
+
 ID of the environment in the source space
 
 #### `managementToken` [string] [required]
+
 Contentful management API token for the space to be exported
 
 #### `deliveryToken` [string]
+
 Contentful Content Delivery API (CDA) token for the space to be exported.
 
 Providing `deliveryToken` will export both entries and assets from the
@@ -140,22 +157,26 @@ Just to clarify: When Contentful Management API always returns the latest versio
 the Content Delivery API would return the `publishedVersion` (23). CDA responses don't include
 version number.
 
-Note: Tags are only available on the Contentful Management API, so they will not be exported if you provide a Contenful Delivery Token. Tags is a new feature that not all users have access to.
+Note: Tags are only available on the Contentful Management API, so they will not be exported if you provide a Contentful Delivery Token. Tags is a new feature that not all users have access to.
 
 ### Output
 
 #### `exportDir` [string] [default: current process working directory]
+
 Defines the path for storing the export JSON file
 
 #### `saveFile` [boolean] [default: true]
+
 Save the export as a JSON file
 
 #### `contentFile` [string]
+
 The filename for the exported data
 
 ### Filtering
 
 #### `includeDrafts` [boolean] [default: false]
+
 Include drafts in the exported entries.
 
 The `deliveryToken` option is ignored
@@ -164,68 +185,106 @@ If you want to include drafts, there's no point of getting them through the
 Content Delivery API.
 
 #### `includeArchived` [boolean] [default: false]
-Include archived entries in the exported entries
+
+Include archived entries and assets in the exported data. This option does not include archived Releases.
 
 #### `skipContentModel` [boolean] [default: false]
+
 Skip exporting content models
 
 #### `skipEditorInterfaces` [boolean] [default: false]
+
 Skip exporting editor interfaces
 
 #### `skipContent` [boolean] [default: false]
+
 Skip exporting assets and entries.
 
 #### `skipRoles` [boolean] [default: false]
+
 Skip exporting roles and permissions
 
 #### `skipTags` [boolean] [default: false]
+
 Skip exporting tags
 
 #### `skipWebhooks` [boolean] [default: false]
+
 Skip exporting webhooks
 
+#### `skipReleases` [boolean] [default: false]
+
+Skip exporting [Releases](https://www.contentful.com/help/releases/). See the "Releases" section below for what's exported when this is on.
+
 #### `stripTags` [boolean] [default: false]
+
 Untag assets and entries
 
+#### `includeExperienceOrchestration` [boolean] [default: true]
+
+Export Experience Orchestration (ExO) entities: Design Tokens, Components, Experience Templates, Data Assemblies, Experience Fragments, and Experiences.
+
+Requires the Organization to have the `exo_m1` entitlement. If the Organization is not entitled, the export will not throw — each ExO array will be empty and a warning will be logged.
+
+See [docs/exo-export.md](./docs/exo-export.md) for full details.
+
 #### `contentOnly` [boolean] [default: false]
+
 Only export entries and assets
 
 #### `queryEntries` [array]
+
 Only export entries that match these queries
 
 #### `queryAssets` [array]
+
 Only export assets that match these queries
 
 #### `downloadAssets` [boolean]
+
 Download actual asset files
 
 ### Connection
 
 #### `host` [string] [default: 'api.contentful.com']
+
 The Management API host
 
+#### `hostDelivery` [string] [default: 'cdn.contentful.com']
+
+The Delivery API host
+
 #### `proxy` [string]
+
 Proxy configuration in HTTP auth format: `host:port` or `user:password@host:port`
 
 #### `rawProxy` [boolean]
+
 Pass proxy config to Axios instead of creating a custom httpsAgent
 
 #### `maxAllowedLimit` [number] [default: 1000]
+
 The number of items per page per request
 
-#### `limit` [number]
-The total number of items to return. Can be used with entries or assets. If not provided, then all entries or assets will be returned. The entries or assets will be ordered using: `sys.createdAt,sys.id`.
-
 #### `headers` [object]
-Additional headers to attach to the requests. 
+
+Additional headers to attach to the requests.
 
 ### Other
 
 #### `errorLogFile` [string]
+
 Full path to the error log file
 
 #### `useVerboseRenderer` [boolean] [default: false]
+
 Display progress in new lines instead of displaying a busy spinner and the status in the same line. Useful for CI.
+
+### Experience Orchestration
+
+#### `includeExperienceOrchestration` [boolean] [default: true]
+
+Flag controlling whether Experience Orchestration (ExO) entities — Design Tokens, Components, Experience Templates, Data Assemblies, Experience Fragments, and Experiences — are exported when present in the source space. Requires the `exoM1` entitlement on the source space's organization. Set to `false` to opt out. See the "Experience Orchestration (ExO) entities" section below for what happens when the space isn't entitled.
 
 ## :rescue_worker_helmet: Troubleshooting
 
@@ -254,6 +313,21 @@ contentfulExport({
 })
 ```
 
+### Embargoed Assets
+
+If a space is configured to use the [embargoed assets feature](https://www.contentful.com/help/media/embargoed-assets/), certain options will need to be set to use the export/import tooling. When exporting content, the `downloadAssets` option must be set to `true`. This will download the asset files to your local machine. Then, when importing content ([using `contentful-import`](https://github.com/contentful/contentful-import)), the `uploadAssets` option must be set to `true` and the `assetsDirectory` must be set to the directory that contains all of the exported asset folders.
+
+```javascript
+const contentfulExport = require("contentful-export");
+
+const options = {
+  spaceId: "<space_id>",
+  managementToken: "<content_management_api_key>",
+  downloadAssets: true,
+};
+
+contentfulExport(options);
+```
 
 ## :card_file_box: Exported data structure
 
@@ -268,11 +342,94 @@ This is an overview of the exported data:
   "tags": [],
   "webhooks": [],
   "roles": [],
-  "editorInterfaces": []
+  "editorInterfaces": [],
+  "releases": [],
+  "designTokens": [],
+  "components": [],
+  "experienceTemplates": [],
+  "dataAssemblies": [],
+  "experienceFragments": [],
+  "experiences": []
 }
 ```
 
-*Note:* Tags feature is not available for all users. If you do not have access to this feature, the tags array will always be empty.
+When `includeExperienceOrchestration: true` is set, six additional arrays are included:
+
+```json
+{
+  "designTokens": [],
+  "components": [],
+  "experienceTemplates": [],
+  "dataAssemblies": [],
+  "experienceFragments": [],
+  "experiences": []
+}
+```
+
+_Note:_ Tags feature is not available for all users. If you do not have access to this feature, the tags array will always be empty.
+
+_Note:_ `designTokens`, `components`, `experienceTemplates`, `dataAssemblies`, `experienceFragments`, and `experiences` are Experience Orchestration (ExO) entities — present by default; absent only if you explicitly set `includeExperienceOrchestration: false` — see the "Experience Orchestration (ExO) entities" section below.
+
+_Note:_ `releases` is present by default; absent only if you explicitly set `skipReleases: true` — see the "Releases" section below. It's a separate, GA Contentful feature, not part of ExO.
+
+## :test_tube: Experience Orchestration (ExO) entities
+
+Experience Orchestration (ExO) is Contentful's system for composing and rendering structured page experiences. It sits above the traditional entry/content-type layer and provides six dedicated entity types — Design Tokens, Components, Experience Templates, Data Assemblies, Experience Fragments, and Experiences — that together describe how content is fetched, assembled, and laid out.
+
+> **Experimental:** ExO entities (`designTokens`, `components`, `experienceTemplates`, `dataAssemblies`, `experienceFragments`, `experiences`) are `@internal` and considered experimental. Their shape and export behavior are subject to change without notice.
+
+ExO export is on by default (`includeExperienceOrchestration: true`) — for the CLI and the module API alike. Pass `includeExperienceOrchestration: false` (`--include-experience-orchestration=false` on the CLI) to opt out.
+
+```javascript
+import contentfulExport from 'contentful-export'
+
+const options = {
+  spaceId: '<space_id>',
+  managementToken: '<content_management_api_key>',
+  includeExperienceOrchestration: false // opt out; omit to export ExO entities when present (the default)
+}
+
+await contentfulExport(options)
+```
+
+If the source space has no ExO entities, or lacks the `exoM1` entitlement, each ExO entity type logs a `Skipping <Entity> export` warning and exports as an empty array — it does not fail the export. Pass `includeExperienceOrchestration: false` if you want to avoid it.
+
+Requires the `exoM1` entitlement on the source space's organization. [contentful-cli](https://github.com/contentful/contentful-cli)'s `space export` command doesn't expose this option at all yet, so ExO export isn't reachable through that separate CLI regardless of default.
+
+### Optimization Variants
+
+Experiences and Experience Fragments each support **Optimization Variants** — alternate versions used for personalization. Variants are a separate opt-in on top of `includeExperienceOrchestration`, defaulting to `false`:
+
+```javascript
+const options = {
+  spaceId: '<space_id>',
+  managementToken: '<content_management_api_key>',
+  includeExperienceOrchestration: true,
+  includeExoVariants: true
+}
+
+await contentfulExport(options)
+```
+
+Unlike the six entity types above, variants are **not** exported as a seventh top-level array — they're nested onto their parent as `experience.optimizationVariants` / `experienceFragment.optimizationVariants`, because a variant has no globally-unique `sys.id` of its own (the API's variant response reuses the parent's `sys.id`; the variant is identified by `sys.variant`/`sys.variantType`/`sys.variantDimension` instead). When `includeExoVariants` is omitted or `false`, the `optimizationVariants` field is absent entirely — not an empty array — so default export output is unaffected. See [`docs/exo-export.md`](./docs/exo-export.md#optimization-variants) for the full shape, the ADR behind the nested-storage decision, and the corresponding `contentful-import` behavior.
+
+### Round-tripping into `contentful-import`
+
+The ExO entities exported here are designed to be fed directly into [`contentful-import`](https://github.com/contentful/contentful-import), which preserves source IDs, applies dependency ordering (a topological sort for Components and Experience Fragments, since either can reference others of the same type), and upgrades entities from older, pre-rename export files automatically. See `contentful-import`'s README "Experience Orchestration (ExO) entities" section for the import-side details.
+
+## :package: Releases
+
+[Releases](https://www.contentful.com/help/releases/) (Timeline) is a separate, GA Contentful feature — not part of Experience Orchestration, and gated by its own organization entitlement rather than `exoM1`.
+
+Releases export is on by default (`skipReleases: false`) — for the CLI and the module API alike. Pass `skipReleases: true` (`--skip-releases` on the CLI) to opt out.
+
+Only releases with `sys.schemaVersion: "Release.v2"` ("Releases") are fetched. `Release.v1` ("Launch") releases are excluded by the export query itself, since [`contentful-import`](https://github.com/contentful/contentful-import) only supports `Release.v2` on the import side.
+
+Only active Releases are exported. Archived Releases are omitted, regardless of `includeArchived`, because that option currently applies only to entries and assets.
+
+If the source space's organization lacks the Releases entitlement, or the fetch otherwise fails, a `Skipping Releases export` warning is logged and `releases` exports as an empty array — it does not fail the export.
+
+Round-trips into [`contentful-import`](https://github.com/contentful/contentful-import), which imports each release found in the exported data. See `contentful-import`'s README "Releases" section for the import-side details, including a real limitation worth knowing before you rely on this for repeated imports: Releases have no ID-preserving create, so re-importing the same export creates additional releases rather than updating existing ones.
 
 ## :warning: Limitations
 
@@ -285,7 +442,12 @@ This is an overview of the exported data:
 Read the [releases](https://github.com/contentful/contentful-export/releases) page for more information.
 
 ## :scroll: License
- 
+
 This project is licensed under MIT license
+
+## For AI Agents
+
+<!-- Generated by seed-golden-context | Last updated: 2026-05-04 -->
+If you are an AI coding agent working in this repository, read [AGENTS.md](./AGENTS.md) first. It tells you where to find architectural context, development setup, decision records, and repo-specific rules.
 
 [1]: https://www.contentful.com

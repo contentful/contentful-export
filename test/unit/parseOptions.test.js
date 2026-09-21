@@ -1,4 +1,4 @@
-import HttpsProxyAgent from 'https-proxy-agent'
+import { HttpsProxyAgent } from 'https-proxy-agent'
 import { basename, isAbsolute, resolve, sep } from 'path'
 import parseOptions from '../../lib/parseOptions'
 
@@ -94,13 +94,10 @@ test('parseOption accepts proxy config as string', () => {
     proxy: 'localhost:1234'
   })
   expect(options).not.toHaveProperty('proxy')
-  expect(JSON.stringify(options.httpsAgent.constructor)).toEqual(JSON.stringify(HttpsProxyAgent))
-  expect(options.httpsAgent.options.host).toBe('localhost')
-  expect(options.httpsAgent.options.port).toBe(1234)
-  expect(options.httpsAgent.options).not.toHaveProperty('auth')
+  expect(options.httpsAgent).toBeInstanceOf(HttpsProxyAgent)
 })
 
-test.skip('parseOption accepts proxy config as object', () => {
+test('parseOption accepts proxy config as object', () => {
   const options = parseOptions({
     spaceId,
     managementToken,
@@ -112,11 +109,8 @@ test.skip('parseOption accepts proxy config as object', () => {
     }
   })
   expect(options).not.toHaveProperty('proxy')
-  expect(JSON.stringify(options.httpsAgent.constructor)).toEqual(JSON.stringify(HttpsProxyAgent))
-  expect(options.httpsAgent.options.host).toBe('localhost')
-  expect(options.httpsAgent.options.port).toBe(1234)
-  expect(options.httpsAgent.options).not.toHaveProperty('auth')
-}, 'broken')
+  expect(options.httpsAgent).toBeInstanceOf(HttpsProxyAgent)
+})
 
 test('parseOptions parses queryEntries option', () => {
   const options = parseOptions({

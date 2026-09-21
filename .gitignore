@@ -8,7 +8,6 @@ gh-pages
 *.dockerignore
 
 # Node package managers
-.npmrc
 yarn.lock
 
 # Created by https://www.gitignore.io/api/vim,code,linux,macos,windows,sublimetext,node
@@ -17,7 +16,6 @@ yarn.lock
 # Visual Studio Code - https://code.visualstudio.com/
 .settings/
 .vscode/
-tsconfig.json
 jsconfig.json
 
 # Export config
@@ -191,5 +189,6 @@ $RECYCLE.BIN/
 *.lnk
 
 .idea
+.tool-versions
 
 # End of https://www.gitignore.io/api/vim,code,linux,macos,windows,sublimetext,node

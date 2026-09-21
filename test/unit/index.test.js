@@ -2,6 +2,7 @@ import { resolve } from 'path'
 
 import bfj from 'bfj'
 import fs from 'fs'
+import Listr from 'listr'
 import mkdirp from 'mkdirp'
 
 import {
@@ -141,6 +142,92 @@ test('Creates a valid and correct opts object', async () => {
   expect(exportedTable[0]).toMatch(/Entries.+0/)
   expect(exportedTable[0]).toMatch(/Assets.+2/)
   expect(exportedTable[0]).toMatch(/Locales.+0/)
+})
+
+test('Adds a computed row to the summary table for nested Optimization Variants', async () => {
+  // Variants are nested onto their parent, so they have no top-level ctx.data field
+  // and their count isn't free from the generic per-field loop in lib/index.js — this
+  // exercises the computed rows added specifically to cover that.
+  getSpaceData.mockImplementationOnce(() => new Listr([
+    {
+      title: 'mocked get full source space with variants',
+      task: (ctx) => {
+        ctx.data = {
+          contentTypes: [],
+          entries: [],
+          assets: [],
+          locales: [],
+          experiences: [
+            { sys: { id: 'exp1' }, optimizationVariants: [{ sys: { id: 'exp1', variant: 'v1' } }, { sys: { id: 'exp1', variant: 'v2' } }] },
+            { sys: { id: 'exp2' }, optimizationVariants: [] }
+          ],
+          experienceFragments: [
+            { sys: { id: 'frag1' }, optimizationVariants: [{ sys: { id: 'frag1', variant: 'v1' } }] }
+          ]
+        }
+      }
+    }
+  ]))
+
+  await runContentfulExport({
+    errorLogFile: 'errorlogfile',
+    spaceId: 'someSpaceId',
+    managementToken: 'someManagementToken'
+  })
+
+  const exportedTable = global.console.log.mock.calls.find((call) => call[0].match(/Exported entities/))
+  expect(exportedTable).not.toBeUndefined()
+  expect(exportedTable[0]).toMatch(/Experiences.+2/)
+  expect(exportedTable[0]).toMatch(/Experience Fragments.+1/)
+  expect(exportedTable[0]).toMatch(/Experience Optimization Variants.+2/)
+  expect(exportedTable[0]).toMatch(/Experience Fragment Optimization Variants.+1/)
+})
+
+test('Adds a fetch-failure row to the summary table when a variant fetch failed', async () => {
+  // A per-parent variant fetch failure falls back to optimizationVariants: [], which
+  // looks identical to a parent that genuinely has zero variants. The failure count
+  // must show up as its own row rather than being folded silently into that count.
+  getSpaceData.mockImplementationOnce(() => new Listr([
+    {
+      title: 'mocked get full source space with a variant fetch failure',
+      task: (ctx) => {
+        ctx.data = {
+          contentTypes: [],
+          entries: [],
+          assets: [],
+          locales: [],
+          experiences: [
+            { sys: { id: 'exp1' }, optimizationVariants: [] }
+          ],
+          experienceFragments: []
+        }
+        ctx.optimizationVariantFailures = { experiences: 1, experienceFragments: 0 }
+      }
+    }
+  ]))
+
+  await runContentfulExport({
+    errorLogFile: 'errorlogfile',
+    spaceId: 'someSpaceId',
+    managementToken: 'someManagementToken'
+  })
+
+  const exportedTable = global.console.log.mock.calls.find((call) => call[0].match(/Exported entities/))
+  expect(exportedTable).not.toBeUndefined()
+  expect(exportedTable[0]).toMatch(/Experience Optimization Variant Fetch Failures.+1/)
+  expect(exportedTable[0]).not.toMatch(/Experience Fragment Optimization Variant Fetch Failures/)
+})
+
+test('Omits the variant summary rows when no parent has optimizationVariants', async () => {
+  await runContentfulExport({
+    errorLogFile: 'errorlogfile',
+    spaceId: 'someSpaceId',
+    managementToken: 'someManagementToken'
+  })
+
+  const exportedTable = global.console.log.mock.calls.find((call) => call[0].match(/Exported entities/))
+  expect(exportedTable).not.toBeUndefined()
+  expect(exportedTable[0]).not.toMatch(/Optimization Variants/)
 })
 
 test('Run Contentful export fails due to rejection', async () => {

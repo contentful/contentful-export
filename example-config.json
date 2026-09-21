@@ -15,7 +15,8 @@
   "contentOnly": false,
   "queryEntries": [
     "content_type=<content_type_id>",
-    "sys.id=<entry_id>"
+    "sys.id=<entry_id>",
+    "limit=1000"
   ],
   "queryAssets": [
     "fields.title=Example"
