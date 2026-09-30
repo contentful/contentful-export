@@ -858,6 +858,35 @@ test('Fetches all ExO entities into their renamed fields via the non-deprecated 
     })
 })
 
+test('Preserves ordered Data Assembly parameter definitions', () => {
+  const parameters = [
+    { id: 'title', name: 'Title', type: 'String', required: false },
+    { id: 'limit', name: 'Limit', type: 'Number', required: true }
+  ]
+  const dataAssembly = {
+    sys: { id: 'assembly' },
+    parameters
+  }
+  setupExoMocks()
+  mockClient.dataAssembly.getMany = jest.fn(() => Promise.resolve(cursorPage([dataAssembly])))
+
+  return getSpaceData({
+    client: mockClient,
+    spaceId: 'spaceid',
+    maxAllowedLimit,
+    skipContent: true,
+    skipWebhooks: true,
+    skipRoles: true,
+    includeExperienceOrchestration: true
+  })
+    .run({
+      data: {}
+    })
+    .then((response) => {
+      expect(response.data.dataAssemblies).toEqual([dataAssembly])
+    })
+})
+
 test('Follows cursor pagination across pages and aggregates ExO items', () => {
   setupExoMocks()
   // Make components span two pages driven by a `pages.next` token.
