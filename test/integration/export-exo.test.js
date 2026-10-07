@@ -261,7 +261,7 @@ beforeAll(async () => {
       component: resourceLink('Contentful:Component', componentUrn(publishedCompositeComponent.sys.id)),
       contentBindings: {
         sys: resourceLink('Contentful:DataAssembly', dataAssemblyUrn(publishedAssemblyB.sys.id)).sys,
-        parameters: { p_entry: resourceLink('Contentful:Entry', entryUrn(publishedEntry.sys.id)) }
+        parameters: { p_entry: { $literal: resourceLink('Contentful:Entry', entryUrn(publishedEntry.sys.id)) } }
       }
     }
   )
@@ -388,7 +388,7 @@ describe('Experience Orchestration', () => {
 
       const exportedFragmentB = content.experienceFragments.find((f) => f.name === 'Fragment B')
       expect(exportedFragmentB.contentBindings.sys.urn).toBe(dataAssemblyUrn(createdIds.dataAssemblies[1]))
-      expect(exportedFragmentB.contentBindings.parameters.p_entry.sys.urn).toBe(entryUrn(entryId))
+      expect(exportedFragmentB.contentBindings.parameters.p_entry.$literal.sys.urn).toBe(entryUrn(entryId))
 
       // includeExoVariants defaults to false -- optimizationVariants must be absent
       // entirely (not an empty array) when the flag isn't passed.
