@@ -86,7 +86,7 @@ npm run test:integration        # source: package.json -> scripts.test:integrati
 - **Unit tests:** `test/unit/` -- mirrors `lib/` structure
 - **Integration tests:** `test/integration/` -- runs against a real Contentful space (requires environment variables)
 - **Run all:** `npm test`
-- **Run single:** `npx jest --testPathPattern=test/unit/tasks/init-client`
+- **Run single:** `npx jest --testPathPatterns=test/unit/tasks/init-client`
 - **Coverage:** Collected from `lib/**/*.js`, excludes `usageParams.js`
 
 Integration tests require these environment variables:
