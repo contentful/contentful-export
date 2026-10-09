@@ -24,8 +24,6 @@ const fragmentUrn = (id) => `${EXO_URN_BASE}/experienceFragments/${id}`
 const dataAssemblyUrn = (id) => `${EXO_URN_BASE}/dataAssemblies/${id}`
 const entryUrn = (id) => `${CONTENT_URN_BASE}/entries/${id}`
 
-const VIEWPORT = { id: '_', query: '*', displayName: 'Default', previewSize: '1024px' }
-
 async function retry(fn, attempts = 5, delayMs = 2000) {
   let lastErr
   for (let i = 0; i < attempts; i++) {
@@ -160,7 +158,6 @@ beforeAll(async () => {
     {
       name: 'Base Component',
       description: 'Leaf component exercising a Slot placeholder',
-      viewports: [VIEWPORT],
       contentProperties: [],
       designProperties: [],
       slots: [{ id: 'untitledSlot1', name: 'Untitled slot 1', required: false, validations: [] }],
@@ -175,7 +172,6 @@ beforeAll(async () => {
     {
       name: 'Leaf Component',
       description: 'Component exercising a DesignToken-backed design property and a DataAssembly link',
-      viewports: [VIEWPORT],
       contentProperties: [],
       designProperties: [
         {
@@ -197,7 +193,6 @@ beforeAll(async () => {
     {
       name: 'Fragment A',
       description: 'Fragment wrapping the base component',
-      viewports: [VIEWPORT],
       designProperties: {},
       component: resourceLink('Contentful:Component', componentUrn(publishedBaseComponent.sys.id))
     }
@@ -213,7 +208,6 @@ beforeAll(async () => {
     {
       name: 'Fragment A Variant',
       description: 'Optimization variant of Fragment A',
-      viewports: [VIEWPORT],
       designProperties: {},
       component: resourceLink('Contentful:Component', componentUrn(publishedBaseComponent.sys.id))
     }
@@ -224,7 +218,6 @@ beforeAll(async () => {
     {
       name: 'Composite Component',
       description: 'Component exercising Component -> Component and Component -> ExperienceFragment tree nodes',
-      viewports: [VIEWPORT],
       contentProperties: [],
       designProperties: [],
       dataAssemblies: [resourceLink('Contentful:DataAssembly', dataAssemblyUrn(publishedAssemblyB.sys.id))],
@@ -256,7 +249,6 @@ beforeAll(async () => {
     {
       name: 'Fragment B',
       description: 'Fragment wrapping the composite component with contentBindings',
-      viewports: [VIEWPORT],
       designProperties: {},
       component: resourceLink('Contentful:Component', componentUrn(publishedCompositeComponent.sys.id)),
       contentBindings: {
@@ -275,7 +267,6 @@ beforeAll(async () => {
     {
       name: 'Template A',
       description: 'Template wrapping fragment A',
-      viewports: [VIEWPORT],
       contentProperties: [],
       designProperties: [],
       dataAssemblies: [resourceLink('Contentful:DataAssembly', dataAssemblyUrn(publishedAssemblyA.sys.id))],
@@ -296,7 +287,6 @@ beforeAll(async () => {
     {
       name: 'Template B',
       description: 'Template wrapping the composite component and fragment B',
-      viewports: [VIEWPORT],
       contentProperties: [],
       designProperties: [],
       dataAssemblies: [resourceLink('Contentful:DataAssembly', dataAssemblyUrn(publishedAssemblyB.sys.id))],
@@ -327,7 +317,6 @@ beforeAll(async () => {
     {
       name: 'Experience A',
       description: 'Experience built from template A',
-      viewports: [VIEWPORT],
       designProperties: {},
       experienceTemplate: resourceLink('Contentful:ExperienceTemplate', `${EXO_URN_BASE}/experienceTemplates/${publishedTemplateA.sys.id}`)
     }
@@ -341,7 +330,6 @@ beforeAll(async () => {
     {
       name: 'Experience A Variant',
       description: 'Optimization variant of Experience A',
-      viewports: [VIEWPORT],
       designProperties: {},
       experienceTemplate: resourceLink('Contentful:ExperienceTemplate', `${EXO_URN_BASE}/experienceTemplates/${publishedTemplateA.sys.id}`)
     }
@@ -352,7 +340,6 @@ beforeAll(async () => {
     {
       name: 'Experience B',
       description: 'Experience built from template B',
-      viewports: [VIEWPORT],
       designProperties: {},
       experienceTemplate: resourceLink('Contentful:ExperienceTemplate', `${EXO_URN_BASE}/experienceTemplates/${publishedTemplateB.sys.id}`)
     }
